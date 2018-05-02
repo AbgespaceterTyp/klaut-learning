@@ -17,7 +17,7 @@ public class Word2VecModelService implements IModelService {
     }
 
     @Override
-    public Page<Model> findAll(Pageable pageable) {
+    public Page<Model> getModels(Pageable pageable) {
         return modelRepository.findAll(pageable);
     }
 

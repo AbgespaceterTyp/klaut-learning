@@ -21,6 +21,6 @@ public class ModelController {
 
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<Page<Model>> findAll(Pageable pageable) {
-        return ResponseEntity.ok(modelService.findAll(pageable));
+        return ResponseEntity.ok(modelService.getModels(pageable));
     }
 }

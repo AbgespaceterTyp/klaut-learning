@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Set;
 
 public interface IModelService {
-    Page<Model> findAll(Pageable pageable);
+    Page<Model> getModels(Pageable pageable);
 
     Model createModel(String modelName, String modelDescription, ModelParams modelParams, Set<String> sourceUrls);
 
