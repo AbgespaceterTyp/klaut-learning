@@ -29,12 +29,11 @@ public class Word2VecModelService implements IModelService {
     }
 
     @Override
-    public Model createModel(String modelName, String modelDescription, ModelParams modelParams, Set<String> sourceUrls) {
-        // TODO LG implement
-        // store source files
-        // create model, link with source files and set model params if set
-        // return created model
-        return null;
+    public Model createModel(String modelName, String modelDescription) {
+        final Model model = new Model();
+        model.setName(modelName);
+        model.setDescription(modelDescription);
+        return modelRepository.save(model);
     }
 
     @Override
