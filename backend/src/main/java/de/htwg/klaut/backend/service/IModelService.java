@@ -10,13 +10,13 @@ import java.util.Set;
 public interface IModelService {
     Page<Model> getModels(Pageable pageable);
 
-    Model createModel(String modelName, String modelDescription, ModelParams modelParams, Set<String> sourceUrls);
+    Model createModel(String modelName, String modelDescription, ModelParams modelParams, Set<String> sourceUrls) throws Exception;
 
-    void trainModel(String modelId, Set<String> sourceUrls);
+    void trainModel(String modelId, Set<String> sourceUrls) throws Exception;
 
-    void trainModel(String modelId, ModelParams modelParams);
+    void trainModel(String modelId, ModelParams modelParams) throws Exception;
 
-    void trainModel(String modelId, ModelParams modelParams, Set<String> sourceUrls);
+    void trainModel(String modelId, ModelParams modelParams, Set<String> sourceUrls) throws Exception;
 
-    void deleteModel(String modelId);
+    void deleteModel(String modelId) throws Exception;
 }
