@@ -24,9 +24,11 @@
         <dynamodb.version>5.0.2</dynamodb.version>
         <aws-java-jdk.version>1.11.313</aws-java-jdk.version>
         <swagger-ui.version>2.7.0</swagger-ui.version>
+        <dl4j.Version>1.0.0-alpha</dl4j.Version>
     </properties>
 
     <dependencies>
+        <!-- Spring boot -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
@@ -35,6 +37,8 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!-- AWS -->
         <dependency>
             <groupId>com.github.derjust</groupId>
             <artifactId>spring-data-dynamodb</artifactId>
@@ -45,6 +49,8 @@
             <artifactId>aws-java-sdk</artifactId>
             <version>${aws-java-jdk.version}</version>
         </dependency>
+
+        <!-- Swagger ui -->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -55,11 +61,25 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>${swagger-ui.version}</version>
         </dependency>
+
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- Deep Learning for Java -->
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-core</artifactId>
+            <version>${dl4j.Version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.deeplearning4j</groupId>
+            <artifactId>deeplearning4j-nlp</artifactId>
+            <version>${dl4j.Version}</version>
         </dependency>
 
         <!-- Logging -->
