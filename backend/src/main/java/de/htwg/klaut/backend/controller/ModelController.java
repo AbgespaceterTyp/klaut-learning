@@ -1,6 +1,6 @@
 package de.htwg.klaut.backend.controller;
 
-import de.htwg.klaut.backend.model.Model;
+import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.service.IModelService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -1,4 +1,4 @@
 package de.htwg.klaut.backend.model;
 
-public class Model {
+public interface ModelParams {
 }
