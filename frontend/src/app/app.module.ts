@@ -12,7 +12,6 @@ import { AuthGuard } from './_guards/index';
 import { AuthenticationService } from './_services/index';
 import { routing } from './app.routing';
 
-
 @NgModule({
   declarations: [
     AppComponent,
