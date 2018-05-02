@@ -33,7 +33,8 @@ public class ModelController {
     public ResponseEntity<Model> createModel(@RequestParam(value = "modelName") String modelName,
                                                    @RequestParam(value = "modelDescription") String modelDescription) {
         try{
-            return ResponseEntity.ok(modelService.createModel(modelName, modelDescription));
+            final Model model = modelService.createModel(modelName, modelDescription);
+            return ResponseEntity.ok(model);
         } catch (Exception e) {
             return new ResponseEntity<Model>(HttpStatus.BAD_REQUEST);
         }

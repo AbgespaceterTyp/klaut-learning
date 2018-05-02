@@ -1,6 +1,7 @@
 package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.model.ModelParams;
+import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.repository.ModelRepository;
 import org.deeplearning4j.models.word2vec.Word2Vec;
@@ -64,12 +65,14 @@ public class Word2VecModelService implements IModelService {
 
             t.setTokenPreProcessor(new CommonPreprocessor());
 
+            // TODO check for type before casting it;)
+            Word2VecParams word2VecParams = (Word2VecParams) modelParams;
             Word2Vec Word2Vec = new Word2Vec.Builder()
-                    .minWordFrequency(5)
-                    .iterations(4)
-                    .layerSize(100)
-                    .seed(42)
-                    .windowSize(20)
+                    .minWordFrequency(word2VecParams.getMinWordFrequency())
+                    .iterations(word2VecParams.getIterations())
+                    .layerSize(word2VecParams.getLayerSize())
+                    .seed(word2VecParams.getSeed())
+                    .windowSize(word2VecParams.getWindowSize())
                     .iterate(iter)
                     .tokenizerFactory(t)
                     .build();
@@ -86,6 +89,6 @@ public class Word2VecModelService implements IModelService {
         // TODO LG implement
         // load model from db
         // delete files from s3
-        // delete model
+        modelRepository.deleteById(modelId);
     }
 }
