@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    active: "dev"
+
+amazon:
+  aws:
+    accesskey:
+    secretkey:
+    bucketName: mediafilescad
+
+---
+
+spring:
+  profiles: dev
+
+---
+
+spring:
+  profiles: prod

@@ -1,4 +1,4 @@
-package de.htwg.klaut;
+package de.htwg.klaut.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
