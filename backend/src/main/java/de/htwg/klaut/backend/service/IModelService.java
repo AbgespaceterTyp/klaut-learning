@@ -12,7 +12,11 @@ public interface IModelService {
 
     Model createModel(String modelName, String modelDescription, ModelParams modelParams, Set<String> sourceUrls);
 
-    void trainsModel(String modelId, ModelParams modelParams, Set<String> sourceUrls);
+    void trainModel(String modelId, Set<String> sourceUrls);
+
+    void trainModel(String modelId, ModelParams modelParams);
+
+    void trainModel(String modelId, ModelParams modelParams, Set<String> sourceUrls);
 
     void deleteModel(String modelId);
 }
