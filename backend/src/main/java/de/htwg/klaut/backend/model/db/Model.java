@@ -19,6 +19,9 @@ public class Model {
     public String id;
 
     @DynamoDBAttribute
+    private String organisation;
+
+    @DynamoDBAttribute
     private String name;
 
     @DynamoDBAttribute
