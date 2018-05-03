@@ -3,6 +3,7 @@ package de.htwg.klaut.backend.service;
 import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.repository.ModelRepository;
+import lombok.extern.log4j.Log4j2;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.deeplearning4j.text.sentenceiterator.BasicLineIterator;
 import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
@@ -16,6 +17,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+@Log4j2
 public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     private final ModelRepository modelRepository;
@@ -31,6 +33,8 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     @Override
     public Model createModel(String modelName, String modelDescription) {
+        log.debug("creating model (name='{}', desc='{}'", modelName, modelDescription);
+
         final Model model = new Model();
         model.setName(modelName);
         model.setDescription(modelDescription);

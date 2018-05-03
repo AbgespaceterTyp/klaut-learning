@@ -2,8 +2,7 @@ package de.htwg.klaut.backend.controller;
 
 import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.service.IModelService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,9 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("model")
+@Log4j2
 public class ModelController {
 
-    private Logger logger = LogManager.getLogger(ModelController.class);
     private IModelService modelService;
 
     public ModelController(IModelService modelService) {
@@ -36,7 +35,7 @@ public class ModelController {
             final Model model = modelService.createModel(modelName, modelDescription);
             return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
-            logger.error(e);
+            log.error(e);
             return ResponseEntity.badRequest().build();
         }
     }
@@ -47,7 +46,7 @@ public class ModelController {
             modelService.deleteModel(modelId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {
-            logger.error(e);
+            log.error(e);
             return ResponseEntity.badRequest().build();
         }
     }
