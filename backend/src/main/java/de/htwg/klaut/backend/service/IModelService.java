@@ -18,5 +18,9 @@ public interface IModelService<MODEL_PARAM_TYPE extends ModelParams> {
 
     void trainModel(String modelId, MODEL_PARAM_TYPE modelParams, Set<String> sourceUrls) throws Exception;
 
+    void addSource(String modelId, String fileName) throws Exception;
+
+    void setParams(String modelId, MODEL_PARAM_TYPE modelParams) throws Exception;
+
     void deleteModel(String modelId) throws Exception;
 }

@@ -106,6 +106,16 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
+    public void addSource(String modelId, String fileName) throws Exception {
+        // TODO LG implement
+    }
+
+    @Override
+    public void setParams(String modelId, Word2VecParams modelParams) throws Exception {
+        // TODO LG implement
+    }
+
+    @Override
     public void deleteModel(String modelId) {
         // TODO LG implement
         // load model from db
