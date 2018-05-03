@@ -1,6 +1,7 @@
 package de.htwg.klaut.backend.model.db;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
+import de.htwg.klaut.backend.model.ModelParamConverter;
 import de.htwg.klaut.backend.model.ModelParams;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,7 +31,7 @@ public class Model {
     @DynamoDBAttribute
     private String description;
 
-    @DynamoDBAttribute
+    @DynamoDBTypeConverted(converter = ModelParamConverter.class)
     private ModelParams params;
 
     @DynamoDBAttribute
