@@ -37,7 +37,18 @@ public class ModelController {
             return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error(e);
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteModel(@RequestParam(value = "modelId") String modelId){
+        try{
+            modelService.deleteModel(modelId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            logger.error(e);
+            return ResponseEntity.badRequest().build();
         }
     }
 }
