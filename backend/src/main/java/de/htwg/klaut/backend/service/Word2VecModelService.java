@@ -1,5 +1,6 @@
 package de.htwg.klaut.backend.service;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverterFactory;
 import de.htwg.klaut.backend.model.ModelParams;
 import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.Model;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Word2VecModelService implements IModelService {
@@ -34,6 +36,25 @@ public class Word2VecModelService implements IModelService {
         final Model model = new Model();
         model.setName(modelName);
         model.setDescription(modelDescription);
+        model.setOrganisation("klaut-learning");
+
+        Word2VecParams params = new Word2VecParams();
+        params.setIterations(5);
+        params.setLayerSize(100);
+        params.setMinWordFrequency(5);
+        params.setSeed(43);
+        params.setWindowSize(10);
+
+        model.setParams(params);
+        model.setAlogrithm("word2vec");
+        model.setModelUrl("modelurl");
+
+        HashSet<String> sourceUrls = new HashSet<>();
+        sourceUrls.add("sourceUrl1");
+        sourceUrls.add("sourceUrl2");
+
+        model.setSourceUrls(sourceUrls);
+
         return modelRepository.save(model);
     }
 
