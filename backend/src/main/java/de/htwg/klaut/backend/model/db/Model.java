@@ -43,7 +43,7 @@ public class Model implements Serializable {
     }
 
     public void setOrganization(String organization) {
-        if(compositeId == null){
+        if (compositeId == null) {
             compositeId = new ModelCompositeId();
         }
         this.compositeId.setOrganization(organization);
@@ -56,7 +56,7 @@ public class Model implements Serializable {
     }
 
     public void setId(String sortKey) {
-        if(compositeId == null){
+        if (compositeId == null) {
             compositeId = new ModelCompositeId();
         }
         this.compositeId.setId(sortKey);

@@ -30,8 +30,8 @@ public class ModelController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<String> createModel(@RequestParam(value = "modelName") String modelName,
-                                                   @RequestParam(value = "modelDescription") String modelDescription) {
-        try{
+                                              @RequestParam(value = "modelDescription") String modelDescription) {
+        try {
             final Model model = modelService.createModel(modelName, modelDescription);
             return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
@@ -41,8 +41,8 @@ public class ModelController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteModel(@RequestParam(value = "modelId") String modelId){
-        try{
+    public ResponseEntity<String> deleteModel(@RequestParam(value = "modelId") String modelId) {
+        try {
             modelService.deleteModel(modelId);
             return ResponseEntity.ok().build();
         } catch (Exception e) {

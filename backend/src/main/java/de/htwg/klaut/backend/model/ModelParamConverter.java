@@ -8,7 +8,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 
-public class ModelParamConverter implements DynamoDBTypeConverter<String,ModelParams> {
+public class ModelParamConverter implements DynamoDBTypeConverter<String, ModelParams> {
 
     private Logger logger = LogManager.getLogger(ModelParamConverter.class);
     private ObjectMapper mapper = new ObjectMapper();
@@ -29,7 +29,7 @@ public class ModelParamConverter implements DynamoDBTypeConverter<String,ModelPa
         ModelParams modelParam = null;
         try {
             // TODO LG allow other param types too
-            modelParam = mapper.readValue(s,Word2VecParams.class);
+            modelParam = mapper.readValue(s, Word2VecParams.class);
         } catch (IOException e) {
             logger.error(e);
         }
