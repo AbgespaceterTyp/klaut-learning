@@ -1,4 +1,7 @@
 package de.htwg.klaut.backend.service;
 
-public class S3StorageService implements IS3StorageService{
+import org.springframework.stereotype.Service;
+
+@Service
+public class S3StorageService implements IS3StorageService {
 }
