@@ -26,7 +26,7 @@ public class Model {
     private String name;
 
     @DynamoDBAttribute
-    private String alogrithm;
+    private String algorithm;
 
     @DynamoDBAttribute
     private String description;
