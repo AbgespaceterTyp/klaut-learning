@@ -7,16 +7,16 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Set;
 
-public interface IModelService {
+public interface IModelService<MODEL_PARAM_TYPE extends ModelParams> {
     Page<Model> getModels(Pageable pageable);
 
     Model createModel(String modelName, String modelDescription) throws Exception;
 
     void trainModel(String modelId, Set<String> sourceUrls) throws Exception;
 
-    void trainModel(String modelId, ModelParams modelParams) throws Exception;
+    void trainModel(String modelId, MODEL_PARAM_TYPE modelParams) throws Exception;
 
-    void trainModel(String modelId, ModelParams modelParams, Set<String> sourceUrls) throws Exception;
+    void trainModel(String modelId, MODEL_PARAM_TYPE modelParams, Set<String> sourceUrls) throws Exception;
 
     void deleteModel(String modelId) throws Exception;
 }

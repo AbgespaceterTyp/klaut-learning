@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Word2VecModelService implements IModelService {
+public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     private final ModelRepository modelRepository;
 
@@ -64,12 +64,12 @@ public class Word2VecModelService implements IModelService {
     }
 
     @Override
-    public void trainModel(String modelId, ModelParams modelParams) throws Exception {
+    public void trainModel(String modelId, Word2VecParams modelParams) throws Exception {
         trainModel(modelId, modelParams, Collections.emptySet());
     }
 
     @Override
-    public void trainModel(String modelId, ModelParams modelParams, Set<String> sourceUrls) throws Exception {
+    public void trainModel(String modelId, Word2VecParams modelParams, Set<String> sourceUrls) throws Exception {
         // TODO LG implement
         // store source files
         // load model from db and link new source urls
