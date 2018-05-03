@@ -34,7 +34,7 @@ public class ModelController {
                                                    @RequestParam(value = "modelDescription") String modelDescription) {
         try{
             final Model model = modelService.createModel(modelName, modelDescription);
-            return new ResponseEntity<>(model.getSortKey(), HttpStatus.CREATED);
+            return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
             logger.error(e);
             return ResponseEntity.badRequest().build();

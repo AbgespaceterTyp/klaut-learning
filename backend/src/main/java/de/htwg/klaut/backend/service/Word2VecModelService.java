@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 public class Word2VecModelService implements IModelService<Word2VecParams> {
 
@@ -35,7 +34,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         final Model model = new Model();
         model.setName(modelName);
         model.setDescription(modelDescription);
-        model.setOrganization("klaut-learning");
+        model.setOrganization("klaut-learning2");
 
         Word2VecParams params = new Word2VecParams();
         params.setIterations(5);
