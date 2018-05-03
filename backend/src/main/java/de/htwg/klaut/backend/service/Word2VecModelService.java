@@ -1,7 +1,5 @@
 package de.htwg.klaut.backend.service;
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverterFactory;
-import de.htwg.klaut.backend.model.ModelParams;
 import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.repository.ModelRepository;
@@ -64,12 +62,12 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void trainModel(String modelId, Word2VecParams modelParams) throws Exception {
-        trainModel(modelId, modelParams, Collections.emptySet());
+    public void trainModel(String modelId, Word2VecParams word2VecParams) throws Exception {
+        trainModel(modelId, word2VecParams, Collections.emptySet());
     }
 
     @Override
-    public void trainModel(String modelId, Word2VecParams modelParams, Set<String> sourceUrls) throws Exception {
+    public void trainModel(String modelId, Word2VecParams word2VecParams, Set<String> sourceUrls) throws Exception {
         // TODO LG implement
         // store source files
         // load model from db and link new source urls
@@ -86,8 +84,6 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
             t.setTokenPreProcessor(new CommonPreprocessor());
 
-            // TODO check for type before casting it;)
-            Word2VecParams word2VecParams = (Word2VecParams) modelParams;
             Word2Vec Word2Vec = new Word2Vec.Builder()
                     .minWordFrequency(word2VecParams.getMinWordFrequency())
                     .iterations(word2VecParams.getIterations())
