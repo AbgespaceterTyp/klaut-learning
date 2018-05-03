@@ -15,6 +15,7 @@ import java.io.FileInputStream;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 public class Word2VecModelService implements IModelService<Word2VecParams> {
 
@@ -34,7 +35,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         final Model model = new Model();
         model.setName(modelName);
         model.setDescription(modelDescription);
-        model.setOrganisation("klaut-learning");
+        model.setOrganization("klaut-learning");
 
         Word2VecParams params = new Word2VecParams();
         params.setIterations(5);
@@ -106,6 +107,6 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         // TODO LG implement
         // load model from db
         // delete files from s3
-        modelRepository.deleteById(modelId);
+        //modelRepository.deleteById(modelId);
     }
 }
