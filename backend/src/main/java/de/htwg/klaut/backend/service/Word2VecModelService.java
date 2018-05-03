@@ -46,7 +46,7 @@ public class Word2VecModelService implements IModelService {
         params.setWindowSize(10);
 
         model.setParams(params);
-        model.setAlogrithm("word2vec");
+        model.setAlgorithm("word2vec");
         model.setModelUrl("modelurl");
 
         HashSet<String> sourceUrls = new HashSet<>();
