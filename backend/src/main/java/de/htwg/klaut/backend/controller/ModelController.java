@@ -33,7 +33,8 @@ public class ModelController {
     public ResponseEntity<String> createModel(@RequestParam(value = "modelName") String modelName,
                                               @RequestParam(value = "modelDescription") String modelDescription) {
         try {
-            final Model model = modelService.createModel(modelName, modelDescription);
+            // TODO JD set company/tenant here
+            final Model model = modelService.createModel(modelName, modelDescription,"klaut-learning");
             return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
             log.error(e);

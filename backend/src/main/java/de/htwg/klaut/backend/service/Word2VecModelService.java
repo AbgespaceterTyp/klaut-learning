@@ -15,8 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Collections;
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -24,25 +25,29 @@ import java.util.Set;
 public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     private final IModelRepository modelRepository;
+    private final IS3StorageService s3StorageService;
 
-    public Word2VecModelService(IModelRepository modelRepository) {
+    public Word2VecModelService(IModelRepository modelRepository, IS3StorageService s3StorageService) {
         this.modelRepository = modelRepository;
+        this.s3StorageService = s3StorageService;
     }
 
     @Override
     public Page<Model> getModels(Pageable pageable) {
+        log.debug("loading models");
         return modelRepository.findAll(pageable);
     }
 
     @Override
-    public Model createModel(String modelName, String modelDescription) {
-        log.debug("creating model (name='{}', desc='{}'", modelName, modelDescription);
+    public Model createModel(String modelName, String modelDescription, String organization) {
+        log.debug("creating model (name='{}', desc='{}', orga='{}')", modelName, modelDescription, organization);
 
         final Model model = new Model();
         model.setName(modelName);
         model.setDescription(modelDescription);
-        model.setOrganization("klaut-learning2");
+        model.setOrganization(organization);
 
+        // TODO LG remove all under this marker when s3 service works
         Word2VecParams params = new Word2VecParams();
         params.setIterations(5);
         params.setLayerSize(100);
@@ -64,65 +69,78 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void trainModel(ModelCompositeId modelId, Set<String> sourceUrls) throws Exception {
-        trainModel(modelId, null, Collections.emptySet());
-    }
+    public void trainModel(ModelCompositeId modelId) throws Exception {
+        log.debug("starting training of model: " + modelId);
+        Optional<Model> modelOptional = modelRepository.findById(modelId);
+        if(!modelOptional.isPresent()){
+            throw new IOException("Failed to find model: " + modelId);
+        }
+        final Model modelToTrain = modelOptional.get();
+        Set<String> sourceUrls = modelToTrain.getSourceUrls();
+        if(sourceUrls.isEmpty()){
+            throw new IOException("No source urls found for model: " + modelId);
+        }
 
-    @Override
-    public void trainModel(ModelCompositeId modelId, Word2VecParams word2VecParams) throws Exception {
-        trainModel(modelId, word2VecParams, Collections.emptySet());
-    }
+        // TODO LG we just take first source url here, check if it is possible to use more than one source file
+        final String sourceUrl = sourceUrls.iterator().next();
+        log.debug("loading source url: " + sourceUrl);
 
-    @Override
-    public void trainModel(ModelCompositeId modelId, Word2VecParams word2VecParams, Set<String> sourceUrls) throws Exception {
-        // TODO LG implement
-        // store source files
-        // load model from db and link new source urls
-        // update model for new params if set
-        // start training
-        // store model again
-
-        // TODO check model type first
-        // TODO load from source urls
-        try (FileInputStream fileInputStream = new FileInputStream(new File("src/main/resources/Der_Dunkelgraf_Norm.txt"))) {
+        File sourceFile = s3StorageService.getSourceFile(sourceUrl);
+        try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
             BasicLineIterator iter = new BasicLineIterator(fileInputStream);
             // Split on white spaces in the line to get words
             DefaultTokenizerFactory t = new DefaultTokenizerFactory();
-
             t.setTokenPreProcessor(new CommonPreprocessor());
 
+            final Word2VecParams params = (Word2VecParams) modelToTrain.getParams();
             Word2Vec Word2Vec = new Word2Vec.Builder()
-                    .minWordFrequency(word2VecParams.getMinWordFrequency())
-                    .iterations(word2VecParams.getIterations())
-                    .layerSize(word2VecParams.getLayerSize())
-                    .seed(word2VecParams.getSeed())
-                    .windowSize(word2VecParams.getWindowSize())
+                    .minWordFrequency(params.getMinWordFrequency())
+                    .iterations(params.getIterations())
+                    .layerSize(params.getLayerSize())
+                    .seed(params.getSeed())
+                    .windowSize(params.getWindowSize())
                     .iterate(iter)
                     .tokenizerFactory(t)
                     .build();
 
             Word2Vec.fit();
-        } catch (Exception e) {
-            // TODO LG log error and throw exception
-            throw e;
+            log.debug("finished training of model: " + modelId);
+
+            // TODO LG how to go on training with an existing model?
+            String modelUrl = s3StorageService.addModel(Word2Vec);
+            modelToTrain.setModelUrl(modelUrl);
+            modelRepository.save(modelToTrain);
         }
     }
 
     @Override
     public void addSource(ModelCompositeId modelId, String fileName) throws Exception {
-        // TODO LG implement
+        log.debug("adding source file" + fileName +" to model: " + modelId);
+
+        Optional<Model> modelOptional = modelRepository.findById(modelId);
+        if(modelOptional.isPresent()){
+            final Model modelToUpdate = modelOptional.get();
+            String sourceUrl = s3StorageService.addSourceFile(fileName);
+            modelToUpdate.getSourceUrls().add(sourceUrl);
+            modelRepository.save(modelToUpdate);
+        }
     }
 
     @Override
     public void setParams(ModelCompositeId modelId, Word2VecParams modelParams) throws Exception {
-        // TODO LG implement
+        log.debug("set params" + modelParams +" to model: " + modelId);
+
+        Optional<Model> modelOptional = modelRepository.findById(modelId);
+        if(modelOptional.isPresent()){
+            final Model modelToUpdate = modelOptional.get();
+            modelToUpdate.setParams(modelParams);
+            modelRepository.save(modelToUpdate);
+        }
     }
 
     @Override
-    public void deleteModel(ModelCompositeId modelId) {
-        // TODO LG implement
-        // load model from db
-        // delete files from s3
+    public void deleteModel(ModelCompositeId modelId) throws Exception{
+        s3StorageService.deleteFilesForId(modelId);
         modelRepository.deleteById(modelId);
     }
 }
