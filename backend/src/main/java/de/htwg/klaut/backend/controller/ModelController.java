@@ -1,6 +1,7 @@
 package de.htwg.klaut.backend.controller;
 
 import de.htwg.klaut.backend.model.db.Model;
+import de.htwg.klaut.backend.model.db.ModelCompositeId;
 import de.htwg.klaut.backend.service.IModelService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
@@ -43,7 +44,8 @@ public class ModelController {
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteModel(@RequestParam(value = "modelId") String modelId) {
         try {
-            modelService.deleteModel(modelId);
+            // TODO JD set company/tenant here
+            modelService.deleteModel(new ModelCompositeId("klaut-learning",modelId));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error(e);

@@ -2,6 +2,7 @@ package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.Model;
+import de.htwg.klaut.backend.model.db.ModelCompositeId;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
 import org.deeplearning4j.models.word2vec.Word2Vec;
@@ -63,17 +64,17 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void trainModel(String modelId, Set<String> sourceUrls) throws Exception {
+    public void trainModel(ModelCompositeId modelId, Set<String> sourceUrls) throws Exception {
         trainModel(modelId, null, Collections.emptySet());
     }
 
     @Override
-    public void trainModel(String modelId, Word2VecParams word2VecParams) throws Exception {
+    public void trainModel(ModelCompositeId modelId, Word2VecParams word2VecParams) throws Exception {
         trainModel(modelId, word2VecParams, Collections.emptySet());
     }
 
     @Override
-    public void trainModel(String modelId, Word2VecParams word2VecParams, Set<String> sourceUrls) throws Exception {
+    public void trainModel(ModelCompositeId modelId, Word2VecParams word2VecParams, Set<String> sourceUrls) throws Exception {
         // TODO LG implement
         // store source files
         // load model from db and link new source urls
@@ -108,20 +109,20 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void addSource(String modelId, String fileName) throws Exception {
+    public void addSource(ModelCompositeId modelId, String fileName) throws Exception {
         // TODO LG implement
     }
 
     @Override
-    public void setParams(String modelId, Word2VecParams modelParams) throws Exception {
+    public void setParams(ModelCompositeId modelId, Word2VecParams modelParams) throws Exception {
         // TODO LG implement
     }
 
     @Override
-    public void deleteModel(String modelId) {
+    public void deleteModel(ModelCompositeId modelId) {
         // TODO LG implement
         // load model from db
         // delete files from s3
-        //modelRepository.deleteById(modelId);
+        modelRepository.deleteById(modelId);
     }
 }
