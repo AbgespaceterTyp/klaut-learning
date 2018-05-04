@@ -2,7 +2,7 @@ package de.htwg.klaut.backend.model.db;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import de.htwg.klaut.backend.model.ModelParamConverter;
-import de.htwg.klaut.backend.model.ModelParams;
+import de.htwg.klaut.backend.model.IModelParams;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -29,7 +29,7 @@ public class Model implements Serializable {
     private String description;
 
     @DynamoDBTypeConverted(converter = ModelParamConverter.class)
-    private ModelParams params;
+    private IModelParams params;
 
     @DynamoDBAttribute
     private String modelUrl;
@@ -86,11 +86,11 @@ public class Model implements Serializable {
         this.description = description;
     }
 
-    public ModelParams getParams() {
+    public IModelParams getParams() {
         return params;
     }
 
-    public void setParams(ModelParams params) {
+    public void setParams(IModelParams params) {
         this.params = params;
     }
 

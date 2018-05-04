@@ -1,15 +1,15 @@
 package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.model.Organization;
-import de.htwg.klaut.backend.repository.OrganizationRepository;
+import de.htwg.klaut.backend.repository.IOrganizationRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class OrganizationService implements IOrganizationService {
 
-    private OrganizationRepository organizationRepository;
+    private IOrganizationRepository organizationRepository;
 
-    public OrganizationService(OrganizationRepository organizationRepository) {
+    public OrganizationService(IOrganizationRepository organizationRepository) {
         this.organizationRepository = organizationRepository;
     }
 

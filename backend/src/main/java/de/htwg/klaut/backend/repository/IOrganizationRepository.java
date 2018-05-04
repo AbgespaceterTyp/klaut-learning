@@ -7,5 +7,5 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScanCount;
 
 @EnableScan
 @EnableScanCount
-public interface OrganizationRepository extends DynamoDBPagingAndSortingRepository<Organization, String> {
+public interface IOrganizationRepository extends DynamoDBPagingAndSortingRepository<Organization, String> {
 }

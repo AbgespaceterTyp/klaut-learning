@@ -9,7 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Word2VecParams implements ModelParams {
+public class Word2VecParams implements IModelParams {
 
     private int minWordFrequency;
     private int iterations;
