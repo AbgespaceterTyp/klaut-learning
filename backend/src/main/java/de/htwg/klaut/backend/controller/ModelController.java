@@ -1,40 +1,40 @@
 package de.htwg.klaut.backend.controller;
 
+import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
+import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.service.IModelService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
 
 @RestController
 @RequestMapping("model")
 @Log4j2
 public class ModelController {
 
-    private IModelService modelService;
+    private IModelService<Word2VecParams> modelService;
 
-    public ModelController(IModelService modelService) {
+    public ModelController(IModelService<Word2VecParams> modelService) {
         this.modelService = modelService;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
+    @GetMapping
     public ResponseEntity<Page<Model>> getModels(Pageable pageable) {
-        return ResponseEntity.ok(modelService.getModels(pageable));
+        return new ResponseEntity<>(modelService.getModels(pageable), HttpStatus.OK);
     }
 
-    @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> createModel(@RequestParam(value = "modelName") String modelName,
-                                              @RequestParam(value = "modelDescription") String modelDescription) {
+    @PostMapping
+    public ResponseEntity<String> createModel(@RequestBody ModelDto modelDto) {
         try {
             // TODO JD set company/tenant here
-            final Model model = modelService.createModel(modelName, modelDescription, "klaut-learning");
+            final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription(), "klaut-learning");
             return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
             log.error(e);
@@ -42,8 +42,45 @@ public class ModelController {
         }
     }
 
+    @PutMapping(path = "{modelId}/param")
+    public ResponseEntity setParameter(@RequestBody Word2VecParams params, @PathVariable String modelId) {
+        try {
+            // TODO JD set company/tenant here
+            modelService.setParams(new CompositeId("klaut-learning", modelId), params);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error(e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping(path = "{modelId}/train")
+    public ResponseEntity trainModel(@PathVariable String modelId) {
+        try {
+            // TODO JD set company/tenant here
+            modelService.trainModel(new CompositeId("klaut-learning", modelId));
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error(e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping(path = "{modelId}/source")
+    public ResponseEntity addSource(@PathVariable String modelId) {
+        try {
+            // TODO JD set company/tenant here
+            // TODO LG copy uploaded file to temp and add as source
+            //modelService.addSource(new CompositeId("klaut-learning", modelId));
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            log.error(e);
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteModel(@RequestParam(value = "modelId") String modelId) {
+    public ResponseEntity<String> deleteModel(@PathVariable String modelId) {
         try {
             // TODO JD set company/tenant here
             modelService.deleteModel(new CompositeId("klaut-learning", modelId));
