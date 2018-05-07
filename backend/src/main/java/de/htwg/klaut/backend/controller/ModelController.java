@@ -12,10 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
-
 @RestController
-@RequestMapping("model")
+@RequestMapping("{organization}/model")
 @Log4j2
 public class ModelController {
 
@@ -26,12 +24,12 @@ public class ModelController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Model>> getModels(Pageable pageable) {
+    public ResponseEntity<Page<Model>> getModels(@PathVariable String organization, Pageable pageable) {
         return new ResponseEntity<>(modelService.getModels(pageable), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<String> createModel(@RequestBody ModelDto modelDto) {
+    public ResponseEntity<String> createModel(@PathVariable String organization, @RequestBody ModelDto modelDto) {
         try {
             // TODO JD set company/tenant here
             final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription(), "klaut-learning");
@@ -43,7 +41,7 @@ public class ModelController {
     }
 
     @PutMapping(path = "{modelId}/param")
-    public ResponseEntity setParameter(@RequestBody Word2VecParams params, @PathVariable String modelId) {
+    public ResponseEntity setParameter(@PathVariable String organization, @RequestBody Word2VecParams params, @PathVariable String modelId) {
         try {
             // TODO JD set company/tenant here
             modelService.setParams(new CompositeId("klaut-learning", modelId), params);
@@ -55,7 +53,7 @@ public class ModelController {
     }
 
     @PutMapping(path = "{modelId}/train")
-    public ResponseEntity trainModel(@PathVariable String modelId) {
+    public ResponseEntity trainModel(@PathVariable String organization, @PathVariable String modelId) {
         try {
             // TODO JD set company/tenant here
             modelService.trainModel(new CompositeId("klaut-learning", modelId));
@@ -67,7 +65,7 @@ public class ModelController {
     }
 
     @PutMapping(path = "{modelId}/source")
-    public ResponseEntity addSource(@PathVariable String modelId) {
+    public ResponseEntity addSource(@PathVariable String organization, @PathVariable String modelId) {
         try {
             // TODO JD set company/tenant here
             // TODO LG copy uploaded file to temp and add as source
@@ -80,7 +78,7 @@ public class ModelController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteModel(@PathVariable String modelId) {
+    public ResponseEntity<String> deleteModel(@PathVariable String organization, @PathVariable String modelId) {
         try {
             // TODO JD set company/tenant here
             modelService.deleteModel(new CompositeId("klaut-learning", modelId));
