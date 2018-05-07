@@ -1,8 +1,8 @@
 package de.htwg.klaut.backend.model.db;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import de.htwg.klaut.backend.model.ModelParamConverter;
 import de.htwg.klaut.backend.model.IModelParams;
+import de.htwg.klaut.backend.model.ModelParamConverter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -17,7 +17,7 @@ import java.util.Set;
 public class Model implements Serializable {
 
     @Id
-    private ModelCompositeId compositeId;
+    private CompositeId compositeId;
 
     @DynamoDBAttribute
     private String name;
@@ -44,7 +44,7 @@ public class Model implements Serializable {
 
     public void setOrganization(String organization) {
         if (compositeId == null) {
-            compositeId = new ModelCompositeId();
+            compositeId = new CompositeId();
         }
         this.compositeId.setOrganization(organization);
     }
@@ -57,7 +57,7 @@ public class Model implements Serializable {
 
     public void setId(String sortKey) {
         if (compositeId == null) {
-            compositeId = new ModelCompositeId();
+            compositeId = new CompositeId();
         }
         this.compositeId.setId(sortKey);
     }

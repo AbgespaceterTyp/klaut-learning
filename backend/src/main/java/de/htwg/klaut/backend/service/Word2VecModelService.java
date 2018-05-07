@@ -1,8 +1,8 @@
 package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.model.Word2VecParams;
+import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
-import de.htwg.klaut.backend.model.db.ModelCompositeId;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
 import org.deeplearning4j.models.word2vec.Word2Vec;
@@ -69,15 +69,15 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void trainModel(ModelCompositeId modelId) throws Exception {
+    public void trainModel(CompositeId modelId) throws Exception {
         log.debug("starting training of model: " + modelId);
         Optional<Model> modelOptional = modelRepository.findById(modelId);
-        if(!modelOptional.isPresent()){
+        if (!modelOptional.isPresent()) {
             throw new IOException("Failed to find model: " + modelId);
         }
         final Model modelToTrain = modelOptional.get();
         Set<String> sourceUrls = modelToTrain.getSourceUrls();
-        if(sourceUrls.isEmpty()){
+        if (sourceUrls.isEmpty()) {
             throw new IOException("No source urls found for model: " + modelId);
         }
 
@@ -114,11 +114,11 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void addSource(ModelCompositeId modelId, String fileName) throws Exception {
-        log.debug("adding source file" + fileName +" to model: " + modelId);
+    public void addSource(CompositeId modelId, String fileName) throws Exception {
+        log.debug("adding source file" + fileName + " to model: " + modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
-        if(modelOptional.isPresent()){
+        if (modelOptional.isPresent()) {
             final Model modelToUpdate = modelOptional.get();
             String sourceUrl = s3StorageService.addSourceFile(fileName);
             modelToUpdate.getSourceUrls().add(sourceUrl);
@@ -127,11 +127,11 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void setParams(ModelCompositeId modelId, Word2VecParams modelParams) throws Exception {
-        log.debug("set params" + modelParams +" to model: " + modelId);
+    public void setParams(CompositeId modelId, Word2VecParams modelParams) throws Exception {
+        log.debug("set params" + modelParams + " to model: " + modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
-        if(modelOptional.isPresent()){
+        if (modelOptional.isPresent()) {
             final Model modelToUpdate = modelOptional.get();
             modelToUpdate.setParams(modelParams);
             modelRepository.save(modelToUpdate);
@@ -139,7 +139,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void deleteModel(ModelCompositeId modelId) throws Exception{
+    public void deleteModel(CompositeId modelId) throws Exception {
         s3StorageService.deleteFilesForId(modelId);
         modelRepository.deleteById(modelId);
     }

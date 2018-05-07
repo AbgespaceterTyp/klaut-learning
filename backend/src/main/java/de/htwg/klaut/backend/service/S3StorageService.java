@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import de.htwg.klaut.backend.model.db.ModelCompositeId;
+import de.htwg.klaut.backend.model.db.CompositeId;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,7 +24,7 @@ public class S3StorageService implements IS3StorageService {
     private AmazonS3 amazonS3;
 
     @Override
-    public void deleteFilesForId(ModelCompositeId modelId) throws Exception {
+    public void deleteFilesForId(CompositeId modelId) throws Exception {
 
     }
 

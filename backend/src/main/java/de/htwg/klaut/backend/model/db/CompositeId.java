@@ -12,7 +12,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class ModelCompositeId implements Serializable {
+public class CompositeId implements Serializable {
 
     @DynamoDBHashKey
     private String organization;
