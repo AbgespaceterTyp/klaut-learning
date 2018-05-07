@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
+import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +27,17 @@ public class S3StorageService implements IS3StorageService {
     private AmazonS3 amazonS3;
 
     @Override
-    public void deleteFilesForId(CompositeId modelId) throws IOException, ModelNotFoundException {
+    public void deleteFilesForId(CompositeId modelId) throws SourceNotFoundException, ModelNotFoundException {
 
     }
 
     @Override
-    public File getSourceFile(String sourceUrl) throws IOException {
+    public File getSourceFile(String sourceUrl) throws SourceNotFoundException {
         return null;
     }
 
     @Override
-    public String addSourceFile(String fileName) throws IOException {
+    public String addSourceFile(String fileName) throws SourceNotFoundException {
         File sourceFile = new File(fileName);
         try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
             // TODO LG add file name as param or parse from file name
@@ -52,11 +53,13 @@ public class S3StorageService implements IS3StorageService {
                     bucketName, //The S3 Bucket To Upload To
                     fileName));
             return fileUrl;
+        } catch (IOException e){
+            throw new SourceNotFoundException(fileName);
         }
     }
 
     @Override
-    public String addModel(Word2Vec word2Vec) throws IOException {
+    public String addModel(Word2Vec word2Vec) throws SourceNotFoundException {
         return null;
     }
 

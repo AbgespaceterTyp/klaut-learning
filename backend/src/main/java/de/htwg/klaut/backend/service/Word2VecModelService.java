@@ -35,9 +35,9 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public Page<Model> getModels(Pageable pageable) {
+    public Page<Model> getModels(String organization, Pageable pageable) {
         log.debug("loading models");
-        return modelRepository.findAll(pageable);
+        return modelRepository.findByOrOrganization(organization, pageable);
     }
 
     @Override

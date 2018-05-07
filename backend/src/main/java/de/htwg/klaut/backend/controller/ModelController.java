@@ -24,7 +24,7 @@ public class ModelController {
 
     @GetMapping
     public ResponseEntity<Page<Model>> getModels(@PathVariable String organization, Pageable pageable) {
-        return new ResponseEntity<>(modelService.getModels(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(modelService.getModels(organization, pageable), HttpStatus.OK);
     }
 
     @PostMapping

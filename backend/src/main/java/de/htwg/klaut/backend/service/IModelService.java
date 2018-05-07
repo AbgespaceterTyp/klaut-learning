@@ -11,7 +11,7 @@ import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 
 public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
-    Page<Model> getModels(Pageable pageable);
+    Page<Model> getModels(String organization, Pageable pageable);
 
     Model createModel(String modelName, String modelDescription, String organization) throws ModelNotFoundException;
 
