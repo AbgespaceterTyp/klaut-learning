@@ -1,6 +1,7 @@
 package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
+import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
@@ -70,7 +71,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void trainModel(CompositeId modelId) throws ModelNotFoundException, IOException {
+    public void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("starting training of model {}", modelId);
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (!modelOptional.isPresent()) {
@@ -79,7 +80,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         final Model modelToTrain = modelOptional.get();
         Set<String> sourceUrls = modelToTrain.getSourceUrls();
         if (sourceUrls.isEmpty()) {
-            throw new IOException("No source urls found for model: " + modelId);
+            throw new SourceNotFoundException(modelId);
         }
 
         // TODO LG we just take first source url here, check if it is possible to use more than one source file
@@ -111,11 +112,13 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             String modelUrl = s3StorageService.addModel(Word2Vec);
             modelToTrain.setModelUrl(modelUrl);
             modelRepository.save(modelToTrain);
+        } catch (IOException e){
+            throw new SourceNotFoundException(sourceUrl);
         }
     }
 
     @Override
-    public void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, IOException {
+    public void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("adding source file {} to model {}", fileName, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
@@ -144,7 +147,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void deleteModel(CompositeId modelId) throws ModelNotFoundException, IOException {
+    public void deleteModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("deleting model {}", modelId);
 
         s3StorageService.deleteFilesForId(modelId);

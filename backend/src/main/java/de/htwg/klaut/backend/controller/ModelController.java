@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("{organization}/model")
-@Log4j2
 public class ModelController {
 
     private IModelService<Word2VecParams> modelService;
@@ -30,58 +29,33 @@ public class ModelController {
 
     @PostMapping
     public ResponseEntity<String> createModel(@PathVariable String organization, @RequestBody ModelDto modelDto) {
-        try {
-            final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription(), organization);
-            return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error(e);
-            return ResponseEntity.badRequest().build();
-        }
+        final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription(), organization);
+        return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{modelId}/param")
     public ResponseEntity setParameter(@PathVariable String organization, @RequestBody Word2VecParams params, @PathVariable String modelId) {
-        try {
-            modelService.setParams(new CompositeId(organization, modelId), params);
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            log.error(e);
-            return ResponseEntity.badRequest().build();
-        }
+        modelService.setParams(new CompositeId(organization, modelId), params);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "{modelId}/train")
     public ResponseEntity trainModel(@PathVariable String organization, @PathVariable String modelId) {
-        try {
-            modelService.trainModel(new CompositeId(organization, modelId));
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            log.error(e);
-            return ResponseEntity.badRequest().build();
-        }
+        modelService.trainModel(new CompositeId(organization, modelId));
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "{modelId}/source")
     public ResponseEntity addSource(@PathVariable String organization, @PathVariable String modelId) {
-        try {
-            // TODO JD set company/tenant here
-            // TODO LG copy uploaded file to temp and add as source
-            //modelService.addSource(new CompositeId(organization, modelId), "fileName");
-            return ResponseEntity.noContent().build();
-        } catch (Exception e) {
-            log.error(e);
-            return ResponseEntity.badRequest().build();
-        }
+        // TODO JD set company/tenant here
+        // TODO LG copy uploaded file to temp and add as source
+        //modelService.addSource(new CompositeId(organization, modelId), "fileName");
+        return ResponseEntity.noContent().build();
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteModel(@PathVariable String organization, @PathVariable String modelId) {
-        try {
-            modelService.deleteModel(new CompositeId(organization, modelId));
-            return ResponseEntity.ok().build();
-        } catch (Exception e) {
-            log.error(e);
-            return ResponseEntity.badRequest().build();
-        }
+        modelService.deleteModel(new CompositeId(organization, modelId));
+        return ResponseEntity.ok().build();
     }
 }
