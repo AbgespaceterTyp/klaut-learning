@@ -9,7 +9,7 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 
 import { AuthGuard } from './_guards/index';
-import { AuthenticationService } from './_services/index';
+import { AuthenticationService, ModelService } from './_services/index';
 import { routing } from './app.routing';
 
 @NgModule({
@@ -28,6 +28,7 @@ import { routing } from './app.routing';
   providers: [
     AuthGuard,
     AuthenticationService,
+    ModelService,
   ],
   bootstrap: [AppComponent]
 })
