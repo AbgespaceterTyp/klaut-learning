@@ -31,8 +31,7 @@ public class ModelController {
     @PostMapping
     public ResponseEntity<String> createModel(@PathVariable String organization, @RequestBody ModelDto modelDto) {
         try {
-            // TODO JD set company/tenant here
-            final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription(), "klaut-learning");
+            final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription(), organization);
             return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
         } catch (Exception e) {
             log.error(e);
@@ -43,8 +42,7 @@ public class ModelController {
     @PutMapping(path = "{modelId}/param")
     public ResponseEntity setParameter(@PathVariable String organization, @RequestBody Word2VecParams params, @PathVariable String modelId) {
         try {
-            // TODO JD set company/tenant here
-            modelService.setParams(new CompositeId("klaut-learning", modelId), params);
+            modelService.setParams(new CompositeId(organization, modelId), params);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             log.error(e);
@@ -55,8 +53,7 @@ public class ModelController {
     @PutMapping(path = "{modelId}/train")
     public ResponseEntity trainModel(@PathVariable String organization, @PathVariable String modelId) {
         try {
-            // TODO JD set company/tenant here
-            modelService.trainModel(new CompositeId("klaut-learning", modelId));
+            modelService.trainModel(new CompositeId(organization, modelId));
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             log.error(e);
@@ -69,7 +66,7 @@ public class ModelController {
         try {
             // TODO JD set company/tenant here
             // TODO LG copy uploaded file to temp and add as source
-            //modelService.addSource(new CompositeId("klaut-learning", modelId));
+            //modelService.addSource(new CompositeId(organization, modelId), "fileName");
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             log.error(e);
@@ -80,8 +77,7 @@ public class ModelController {
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteModel(@PathVariable String organization, @PathVariable String modelId) {
         try {
-            // TODO JD set company/tenant here
-            modelService.deleteModel(new CompositeId("klaut-learning", modelId));
+            modelService.deleteModel(new CompositeId(organization, modelId));
             return ResponseEntity.ok().build();
         } catch (Exception e) {
             log.error(e);
