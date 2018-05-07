@@ -41,7 +41,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     @Override
     public Model createModel(String modelName, String modelDescription, String organization) {
-        log.debug("creating model (name='{}', desc='{}', orga='{}')", modelName, modelDescription, organization);
+        log.debug("creating model (name='{}', desc='{}', org='{}')", modelName, modelDescription, organization);
 
         final Model model = new Model();
         model.setName(modelName);
@@ -71,7 +71,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     @Override
     public void trainModel(CompositeId modelId) throws ModelNotFoundException, IOException {
-        log.debug("starting training of model: " + modelId);
+        log.debug("starting training of model {}", modelId);
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (!modelOptional.isPresent()) {
             throw new ModelNotFoundException(modelId);
@@ -84,7 +84,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
         // TODO LG we just take first source url here, check if it is possible to use more than one source file
         final String sourceUrl = sourceUrls.iterator().next();
-        log.debug("loading source url: " + sourceUrl);
+        log.debug("loading source url {}", sourceUrl);
 
         File sourceFile = s3StorageService.getSourceFile(sourceUrl);
         try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
@@ -105,7 +105,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
                     .build();
 
             Word2Vec.fit();
-            log.debug("finished training of model: " + modelId);
+            log.debug("finished training of model {}", modelId);
 
             // TODO LG how to go on training with an existing model?
             String modelUrl = s3StorageService.addModel(Word2Vec);
@@ -116,7 +116,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     @Override
     public void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, IOException {
-        log.debug("adding source file" + fileName + " to model: " + modelId);
+        log.debug("adding source file {} to model {}", fileName, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (modelOptional.isPresent()) {
@@ -131,7 +131,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     @Override
     public void setParams(CompositeId modelId, Word2VecParams modelParams) throws ModelNotFoundException {
-        log.debug("set params" + modelParams + " to model: " + modelId);
+        log.debug("set params {} to model {}", modelParams, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (modelOptional.isPresent()) {
@@ -145,6 +145,8 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     @Override
     public void deleteModel(CompositeId modelId) throws ModelNotFoundException, IOException {
+        log.debug("deleting model {}", modelId);
+
         s3StorageService.deleteFilesForId(modelId);
         modelRepository.deleteById(modelId);
     }
