@@ -19,7 +19,6 @@ public class OrganizationService extends OncePerRequestFilter implements IOrgani
 
     private IOrganizationRepository organizationRepository;
 
-    @Getter
     private static ThreadLocal<String> currentOrganization = new ThreadLocal<>();
 
     public OrganizationService(IOrganizationRepository organizationRepository) {
@@ -39,5 +38,10 @@ public class OrganizationService extends OncePerRequestFilter implements IOrgani
         filterChain.doFilter(httpServletRequest, httpServletResponse);
         // Clears the context after the request is done
         currentOrganization.set(null);
+    }
+
+    @Override
+    public String getCurrentOrganization(){
+        return currentOrganization.get();
     }
 }
