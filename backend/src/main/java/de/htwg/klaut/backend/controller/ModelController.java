@@ -24,12 +24,12 @@ public class ModelController {
 
     @GetMapping
     public ResponseEntity<Page<Model>> getModels(@PathVariable String organization, Pageable pageable) {
-        return new ResponseEntity<>(modelService.getModels(organization, pageable), HttpStatus.OK);
+        return new ResponseEntity<>(modelService.getModels(pageable), HttpStatus.OK);
     }
 
     @PostMapping
     public ResponseEntity<String> createModel(@PathVariable String organization, @RequestBody ModelDto modelDto) {
-        final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription(), organization);
+        final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription());
         return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
     }
 
@@ -41,14 +41,14 @@ public class ModelController {
 
     @PutMapping(path = "{modelId}/train")
     public ResponseEntity trainModel(@PathVariable String organization, @PathVariable String modelId) {
-        modelService.trainModel(new CompositeId(organization, modelId),organization);
+        modelService.trainModel(new CompositeId(organization, modelId));
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "{modelId}/source")
     public ResponseEntity addSource(@PathVariable String organization, @PathVariable String modelId) {
         // TODO LG copy uploaded file to temp and add as source
-        modelService.addSource(new CompositeId(organization, modelId), "fileName", organization);
+        modelService.addSource(new CompositeId(organization, modelId), "fileName");
         return ResponseEntity.noContent().build();
     }
 

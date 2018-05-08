@@ -13,13 +13,13 @@ import org.springframework.data.domain.Pageable;
 import java.io.IOException;
 
 public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
-    Page<Model> getModels(String organization, Pageable pageable);
+    Page<Model> getModels(Pageable pageable);
 
-    Model createModel(String modelName, String modelDescription, String organization) throws ModelCreationException;
+    Model createModel(String modelName, String modelDescription) throws ModelCreationException;
 
-    void trainModel(CompositeId modelId, String organization) throws ModelNotFoundException, SourceNotFoundException;
+    void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 
-    void addSource(CompositeId modelId, String fileName, String organization) throws ModelNotFoundException, SourceCreationException;
+    void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, SourceCreationException;
 
     void setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
 

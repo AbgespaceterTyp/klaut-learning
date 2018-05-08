@@ -23,11 +23,16 @@ import java.util.UUID;
 @Service
 public class S3StorageService implements IS3StorageService {
 
+    private final IOrganizationService organizationService;
     @Value("${amazon.aws.bucketName}")
     private String bucketName;
 
-    @Autowired
     private AmazonS3 amazonS3;
+
+    public S3StorageService(IOrganizationService organizationService, AmazonS3 amazonS3) {
+        this.organizationService = organizationService;
+        this.amazonS3 = amazonS3;
+    }
 
     @Override
     public void deleteFilesForId(CompositeId modelId) throws SourceNotFoundException, ModelNotFoundException {
@@ -42,7 +47,7 @@ public class S3StorageService implements IS3StorageService {
     }
 
     @Override
-    public Optional<String> addSourceFile(String fileName, String organization) throws SourceNotFoundException {
+    public Optional<String> addSourceFile(String fileName) throws SourceNotFoundException {
         File sourceFile = new File(fileName);
         try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
             // TODO LG add file name as param or parse from file name
@@ -61,18 +66,18 @@ public class S3StorageService implements IS3StorageService {
     }
 
     @Override
-    public Optional<String> addModel(Word2Vec word2Vec, String organization) {
+    public Optional<String> addModel(Word2Vec word2Vec) {
         // Write model to temp directory
         String modelFileName = UUID.randomUUID().toString();
         final File modelFile = new File(System.getProperty("java.io.tmpdir") + modelFileName);
         WordVectorSerializer.writeWord2VecModel(word2Vec, modelFile);
 
         try (FileInputStream fileInputStream = new FileInputStream(modelFile)) {
-            String s3Key = organization + "/" + modelFileName;
+            String s3Key = organizationService.getCurrentOrganization() + "/" + modelFileName;
             ObjectMetadata metadata = new ObjectMetadata();
             metadata.setContentLength(modelFile.length());
             amazonS3.putObject(
-                    new PutObjectRequest(bucketName, organization + "/" + s3Key, fileInputStream, metadata)
+                    new PutObjectRequest(bucketName, s3Key, fileInputStream, metadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
 
             return Optional.of(String.valueOf(amazonS3.getUrl(bucketName, s3Key)));

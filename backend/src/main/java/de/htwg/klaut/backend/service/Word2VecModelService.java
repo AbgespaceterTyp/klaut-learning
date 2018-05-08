@@ -17,11 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import javax.jws.WebParam;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,26 +29,28 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     private final IModelRepository modelRepository;
     private final IS3StorageService s3StorageService;
+    private final IOrganizationService organizationService;
 
-    public Word2VecModelService(IModelRepository modelRepository, IS3StorageService s3StorageService) {
+    public Word2VecModelService(IModelRepository modelRepository, IS3StorageService s3StorageService, IOrganizationService organizationService) {
         this.modelRepository = modelRepository;
         this.s3StorageService = s3StorageService;
+        this.organizationService = organizationService;
     }
 
     @Override
-    public Page<Model> getModels(String organization, Pageable pageable) {
+    public Page<Model> getModels(Pageable pageable) {
         log.debug("loading models");
-        return modelRepository.findByOrOrganization(organization, pageable);
+        return modelRepository.findByOrOrganization(organizationService.getCurrentOrganization(), pageable);
     }
 
     @Override
-    public Model createModel(String modelName, String modelDescription, String organization) throws ModelCreationException {
-        log.debug("creating model (name='{}', desc='{}', org='{}')", modelName, modelDescription, organization);
+    public Model createModel(String modelName, String modelDescription) throws ModelCreationException {
+        log.debug("creating model (name='{}', desc='{}'", modelName, modelDescription);
         try {
             final Model model = new Model();
             model.setName(modelName);
             model.setDescription(modelDescription);
-            model.setOrganization(organization);
+            model.setOrganization(organizationService.getCurrentOrganization());
 
             Model savedModel = modelRepository.save(model);
             return savedModel;
@@ -60,7 +60,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void trainModel(CompositeId modelId, String organization) throws ModelNotFoundException, SourceNotFoundException {
+    public void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("starting training of model {}", modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
@@ -103,7 +103,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             log.debug("finished training of model {}", modelId);
 
             // TODO LG how to go on training with an existing model?
-            Optional<String> modelUrlOpt = s3StorageService.addModel(Word2Vec, organization);
+            Optional<String> modelUrlOpt = s3StorageService.addModel(Word2Vec);
             if(modelUrlOpt.isPresent()) {
                 modelToTrain.setModelUrl(modelUrlOpt.get());
                 modelRepository.save(modelToTrain);
@@ -116,13 +116,13 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void addSource(CompositeId modelId, String fileName, String organization) throws ModelNotFoundException, SourceCreationException {
+    public void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, SourceCreationException {
         log.debug("adding source file {} to model {}", fileName, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (modelOptional.isPresent()) {
             final Model modelToUpdate = modelOptional.get();
-            Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(fileName, organization);
+            Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(fileName);
             if(sourceUrlOpt.isPresent()) {
                 modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());
                 modelRepository.save(modelToUpdate);

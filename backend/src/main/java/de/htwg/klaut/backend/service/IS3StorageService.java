@@ -14,7 +14,7 @@ public interface IS3StorageService {
 
     Optional<File> getSourceFile(String sourceUrl) throws SourceNotFoundException;
 
-    Optional<String> addSourceFile(String fileName, String organization) throws SourceNotFoundException;
+    Optional<String> addSourceFile(String fileName) throws SourceNotFoundException;
 
-    Optional<String> addModel(Word2Vec word2Vec, String organization);
+    Optional<String> addModel(Word2Vec word2Vec);
 }
