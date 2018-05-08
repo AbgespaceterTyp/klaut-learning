@@ -7,13 +7,14 @@ import org.deeplearning4j.models.word2vec.Word2Vec;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 
 public interface IS3StorageService {
     void deleteFilesForId(CompositeId modelId) throws SourceNotFoundException, ModelNotFoundException;
 
-    File getSourceFile(String sourceUrl) throws SourceNotFoundException;
+    Optional<File> getSourceFile(String sourceUrl) throws SourceNotFoundException;
 
-    String addSourceFile(String fileName) throws SourceNotFoundException;
+    Optional<String> addSourceFile(String fileName, String organization) throws SourceNotFoundException;
 
-    String addModel(Word2Vec word2Vec) throws SourceNotFoundException;
+    Optional<String> addModel(Word2Vec word2Vec, String organization);
 }

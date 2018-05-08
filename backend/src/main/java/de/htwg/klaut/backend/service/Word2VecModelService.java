@@ -49,30 +49,13 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         model.setDescription(modelDescription);
         model.setOrganization(organization);
 
-        // TODO LG remove all under this marker when s3 service works
-        Word2VecParams params = new Word2VecParams();
-        params.setIterations(5);
-        params.setLayerSize(100);
-        params.setMinWordFrequency(5);
-        params.setSeed(43);
-        params.setWindowSize(10);
-
-        model.setParams(params);
-        model.setAlgorithm("word2vec");
-        model.setModelUrl("modelurl");
-
-        HashSet<String> sourceUrls = new HashSet<>();
-        sourceUrls.add("sourceUrl1");
-        sourceUrls.add("sourceUrl2");
-
-        model.setSourceUrls(sourceUrls);
-
         return modelRepository.save(model);
     }
 
     @Override
-    public void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
+    public void trainModel(CompositeId modelId, String organization) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("starting training of model {}", modelId);
+
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (!modelOptional.isPresent()) {
             throw new ModelNotFoundException(modelId);
@@ -87,8 +70,12 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         final String sourceUrl = sourceUrls.iterator().next();
         log.debug("loading source url {}", sourceUrl);
 
-        File sourceFile = s3StorageService.getSourceFile(sourceUrl);
-        try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
+        Optional<File> sourceFileOpt = s3StorageService.getSourceFile(sourceUrl);
+        if(!sourceFileOpt.isPresent()){
+            throw new SourceNotFoundException(modelId);
+        }
+
+        try (FileInputStream fileInputStream = new FileInputStream(sourceFileOpt.get())) {
             BasicLineIterator iter = new BasicLineIterator(fileInputStream);
             // Split on white spaces in the line to get words
             DefaultTokenizerFactory t = new DefaultTokenizerFactory();
@@ -109,24 +96,32 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             log.debug("finished training of model {}", modelId);
 
             // TODO LG how to go on training with an existing model?
-            String modelUrl = s3StorageService.addModel(Word2Vec);
-            modelToTrain.setModelUrl(modelUrl);
-            modelRepository.save(modelToTrain);
+            Optional<String> modelUrlOpt = s3StorageService.addModel(Word2Vec, organization);
+            if(modelUrlOpt.isPresent()) {
+                modelToTrain.setModelUrl(modelUrlOpt.get());
+                modelRepository.save(modelToTrain);
+            } else {
+                // TODO exception
+            }
         } catch (IOException e){
             throw new SourceNotFoundException(sourceUrl);
         }
     }
 
     @Override
-    public void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, SourceNotFoundException {
+    public void addSource(CompositeId modelId, String fileName, String organization) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("adding source file {} to model {}", fileName, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (modelOptional.isPresent()) {
             final Model modelToUpdate = modelOptional.get();
-            String sourceUrl = s3StorageService.addSourceFile(fileName);
-            modelToUpdate.getSourceUrls().add(sourceUrl);
-            modelRepository.save(modelToUpdate);
+            Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(fileName, organization);
+            if(sourceUrlOpt.isPresent()) {
+                modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());
+                modelRepository.save(modelToUpdate);
+            } else {
+                // TODO exception
+            }
         } else {
             throw new ModelNotFoundException(modelId);
         }

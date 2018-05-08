@@ -15,9 +15,9 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
 
     Model createModel(String modelName, String modelDescription, String organization) throws ModelNotFoundException;
 
-    void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
+    void trainModel(CompositeId modelId, String organization) throws ModelNotFoundException, SourceNotFoundException;
 
-    void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, SourceNotFoundException;
+    void addSource(CompositeId modelId, String fileName, String organization) throws ModelNotFoundException, SourceNotFoundException;
 
     void setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
 

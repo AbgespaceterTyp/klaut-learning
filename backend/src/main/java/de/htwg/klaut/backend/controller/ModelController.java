@@ -41,15 +41,14 @@ public class ModelController {
 
     @PutMapping(path = "{modelId}/train")
     public ResponseEntity trainModel(@PathVariable String organization, @PathVariable String modelId) {
-        modelService.trainModel(new CompositeId(organization, modelId));
+        modelService.trainModel(new CompositeId(organization, modelId),organization);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "{modelId}/source")
     public ResponseEntity addSource(@PathVariable String organization, @PathVariable String modelId) {
-        // TODO JD set company/tenant here
         // TODO LG copy uploaded file to temp and add as source
-        //modelService.addSource(new CompositeId(organization, modelId), "fileName");
+        modelService.addSource(new CompositeId(organization, modelId), "fileName", organization);
         return ResponseEntity.noContent().build();
     }
 
