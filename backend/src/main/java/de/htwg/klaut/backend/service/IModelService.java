@@ -1,6 +1,8 @@
 package de.htwg.klaut.backend.service;
 
+import de.htwg.klaut.backend.exception.ModelCreationException;
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
+import de.htwg.klaut.backend.exception.SourceCreationException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.IModelParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
@@ -13,11 +15,11 @@ import java.io.IOException;
 public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
     Page<Model> getModels(String organization, Pageable pageable);
 
-    Model createModel(String modelName, String modelDescription, String organization) throws ModelNotFoundException;
+    Model createModel(String modelName, String modelDescription, String organization) throws ModelCreationException;
 
     void trainModel(CompositeId modelId, String organization) throws ModelNotFoundException, SourceNotFoundException;
 
-    void addSource(CompositeId modelId, String fileName, String organization) throws ModelNotFoundException, SourceNotFoundException;
+    void addSource(CompositeId modelId, String fileName, String organization) throws ModelNotFoundException, SourceCreationException;
 
     void setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
 

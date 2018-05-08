@@ -1,6 +1,8 @@
 package de.htwg.klaut.backend.service;
 
+import de.htwg.klaut.backend.exception.ModelCreationException;
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
+import de.htwg.klaut.backend.exception.SourceCreationException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.jws.WebParam;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,15 +44,19 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public Model createModel(String modelName, String modelDescription, String organization) {
+    public Model createModel(String modelName, String modelDescription, String organization) throws ModelCreationException {
         log.debug("creating model (name='{}', desc='{}', org='{}')", modelName, modelDescription, organization);
+        try {
+            final Model model = new Model();
+            model.setName(modelName);
+            model.setDescription(modelDescription);
+            model.setOrganization(organization);
 
-        final Model model = new Model();
-        model.setName(modelName);
-        model.setDescription(modelDescription);
-        model.setOrganization(organization);
-
-        return modelRepository.save(model);
+            Model savedModel = modelRepository.save(model);
+            return savedModel;
+        } catch (Exception e){
+            throw new ModelCreationException(modelName);
+        }
     }
 
     @Override
@@ -101,7 +108,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
                 modelToTrain.setModelUrl(modelUrlOpt.get());
                 modelRepository.save(modelToTrain);
             } else {
-                // TODO exception
+                throw new SourceCreationException(modelId);
             }
         } catch (IOException e){
             throw new SourceNotFoundException(sourceUrl);
@@ -109,7 +116,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void addSource(CompositeId modelId, String fileName, String organization) throws ModelNotFoundException, SourceNotFoundException {
+    public void addSource(CompositeId modelId, String fileName, String organization) throws ModelNotFoundException, SourceCreationException {
         log.debug("adding source file {} to model {}", fileName, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
@@ -120,7 +127,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
                 modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());
                 modelRepository.save(modelToUpdate);
             } else {
-                // TODO exception
+                throw new SourceCreationException(modelId);
             }
         } else {
             throw new ModelNotFoundException(modelId);
