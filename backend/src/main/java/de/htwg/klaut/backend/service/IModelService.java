@@ -9,6 +9,7 @@ import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -19,7 +20,7 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
 
     void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 
-    void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, SourceCreationException;
+    void addSource(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException;
 
     void setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
 

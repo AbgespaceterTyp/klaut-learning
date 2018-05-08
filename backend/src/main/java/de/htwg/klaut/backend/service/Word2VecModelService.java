@@ -16,6 +16,7 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFac
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -119,13 +120,13 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void addSource(CompositeId modelId, String fileName) throws ModelNotFoundException, SourceCreationException {
-        log.debug("adding source file {} to model {}", fileName, modelId);
+    public void addSource(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException {
+        log.debug("adding source file {} to model {}", file.getName(), modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (modelOptional.isPresent()) {
             final Model modelToUpdate = modelOptional.get();
-            Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(fileName);
+            Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(file);
             if (sourceUrlOpt.isPresent()) {
                 modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());
                 modelRepository.save(modelToUpdate);

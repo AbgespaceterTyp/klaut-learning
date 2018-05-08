@@ -3,6 +3,7 @@ package de.htwg.klaut.backend.service;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
+import de.htwg.klaut.backend.exception.SourceCreationException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import org.apache.commons.io.FileUtils;
@@ -13,6 +14,7 @@ import org.deeplearning4j.util.ModelSerializer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,26 +49,24 @@ public class S3StorageService implements IS3StorageService {
     }
 
     @Override
-    public Optional<String> addSourceFile(String fileName) throws SourceNotFoundException {
-        File sourceFile = new File(fileName);
-        try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
-            // TODO LG add file name as param or parse from file name
-            fileName = createFileName("txt");
+    public Optional<String> addSourceFile(MultipartFile file) throws SourceCreationException {
+        try {
+            String s3Key = organizationService.getCurrentOrganization() + "/" + file.getName();
 
             ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(sourceFile.length());
+            metadata.setContentLength(file.getSize());
             amazonS3.putObject(
-                    new PutObjectRequest(bucketName, fileName, fileInputStream, metadata)
+                    new PutObjectRequest(bucketName, s3Key, file.getInputStream(), metadata)
                             .withCannedAcl(CannedAccessControlList.PublicRead));
 
-            return Optional.of(String.valueOf(amazonS3.getUrl(bucketName, fileName)));
+            return Optional.of(String.valueOf(amazonS3.getUrl(bucketName, file.getName())));
         } catch (IOException e) {
-            throw new SourceNotFoundException(fileName);
+            throw new SourceCreationException(file.getName());
         }
     }
 
     @Override
-    public Optional<String> addModel(Word2Vec word2Vec) {
+    public Optional<String> addModel(Word2Vec word2Vec) throws SourceCreationException {
         // Write model to temp directory
         String modelFileName = UUID.randomUUID().toString();
         final File modelFile = new File(System.getProperty("java.io.tmpdir") + modelFileName);
@@ -82,12 +82,11 @@ public class S3StorageService implements IS3StorageService {
 
             return Optional.of(String.valueOf(amazonS3.getUrl(bucketName, s3Key)));
         } catch (IOException e) {
-
+            throw new SourceCreationException(modelFileName);
         } finally {
             // Remove from temp dir after upload
             FileUtils.deleteQuietly(modelFile);
         }
-        return Optional.empty();
     }
 
     private String createFileName(String fileEnding) {

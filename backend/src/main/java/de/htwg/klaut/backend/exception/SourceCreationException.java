@@ -10,4 +10,8 @@ public class SourceCreationException extends RuntimeException {
     public SourceCreationException(CompositeId modelId) {
         super("failed to create source for model with id " + modelId);
     }
+
+    public SourceCreationException(String name) {
+        super("failed to create source with name " + name);
+    }
 }

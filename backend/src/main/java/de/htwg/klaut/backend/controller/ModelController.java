@@ -11,6 +11,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import sun.plugin.util.UIUtil;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("{organization}/model")
@@ -46,9 +54,11 @@ public class ModelController {
     }
 
     @PutMapping(path = "{modelId}/source")
-    public ResponseEntity addSource(@PathVariable String organization, @PathVariable String modelId) {
-        // TODO LG copy uploaded file to temp and add as source
-        modelService.addSource(new CompositeId(organization, modelId), "fileName");
+    public ResponseEntity addSource(@PathVariable String organization, @RequestBody MultipartFile fileToUpload, @PathVariable String modelId) {
+        if (fileToUpload.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        modelService.addSource(new CompositeId(organization, modelId), fileToUpload);
         return ResponseEntity.noContent().build();
     }
 
