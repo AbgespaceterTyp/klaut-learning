@@ -17,6 +17,10 @@ export class ModelService {
       return this.http.post('/api/klaut-learning2/model', modelDto);
     }
 
+    delete(id: Number) {
+      return this.http.delete('/api/klaut-learning2/model/' + id + '/delete');
+    }
+
     updateParams(params: Word2VecParams, id: Number) {
       return this.http.put('/api/klaut-learning2/model/' + id + '/param', params);
     }

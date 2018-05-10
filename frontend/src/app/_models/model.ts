@@ -11,4 +11,5 @@ export class Word2Vec {
 export class ModelDto {
   name: String;
   description: String;
+  algorithm: String;
 }

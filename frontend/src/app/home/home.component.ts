@@ -14,6 +14,7 @@ export class HomeComponent implements OnInit {
   modelDto: ModelDto = {
     description: "",
     name: "",
+    algorithm: "Word2Vec",
   }
 
 

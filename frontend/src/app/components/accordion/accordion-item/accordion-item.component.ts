@@ -16,6 +16,10 @@ export class AccordionItemComponent implements OnInit {
   paramTimeout = null
   loading = false;
 
+
+  deleted = false;
+  deleting = false;
+
   constructor(private modelService: ModelService) { }
 
   ngOnInit() {
@@ -39,10 +43,23 @@ export class AccordionItemComponent implements OnInit {
       .subscribe(
         data => {
           this.loading = false;
-          console.log(data);
         }
       );
     }, 500);
+  }
+
+  delete() {
+    this.deleting = true;
+    this.modelService.delete(this.model.id)
+    .subscribe(
+      data => {
+        this.deleted = true;
+        this.deleting = false;
+        console.log(data);
+        
+      }
+    )
+    
   }
 
 }
