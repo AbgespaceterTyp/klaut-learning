@@ -37,8 +37,14 @@ public class ModelController {
 
     @PostMapping
     public ResponseEntity<String> createModel(@PathVariable String organization, @RequestBody ModelDto modelDto) {
-        final Model model = modelService.createModel(modelDto.getName(), modelDto.getDescription());
+        final Model model = modelService.createModel(modelDto);
         return new ResponseEntity<>(model.getId(), HttpStatus.CREATED);
+    }
+
+    @PutMapping(path = "{modelId}/update")
+    public ResponseEntity updateModel(@PathVariable String organization, @RequestBody ModelDto modelDto, @PathVariable String modelId) {
+        modelService.updateModel(new CompositeId(organization, modelId), modelDto);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "{modelId}/param")
@@ -63,7 +69,7 @@ public class ModelController {
     }
 
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity<String> deleteModel(@PathVariable String organization, @PathVariable String modelId) {
+    public ResponseEntity deleteModel(@PathVariable String organization, @PathVariable String modelId) {
         modelService.deleteModel(new CompositeId(organization, modelId));
         return ResponseEntity.ok().build();
     }

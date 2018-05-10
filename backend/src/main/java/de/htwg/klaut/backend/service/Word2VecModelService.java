@@ -7,6 +7,7 @@ import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
+import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
 import org.deeplearning4j.models.word2vec.Word2Vec;
@@ -45,16 +46,31 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public Model createModel(String modelName, String modelDescription) throws ModelCreationException {
-        log.debug("creating model (name='{}', desc='{}'", modelName, modelDescription);
+    public Model createModel(ModelDto modelDto) throws ModelCreationException {
+        log.debug("creating model with values {}", modelDto);
         try {
             final Model model = new Model();
-            model.setName(modelName);
-            model.setDescription(modelDescription);
+            model.setName(modelDto.getName());
+            model.setDescription(modelDto.getDescription());
+            model.setAlgorithm(modelDto.getAlgorithm());
             model.setOrganization(organizationService.getCurrentOrganization());
             return modelRepository.save(model);
         } catch (Exception e) {
-            throw new ModelCreationException(modelName);
+            throw new ModelCreationException(modelDto.getName());
+        }
+    }
+
+    @Override
+    public void updateModel(CompositeId modelId, ModelDto modelDto) throws ModelNotFoundException {
+        log.debug("updating model {} with values {}", modelId, modelDto);
+        try {
+            final Model modelToUpdate = modelRepository.findById(modelId).get();
+            modelToUpdate.setName(modelDto.getName());
+            modelToUpdate.setDescription(modelDto.getDescription());
+            modelToUpdate.setAlgorithm(modelDto.getAlgorithm());
+            modelRepository.save(modelToUpdate);
+        } catch (Exception e) {
+            throw new ModelCreationException(modelDto.getName());
         }
     }
 

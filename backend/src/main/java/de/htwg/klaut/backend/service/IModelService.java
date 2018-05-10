@@ -7,6 +7,7 @@ import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.IModelParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
+import de.htwg.klaut.backend.model.dto.ModelDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +17,9 @@ import java.io.IOException;
 public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
     Page<Model> getModels(Pageable pageable);
 
-    Model createModel(String modelName, String modelDescription) throws ModelCreationException;
+    Model createModel(ModelDto modelDto) throws ModelCreationException;
+
+    void updateModel(CompositeId modelId, ModelDto modelDto) throws ModelNotFoundException;
 
     void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 

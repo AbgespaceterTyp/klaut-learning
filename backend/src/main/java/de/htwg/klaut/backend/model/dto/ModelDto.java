@@ -9,4 +9,5 @@ public class ModelDto implements Serializable {
 
     private String name;
     private String description;
+    private String algorithm;
 }
