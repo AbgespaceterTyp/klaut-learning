@@ -11,13 +11,17 @@ import { RegisterComponent } from './register/register.component';
 import { AuthGuard } from './_guards/index';
 import { AuthenticationService, ModelService } from './_services/index';
 import { routing } from './app.routing';
+import { AccordionComponent } from './components/accordion/accordion-body/accordion.component';
+import { AccordionItemComponent } from './components/accordion/accordion-item/accordion-item.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
+    AccordionComponent,
+    AccordionItemComponent
   ],
   imports: [
     BrowserModule,
