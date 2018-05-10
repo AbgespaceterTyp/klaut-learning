@@ -1,6 +1,6 @@
 package de.htwg.klaut.backend.model;
 
-import lombok.*;
+import lombok.Data;
 
 @Data
 public class Word2VecParams implements IModelParams {

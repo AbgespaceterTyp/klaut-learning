@@ -1,6 +1,5 @@
 package de.htwg.klaut.backend.exception;
 
-import de.htwg.klaut.backend.model.db.CompositeId;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
