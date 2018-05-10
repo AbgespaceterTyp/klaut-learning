@@ -1,6 +1,6 @@
 package de.htwg.klaut.backend.service;
 
-import de.htwg.klaut.backend.model.CloudUser;
+import de.htwg.klaut.backend.model.db.CloudUser;
 import de.htwg.klaut.backend.repository.IUserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

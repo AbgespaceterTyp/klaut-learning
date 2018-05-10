@@ -1,7 +1,6 @@
-package de.htwg.klaut.backend.model;
+package de.htwg.klaut.backend.model.db;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
-import de.htwg.klaut.backend.model.db.CompositeId;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

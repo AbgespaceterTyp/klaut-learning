@@ -1,6 +1,6 @@
 package de.htwg.klaut.backend.repository;
 
-import de.htwg.klaut.backend.model.CloudUser;
+import de.htwg.klaut.backend.model.db.CloudUser;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import org.socialsignin.spring.data.dynamodb.repository.DynamoDBPagingAndSortingRepository;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
