@@ -21,36 +21,46 @@
           </div>
 
           <div class="col-sm-4">
-            <p>Params</p>
+            <p class="params-heading">Params</p> <img *ngIf="loading" src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
             <span *ngIf="model.params">
               <div class="form-group row">
-                <label for="epochs" class="col-sm-7 col-form-label">minWordFrequency</label>
+                <label for="minWordFrequency" class="col-sm-7 col-form-label">minWordFrequency</label>
                 <div class="col-sm-4">
-                  <input type="number" class="form-control" id="epochs" min="0" [(ngModel)]="model.params.minWordFrequency">
+                  <input type="number" class="form-control" 
+                         id="minWordFrequency" min="0" [(ngModel)]="model.params.minWordFrequency"
+                         (change)="updateParams()"> 
                 </div>
               </div>
               <div class="form-group row">
-                <label for="epochs" class="col-sm-7 col-form-label">iterations</label>
+                <label for="iterations" class="col-sm-7 col-form-label">iterations</label>
                 <div class="col-sm-4">
-                  <input type="number" class="form-control" id="epochs" min="0" [(ngModel)]="model.params.iterations">
+                  <input type="number" class="form-control" 
+                         id="iterations" min="0" [(ngModel)]="model.params.iterations"
+                         (change)="updateParams()">
                 </div>
               </div>
               <div class="form-group row">
-                <label for="epochs" class="col-sm-7 col-form-label">layerSize</label>
+                <label for="layerSize" class="col-sm-7 col-form-label">layerSize</label>
                 <div class="col-sm-4">
-                  <input type="number" class="form-control" id="epochs" min="0" [(ngModel)]="model.params.layerSize">
+                  <input type="number" class="form-control" 
+                         id="layerSize" min="0" [(ngModel)]="model.params.layerSize"
+                         (change)="updateParams()">
                 </div>
               </div>
               <div class="form-group row">
-                <label for="epochs" class="col-sm-7 col-form-label">seed</label>
+                <label for="seed" class="col-sm-7 col-form-label">seed</label>
                 <div class="col-sm-4">
-                  <input type="number" class="form-control" id="epochs" min="0" [(ngModel)]="model.params.seed">
+                  <input type="number" class="form-control" 
+                        id="seed" min="0" [(ngModel)]="model.params.seed"
+                        (change)="updateParams()">
                 </div>
               </div>
               <div class="form-group row">
-                <label for="epochs" class="col-sm-7 col-form-label">windowSize</label>
+                <label for="windowSize" class="col-sm-7 col-form-label">windowSize</label>
                 <div class="col-sm-4">
-                  <input type="number" class="form-control" id="epochs" min="0" [(ngModel)]="model.params.windowSize">
+                  <input type="number" class="form-control" 
+                         id="windowSize" min="0" [(ngModel)]="model.params.windowSize"
+                         (change)="updateParams()">
                 </div>
               </div>
             </span>

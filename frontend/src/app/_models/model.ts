@@ -1,6 +1,7 @@
 import { Word2VecParams } from "./params";
 
 export class Word2Vec {
+  id: Number;
   name: String;
   algorithm: String;
   description: String;

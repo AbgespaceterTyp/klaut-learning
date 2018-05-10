@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
 import { ModelDto } from '../_models';
+import { Word2VecParams } from '../_models/params';
 
 @Injectable()
 export class ModelService {
@@ -14,6 +15,10 @@ export class ModelService {
 
     create(modelDto: ModelDto) {
       return this.http.post('/api/klaut-learning2/model', modelDto);
+    }
+
+    updateParams(params: Word2VecParams, id: Number) {
+      return this.http.put('/api/klaut-learning2/model/' + id + '/param', params);
     }
     
 }

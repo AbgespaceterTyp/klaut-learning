@@ -1,5 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Word2Vec } from '../../../_models';
+import { ModelService } from '../../../_services';
+import { Timeouts } from 'selenium-webdriver';
+import { timeout } from 'q';
 
 @Component({
   selector: 'app-accordion-item',
@@ -10,7 +13,10 @@ export class AccordionItemComponent implements OnInit {
   @Input('model') model: Word2Vec;
   @Input('opend') opend: boolean;
 
-  constructor() { }
+  paramTimeout = null
+  loading = false;
+
+  constructor(private modelService: ModelService) { }
 
   ngOnInit() {
     if(!this.model.params) {
@@ -22,8 +28,21 @@ export class AccordionItemComponent implements OnInit {
         windowSize: 0,
       }
     }
-    console.log(this.model, this.opend);
-    
+  }
+
+  updateParams() {
+    clearTimeout(this.paramTimeout);
+    this.loading = true;
+
+    this.paramTimeout = setTimeout(() => {
+      this.modelService.updateParams(this.model.params, this.model.id)
+      .subscribe(
+        data => {
+          this.loading = false;
+          console.log(data);
+        }
+      );
+    }, 500);
   }
 
 }
