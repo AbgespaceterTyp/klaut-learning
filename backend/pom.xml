@@ -151,7 +151,7 @@
                         <configuration>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>de.klaut</groupId>
+                                    <groupId>de.htwg.klaut</groupId>
                                     <artifactId>frontend</artifactId>
                                     <version>${project.version}</version>
                                     <type>jar</type>
