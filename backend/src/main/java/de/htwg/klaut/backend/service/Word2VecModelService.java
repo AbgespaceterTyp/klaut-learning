@@ -52,9 +52,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             model.setName(modelName);
             model.setDescription(modelDescription);
             model.setOrganization(organizationService.getCurrentOrganization());
-
-            Model savedModel = modelRepository.save(model);
-            return savedModel;
+            return modelRepository.save(model);
         } catch (Exception e) {
             throw new ModelCreationException(modelName);
         }
@@ -76,8 +74,6 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
         // TODO LG we just take first source url here, check if it is possible to use more than one source file
         final String sourceUrl = sourceUrls.iterator().next();
-        log.debug("loading source url {}", sourceUrl);
-
         Optional<File> sourceFileOpt = s3StorageService.getSourceFile(sourceUrl);
         if (!sourceFileOpt.isPresent()) {
             throw new SourceNotFoundException(modelId);
@@ -88,7 +84,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     private void updateAndTrainModel(File sourceFile, Model modelToTrain) {
         try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
-            BasicLineIterator iter = new BasicLineIterator(fileInputStream);
+            BasicLineIterator iterator = new BasicLineIterator(fileInputStream);
             // Split on white spaces in the line to get words
             DefaultTokenizerFactory t = new DefaultTokenizerFactory();
             t.setTokenPreProcessor(new CommonPreprocessor());
@@ -100,7 +96,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
                     .layerSize(params.getLayerSize())
                     .seed(params.getSeed())
                     .windowSize(params.getWindowSize())
-                    .iterate(iter)
+                    .iterate(iterator)
                     .tokenizerFactory(t)
                     .build();
 
@@ -108,12 +104,12 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
             // TODO LG how to go on training with an existing model?
             Optional<String> modelUrlOpt = s3StorageService.addModel(word2VecModel);
-            if (modelUrlOpt.isPresent()) {
-                modelToTrain.setModelUrl(modelUrlOpt.get());
-                modelRepository.save(modelToTrain);
-            } else {
-                throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(),modelToTrain.getId()));
+            if (!modelUrlOpt.isPresent()) {
+                throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
             }
+
+            modelToTrain.setModelUrl(modelUrlOpt.get());
+            modelRepository.save(modelToTrain);
         } catch (IOException e) {
             throw new SourceNotFoundException(sourceFile.getName());
         }
@@ -124,18 +120,18 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         log.debug("adding source file {} to model {}", file.getName(), modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
-        if (modelOptional.isPresent()) {
-            final Model modelToUpdate = modelOptional.get();
-            Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(file);
-            if (sourceUrlOpt.isPresent()) {
-                modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());
-                modelRepository.save(modelToUpdate);
-            } else {
-                throw new SourceCreationException(modelId);
-            }
-        } else {
+        if (!modelOptional.isPresent()) {
             throw new ModelNotFoundException(modelId);
         }
+
+        final Model modelToUpdate = modelOptional.get();
+        Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(file);
+        if (!sourceUrlOpt.isPresent()) {
+            throw new SourceCreationException(modelId);
+        }
+
+        modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());
+        modelRepository.save(modelToUpdate);
     }
 
     @Override
@@ -143,13 +139,13 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         log.debug("set params {} to model {}", modelParams, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
-        if (modelOptional.isPresent()) {
-            final Model modelToUpdate = modelOptional.get();
-            modelToUpdate.setParams(modelParams);
-            modelRepository.save(modelToUpdate);
-        } else {
+        if (!modelOptional.isPresent()) {
             throw new ModelNotFoundException(modelId);
         }
+
+        final Model modelToUpdate = modelOptional.get();
+        modelToUpdate.setParams(modelParams);
+        modelRepository.save(modelToUpdate);
     }
 
     @Override
