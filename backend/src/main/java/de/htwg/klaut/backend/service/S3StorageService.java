@@ -7,11 +7,8 @@ import de.htwg.klaut.backend.exception.SourceCreationException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
-import org.deeplearning4j.util.ModelSerializer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -51,15 +49,7 @@ public class S3StorageService implements IS3StorageService {
     @Override
     public Optional<String> addSourceFile(MultipartFile file) throws SourceCreationException {
         try {
-            String s3Key = organizationService.getCurrentOrganization() + "/" + file.getName();
-
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(file.getSize());
-            amazonS3.putObject(
-                    new PutObjectRequest(bucketName, s3Key, file.getInputStream(), metadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead));
-
-            return Optional.of(String.valueOf(amazonS3.getUrl(bucketName, file.getName())));
+            return addFile(file.getSize(), file.getName(), file.getInputStream());
         } catch (IOException e) {
             throw new SourceCreationException(file.getName());
         }
@@ -73,14 +63,7 @@ public class S3StorageService implements IS3StorageService {
         WordVectorSerializer.writeWord2VecModel(word2Vec, modelFile);
 
         try (FileInputStream fileInputStream = new FileInputStream(modelFile)) {
-            String s3Key = organizationService.getCurrentOrganization() + "/" + modelFileName;
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setContentLength(modelFile.length());
-            amazonS3.putObject(
-                    new PutObjectRequest(bucketName, s3Key, fileInputStream, metadata)
-                            .withCannedAcl(CannedAccessControlList.PublicRead));
-
-            return Optional.of(String.valueOf(amazonS3.getUrl(bucketName, s3Key)));
+            return addFile(modelFile.length(), modelFileName, fileInputStream);
         } catch (IOException e) {
             throw new SourceCreationException(modelFileName);
         } finally {
@@ -89,11 +72,14 @@ public class S3StorageService implements IS3StorageService {
         }
     }
 
-    private String createFileName(String fileEnding) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(UUID.randomUUID().toString());
-        sb.append(".");
-        sb.append(fileEnding);
-        return sb.toString();
+    private Optional<String> addFile(long contentLength, String fileName, InputStream inputStream) {
+        String s3Key = organizationService.getCurrentOrganization() + "/" + fileName;
+
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(contentLength);
+        amazonS3.putObject(
+                new PutObjectRequest(bucketName, s3Key, inputStream, metadata)
+                        .withCannedAcl(CannedAccessControlList.PublicRead));
+        return Optional.of(String.valueOf(amazonS3.getUrl(bucketName, s3Key)));
     }
 }
