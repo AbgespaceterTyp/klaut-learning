@@ -1,3 +1,24 @@
-<button class="btn btn-primary"(click)="addModel()">add model</button>
+<div class="spacer spacer--10"></div>
+<div class="form-inline">
+  <div class="form-group mx-sm-3 mb-2">
+      <label for="description" class="sr-only">Name</label>
+      <input type="text" class="form-control" 
+                id="description" placeholder="Name" 
+                [(ngModel)]="modelDto.name"/>
+    </div>
+  <div class="form-group mx-sm-3 mb-2">
+    <label for="description" class="sr-only">Description</label>
+    <textarea type="text" class="form-control form-description" 
+              id="description" placeholder="Description" 
+              [(ngModel)]="modelDto.description"></textarea>
+  </div>
+  <div class="form-group">
+    <label for="modelType" class="label-algo">Select Algorithm</label>
+    <select class="form-control mx-sm-3 mb-2" id="modelType">
+      <option>Word2Vec</option>
+    </select>
+    </div>
+  <button class="btn btn-primary mb-2"(click)="addModel()" [disabled]="modelDto.name.length < 3">Add Model</button>
+</div>
 <app-accordion [models]="models.content"
                *ngIf="models"></app-accordion>

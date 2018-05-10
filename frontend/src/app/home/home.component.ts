@@ -11,6 +11,11 @@ import { Word2Vec, ModelDto } from '../_models/index';
 export class HomeComponent implements OnInit {
   models: any;
 
+  modelDto: ModelDto = {
+    description: "",
+    name: "",
+  }
+
 
   constructor(private modelService: ModelService) { }
 
@@ -24,36 +29,37 @@ export class HomeComponent implements OnInit {
   }
 
   addModel() {
-    this.modelService.create({
-      name: "test",
-      description: "noch mehr tests"
-    })
-    .subscribe(data => {
-      console.log(data);
-    });
+    console.log(this.modelDto);
     
-    if (this.models) {
-      this.models.content.unshift({
-        "name": "new model",
-        "algorithm": "word2vec",
-        "description": "was neues",
-        "params": {
-          "minWordFrequency": 5,
-          "iterations": 5,
-          "layerSize": 100,
-          "seed": 43,
-          "windowSize": 10
-        },
-        "modelUrl": "modelurl",
-        "sourceUrls": [
-          "sourceUrl1",
-          "sourceUrl2"
-        ],
-        "id": "keineidichhab",
-        "organization": "klaut-learning2"
+    if (this.modelDto.name.length > 3) {
+      this.modelService.create(this.modelDto)
+      .subscribe(data => {
+        console.log(data);
       });
-
     }
+    
+    // if (this.models) {
+    //   this.models.content.unshift({
+    //     "name": "new model",
+    //     "algorithm": "word2vec",
+    //     "description": "was neues",
+    //     "params": {
+    //       "minWordFrequency": 5,
+    //       "iterations": 5,
+    //       "layerSize": 100,
+    //       "seed": 43,
+    //       "windowSize": 10
+    //     },
+    //     "modelUrl": "modelurl",
+    //     "sourceUrls": [
+    //       "sourceUrl1",
+    //       "sourceUrl2"
+    //     ],
+    //     "id": "keineidichhab",
+    //     "organization": "klaut-learning2"
+    //   });
+
+    // }
     
   }
 
