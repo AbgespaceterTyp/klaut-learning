@@ -68,7 +68,7 @@ public class ModelController {
         return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(method = RequestMethod.DELETE)
+    @DeleteMapping(path = "{modelId}/delete")
     public ResponseEntity deleteModel(@PathVariable String organization, @PathVariable String modelId) {
         modelService.deleteModel(new CompositeId(organization, modelId));
         return ResponseEntity.ok().build();
