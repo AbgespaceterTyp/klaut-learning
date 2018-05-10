@@ -33,16 +33,18 @@ public class OrganizationChecker extends GenericFilterBean {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         HttpSession httpSession = request.getSession(false);
-        Object orgAttribute = httpSession.getAttribute(ORGANIZATION_SESSION_KEY);
-        String currentOrganization = organizationService.getCurrentOrganization();
+        if (httpSession != null) {
+            Object orgAttribute = httpSession.getAttribute(ORGANIZATION_SESSION_KEY);
+            String currentOrganization = organizationService.getCurrentOrganization();
 
-        if (orgAttribute != null) {
-            // User was already authenticated before
-            if (!currentOrganization.equals(orgAttribute.toString())) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, WRONG_ORGANIZATION_MESSAGE);
+            if (orgAttribute != null) {
+                // User was already authenticated before
+                if (!currentOrganization.equals(orgAttribute.toString())) {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, WRONG_ORGANIZATION_MESSAGE);
+                }
+            } else {
+                httpSession.setAttribute(ORGANIZATION_SESSION_KEY, currentOrganization);
             }
-        } else {
-            httpSession.setAttribute(ORGANIZATION_SESSION_KEY, currentOrganization);
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
