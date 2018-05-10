@@ -7,4 +7,6 @@ public interface IOrganizationService {
     Organization createOrganization(String name, String iconUrl);
 
     String getCurrentOrganization();
+
+    void setCurrentOrganization(String organization);
 }
