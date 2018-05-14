@@ -17,5 +17,5 @@ public interface IS3StorageService {
 
     Optional<String> addSourceFile(MultipartFile file) throws SourceCreationException;
 
-    Optional<String> addModel(Word2Vec word2Vec) throws SourceCreationException;
+    Optional<String> addSourceFile(Word2Vec word2Vec) throws SourceCreationException;
 }

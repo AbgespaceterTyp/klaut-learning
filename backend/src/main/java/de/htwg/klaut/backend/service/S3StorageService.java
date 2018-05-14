@@ -56,7 +56,7 @@ public class S3StorageService implements IS3StorageService {
     }
 
     @Override
-    public Optional<String> addModel(Word2Vec word2Vec) throws SourceCreationException {
+    public Optional<String> addSourceFile(Word2Vec word2Vec) throws SourceCreationException {
         // Write model to temp directory
         String modelFileName = UUID.randomUUID().toString();
         final File modelFile = new File(System.getProperty("java.io.tmpdir") + modelFileName);

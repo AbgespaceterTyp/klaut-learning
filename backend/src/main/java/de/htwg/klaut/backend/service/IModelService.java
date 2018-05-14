@@ -21,9 +21,9 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
 
     void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 
-    void addSource(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException;
+    void addSourceFileToModel(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException;
 
-    void setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
+    void setModelParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
 
     void deleteModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 }

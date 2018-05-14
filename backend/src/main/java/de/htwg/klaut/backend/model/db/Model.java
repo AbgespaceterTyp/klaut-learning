@@ -13,7 +13,7 @@ import java.util.Set;
 @DynamoDBTable(tableName = "model")
 @AllArgsConstructor
 @NoArgsConstructor
-/* IMPORTANT: Do not generate setter and getter here or composite key for DynamoDBs will not work */
+/* IMPORTANT: Do not generate setter and getter here or composite key for DynamoDB will not work */
 public class Model implements Serializable {
 
     @Id

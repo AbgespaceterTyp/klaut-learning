@@ -119,7 +119,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             word2VecModel.fit();
 
             // TODO LG how to go on training with an existing model?
-            Optional<String> modelUrlOpt = s3StorageService.addModel(word2VecModel);
+            Optional<String> modelUrlOpt = s3StorageService.addSourceFile(word2VecModel);
             if (!modelUrlOpt.isPresent()) {
                 throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
             }
@@ -132,7 +132,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void addSource(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException {
+    public void addSourceFileToModel(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException {
         log.debug("adding source file {} to model {}", file.getName(), modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
@@ -151,7 +151,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void setParams(CompositeId modelId, Word2VecParams modelParams) throws ModelNotFoundException {
+    public void setModelParams(CompositeId modelId, Word2VecParams modelParams) throws ModelNotFoundException {
         log.debug("set params {} to model {}", modelParams, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
