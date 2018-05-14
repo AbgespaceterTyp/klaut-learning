@@ -1,27 +1,18 @@
 package de.htwg.klaut.backend.controller;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.google.gson.JsonObject;
-import de.htwg.klaut.backend.model.Word2VecParams;
+import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.model.dto.IdDto;
 import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.service.IModelService;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.boot.jackson.JsonObjectSerializer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @RestController
 @RequestMapping("{organization}/model")

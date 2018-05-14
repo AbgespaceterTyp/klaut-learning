@@ -1,4 +1,4 @@
-package de.htwg.klaut.backend.model;
+package de.htwg.klaut.backend.model.db;
 
 import lombok.Data;
 

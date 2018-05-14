@@ -1,4 +1,4 @@
-package de.htwg.klaut.backend.model;
+package de.htwg.klaut.backend.model.db;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTypeConverter;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -15,24 +15,22 @@ public class ModelParamConverter implements DynamoDBTypeConverter<String, IModel
 
     @Override
     public String convert(IModelParams modelParams) {
-        String result = null;
         try {
-            result = mapper.writeValueAsString(modelParams);
+            return mapper.writeValueAsString(modelParams);
         } catch (JsonProcessingException e) {
             logger.error(e);
         }
-        return result;
+        return null;
     }
 
     @Override
     public IModelParams unconvert(String s) {
-        IModelParams modelParam = null;
         try {
             // TODO LG allow other param types too
-            modelParam = mapper.readValue(s, Word2VecParams.class);
+            return mapper.readValue(s, Word2VecParams.class);
         } catch (IOException e) {
             logger.error(e);
         }
-        return modelParam;
+        return null;
     }
 }

@@ -4,7 +4,7 @@ import de.htwg.klaut.backend.exception.ModelCreationException;
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
 import de.htwg.klaut.backend.exception.SourceCreationException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
-import de.htwg.klaut.backend.model.IModelParams;
+import de.htwg.klaut.backend.model.db.IModelParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.model.dto.ModelDto;

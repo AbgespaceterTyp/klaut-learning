@@ -2,20 +2,19 @@ package de.htwg.klaut.backend.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.*;
-import de.htwg.klaut.backend.exception.ModelNotFoundException;
 import de.htwg.klaut.backend.exception.SourceCreationException;
-import de.htwg.klaut.backend.exception.SourceNotFoundException;
-import de.htwg.klaut.backend.model.db.CompositeId;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -84,6 +83,6 @@ public class S3StorageService implements IS3StorageService {
         amazonS3.putObject(
                 new PutObjectRequest(bucketName, s3Key, inputStream, metadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-        return String.valueOf(amazonS3.getUrl(bucketName, s3Key));
+        return String.valueOf(s3Key);
     }
 }

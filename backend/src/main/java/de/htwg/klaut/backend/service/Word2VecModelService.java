@@ -4,7 +4,8 @@ import de.htwg.klaut.backend.exception.ModelCreationException;
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
 import de.htwg.klaut.backend.exception.SourceCreationException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
-import de.htwg.klaut.backend.model.Word2VecParams;
+import de.htwg.klaut.backend.model.db.ModelTrainingData;
+import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.model.dto.ModelDto;
@@ -14,6 +15,7 @@ import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.deeplearning4j.text.sentenceiterator.BasicLineIterator;
 import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
+import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -114,6 +116,17 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
                 .tokenizerFactory(t)
                 .build();
 
+        // Prepare training data
+        final ModelTrainingData trainingData = new ModelTrainingData();
+        trainingData.setLastTrainingStart(DateTime.now().toDate());
+        final Set<ModelTrainingData> modelTrainingDataSet = modelToTrain.getTrainingData();
+        if(modelTrainingDataSet == null){
+            modelToTrain.setTrainingData(new HashSet<>());
+        }
+        modelToTrain.getTrainingData().add(trainingData);
+        modelRepository.save(modelToTrain);
+
+        // Start training
         word2VecModel.fit();
 
         // TODO LG how to go on training with an existing model?
@@ -122,7 +135,9 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
         }
 
-        modelToTrain.setModelUrl(modelUrlOpt.get());
+        // Update training data after
+        trainingData.setLastTrainingEnd(DateTime.now().toDate());
+        trainingData.setModelUrl(modelUrlOpt.get());
         modelRepository.save(modelToTrain);
     }
 
