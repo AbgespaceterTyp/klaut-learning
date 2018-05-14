@@ -4,6 +4,12 @@ server:
 spring:
   profiles:
     active: "dev"
+  session:
+    store-type: redis
+  redis:
+    host: redis-19050.c17.us-east-1-4.ec2.cloud.redislabs.com
+    port: 19050
+    password:
 
   servlet:
     multipart:

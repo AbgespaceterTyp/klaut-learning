@@ -20,7 +20,7 @@ import java.io.IOException;
 public class OrganizationChecker extends GenericFilterBean {
 
     private static final String ORGANIZATION_SESSION_KEY = "ORGANIZATION";
-    public static final String WRONG_ORGANIZATION_MESSAGE = "Not authenticated for this organization";
+    private static final String WRONG_ORGANIZATION_MESSAGE = "Not authenticated for this organization";
 
     @Autowired
     private OrganizationService organizationService;
