@@ -6,21 +6,21 @@ import de.htwg.klaut.backend.exception.ModelNotFoundException;
 import de.htwg.klaut.backend.exception.SourceCreationException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.db.CompositeId;
+import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@Log4j2
 public class S3StorageService implements IS3StorageService {
 
     private final IOrganizationService organizationService;
@@ -35,25 +35,28 @@ public class S3StorageService implements IS3StorageService {
     }
 
     @Override
-    public void deleteSourceFile(String sourceUrl) throws SourceNotFoundException {
+    public void deleteSourceFile(String sourceUrl) {
         amazonS3.deleteObject(new DeleteObjectRequest(bucketName, sourceUrl));
     }
 
     @Override
-    public Optional<File> getSourceFile(String sourceUrl) throws SourceNotFoundException {
+    public Optional<InputStream> getSourceFile(String sourceUrl) {
         S3Object s3Object = amazonS3.getObject(new GetObjectRequest(bucketName, sourceUrl));
-        // TODO get file
-        return Optional.empty();
+        if (s3Object == null) {
+            return Optional.empty();
+        }
+        return Optional.of(s3Object.getObjectContent());
     }
 
     @Override
     public Optional<String> addSourceFile(MultipartFile file) throws SourceCreationException {
+        String fileName = UUID.randomUUID().toString() + ".txt";
         try {
-            String fileName = UUID.randomUUID().toString() + ".txt";
-            return addFile(file.getSize(), fileName, file.getInputStream());
+            return Optional.of(addFile(file.getSize(), fileName, file.getInputStream()));
         } catch (IOException e) {
-            throw new SourceCreationException(file.getName());
+            log.error("Failed to add source file " + fileName);
         }
+        return Optional.empty();
     }
 
     @Override
@@ -64,23 +67,23 @@ public class S3StorageService implements IS3StorageService {
         WordVectorSerializer.writeWord2VecModel(word2Vec, modelFile);
 
         try (FileInputStream fileInputStream = new FileInputStream(modelFile)) {
-            return addFile(modelFile.length(), modelFileName, fileInputStream);
+            return Optional.of(addFile(modelFile.length(), modelFileName, fileInputStream));
         } catch (IOException e) {
-            throw new SourceCreationException(modelFileName);
+            log.error("Failed to add source file " + modelFileName);
         } finally {
             // Remove from temp dir after upload
             FileUtils.deleteQuietly(modelFile);
         }
+        return Optional.empty();
     }
 
-    private Optional<String> addFile(long contentLength, String fileName, InputStream inputStream) {
+    private String addFile(long contentLength, String fileName, InputStream inputStream) {
         String s3Key = organizationService.getCurrentOrganization() + "/" + fileName;
-
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(contentLength);
         amazonS3.putObject(
                 new PutObjectRequest(bucketName, s3Key, inputStream, metadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-        return Optional.of(String.valueOf(amazonS3.getUrl(bucketName, s3Key)));
+        return String.valueOf(amazonS3.getUrl(bucketName, s3Key));
     }
 }

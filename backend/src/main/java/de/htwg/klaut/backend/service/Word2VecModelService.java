@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 import java.util.Set;
 
@@ -90,7 +91,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
         // TODO LG we just take first source url here, check if it is possible to use more than one source file
         final String sourceUrl = sourceUrls.iterator().next();
-        Optional<File> sourceFileOpt = s3StorageService.getSourceFile(sourceUrl);
+        Optional<InputStream> sourceFileOpt = s3StorageService.getSourceFile(sourceUrl);
         if (!sourceFileOpt.isPresent()) {
             throw new SourceNotFoundException(modelId);
         }
@@ -98,37 +99,33 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         updateAndTrainModel(sourceFileOpt.get(), modelToTrain);
     }
 
-    private void updateAndTrainModel(File sourceFile, Model modelToTrain) {
-        try (FileInputStream fileInputStream = new FileInputStream(sourceFile)) {
-            BasicLineIterator iterator = new BasicLineIterator(fileInputStream);
-            // Split on white spaces in the line to get words
-            DefaultTokenizerFactory t = new DefaultTokenizerFactory();
-            t.setTokenPreProcessor(new CommonPreprocessor());
+    private void updateAndTrainModel(InputStream sourceFile, Model modelToTrain) {
+        BasicLineIterator iterator = new BasicLineIterator(sourceFile);
+        // Split on white spaces in the line to get words
+        DefaultTokenizerFactory t = new DefaultTokenizerFactory();
+        t.setTokenPreProcessor(new CommonPreprocessor());
 
-            Word2VecParams params = (Word2VecParams) modelToTrain.getParams();
-            Word2Vec word2VecModel = new Word2Vec.Builder()
-                    .minWordFrequency(params.getMinWordFrequency())
-                    .iterations(params.getIterations())
-                    .layerSize(params.getLayerSize())
-                    .seed(params.getSeed())
-                    .windowSize(params.getWindowSize())
-                    .iterate(iterator)
-                    .tokenizerFactory(t)
-                    .build();
+        Word2VecParams params = (Word2VecParams) modelToTrain.getParams();
+        Word2Vec word2VecModel = new Word2Vec.Builder()
+                .minWordFrequency(params.getMinWordFrequency())
+                .iterations(params.getIterations())
+                .layerSize(params.getLayerSize())
+                .seed(params.getSeed())
+                .windowSize(params.getWindowSize())
+                .iterate(iterator)
+                .tokenizerFactory(t)
+                .build();
 
-            word2VecModel.fit();
+        word2VecModel.fit();
 
-            // TODO LG how to go on training with an existing model?
-            Optional<String> modelUrlOpt = s3StorageService.addSourceFile(word2VecModel);
-            if (!modelUrlOpt.isPresent()) {
-                throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
-            }
-
-            modelToTrain.setModelUrl(modelUrlOpt.get());
-            modelRepository.save(modelToTrain);
-        } catch (IOException e) {
-            throw new SourceNotFoundException(sourceFile.getName());
+        // TODO LG how to go on training with an existing model?
+        Optional<String> modelUrlOpt = s3StorageService.addSourceFile(word2VecModel);
+        if (!modelUrlOpt.isPresent()) {
+            throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
         }
+
+        modelToTrain.setModelUrl(modelUrlOpt.get());
+        modelRepository.save(modelToTrain);
     }
 
     @Override
