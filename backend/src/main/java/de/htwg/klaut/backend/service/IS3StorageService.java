@@ -11,7 +11,7 @@ import java.io.File;
 import java.util.Optional;
 
 public interface IS3StorageService {
-    void deleteFilesForId(CompositeId modelId) throws SourceNotFoundException, ModelNotFoundException;
+    void deleteSourceFile(String sourceUrl) throws SourceNotFoundException;
 
     Optional<File> getSourceFile(String sourceUrl) throws SourceNotFoundException;
 

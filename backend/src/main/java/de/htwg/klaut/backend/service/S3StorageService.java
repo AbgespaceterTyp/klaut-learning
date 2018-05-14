@@ -35,8 +35,8 @@ public class S3StorageService implements IS3StorageService {
     }
 
     @Override
-    public void deleteFilesForId(CompositeId modelId) throws SourceNotFoundException, ModelNotFoundException {
-
+    public void deleteSourceFile(String sourceUrl) throws SourceNotFoundException {
+        amazonS3.deleteObject(new DeleteObjectRequest(bucketName, sourceUrl));
     }
 
     @Override
