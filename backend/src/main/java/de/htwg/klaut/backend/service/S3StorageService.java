@@ -49,7 +49,8 @@ public class S3StorageService implements IS3StorageService {
     @Override
     public Optional<String> addSourceFile(MultipartFile file) throws SourceCreationException {
         try {
-            return addFile(file.getSize(), file.getName(), file.getInputStream());
+            String fileName = UUID.randomUUID().toString() + ".txt";
+            return addFile(file.getSize(), fileName, file.getInputStream());
         } catch (IOException e) {
             throw new SourceCreationException(file.getName());
         }
@@ -59,7 +60,7 @@ public class S3StorageService implements IS3StorageService {
     public Optional<String> addSourceFile(Word2Vec word2Vec) throws SourceCreationException {
         // Write model to temp directory
         String modelFileName = UUID.randomUUID().toString();
-        final File modelFile = new File(System.getProperty("java.io.tmpdir") + modelFileName);
+        final File modelFile = new File(System.getProperty("java.io.tmpdir") + modelFileName + ".model");
         WordVectorSerializer.writeWord2VecModel(word2Vec, modelFile);
 
         try (FileInputStream fileInputStream = new FileInputStream(modelFile)) {
