@@ -4,8 +4,9 @@
 }
 
 .progress {
-  height: 2px;
+  height: 5px;
   margin: -20px -20px 15px -20px;
+  border-radius: 0;
 }
 
 .btn-link--red {
@@ -15,4 +16,11 @@
 .textarea-description {
   resize: none;
   height: 250px;
+}
+
+.btn {
+  &--fullWidth {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 }

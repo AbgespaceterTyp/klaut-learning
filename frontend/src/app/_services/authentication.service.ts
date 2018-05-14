@@ -8,14 +8,12 @@ export class AuthenticationService {
     constructor(private http: HttpClient) { }
 
     login(username: string, organization: string, password: string) {
-        return this.http.post<any>('/api/authenticate', { username: username, organization: organization, password: password })
+        return this.http.get<any>('/api/' + organization +'/user/me', { headers: { 'Authorization': 'Basic ' + btoa(username + ":" + password) } })
             .map(user => {
-                // login successful if there's a jwt token in the response
-                if (user && user.token) {
-                    // store user details and jwt token in local storage to keep user logged in between page refreshes
-                    localStorage.setItem('currentUser', JSON.stringify(user));
+                if (user ) {
+                    localStorage.setItem('currentUser', user.email);
+                    localStorage.setItem('currentOrganization', organization);
                 }
-
                 return user;
             });
     }
@@ -23,5 +21,7 @@ export class AuthenticationService {
     logout() {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
+        localStorage.removeItem('currentOrganization');
+        
     }
 }

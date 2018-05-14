@@ -22,7 +22,10 @@ export class AccordionItemComponent implements OnInit {
   deleted = false;
   deleting = false;
 
-  progress: { percentage: number } = { percentage: 0 }
+  progress: {
+    percentage: number 
+    uploaded: boolean  
+  } = { percentage: 0, uploaded: true };
 
   constructor(private modelService: ModelService) { }
 
@@ -81,6 +84,7 @@ export class AccordionItemComponent implements OnInit {
 
   uploadFile(event) {
     this.progress.percentage = 0;
+    this.progress.uploaded = false;
     let files = event.target.files;
     if (files.length > 0) {
       this.modelService.uploadFile(files[0], this.model.id)
@@ -89,11 +93,20 @@ export class AccordionItemComponent implements OnInit {
           if (event.type === HttpEventType.UploadProgress) {
             this.progress.percentage = Math.round(100 * event.loaded / event.total);
           } else if (event instanceof HttpResponse) {
+            this.progress.uploaded = true;
             console.log('File is completely uploaded!');
           }
         }
       )
     }
+  }
+
+  train() {
+    this.modelService.train(this.model.id)
+    .subscribe(
+      data => {
+        console.log('trained');
+      });
   }
 
 }

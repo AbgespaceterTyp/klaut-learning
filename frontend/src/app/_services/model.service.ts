@@ -7,26 +7,34 @@ import { Word2VecParams } from '../_models/params';
 
 @Injectable()
 export class ModelService {
-    constructor(private http: HttpClient) { }
+    private organization;
+  
+    constructor(private http: HttpClient) { 
+      this.organization = localStorage.getItem('currentOrganization');
+    }
 
     load() {
-      return this.http.get<any>('/api/klaut-learning2/model', { headers: { 'Authorization': 'Basic ' + btoa("admin@klaut.de" + ":" + "password") } });
+      return this.http.get<any>('/api/'+ this.organization +'/model');
     }
 
     create(modelDto: ModelDto) {
-      return this.http.post('/api/klaut-learning2/model', modelDto);
+      return this.http.post('/api/' + this.organization + '/model', modelDto);
     }
 
     delete(id: Number) {
-      return this.http.delete('/api/klaut-learning2/model/' + id + '/delete');
+      return this.http.delete('/api/' + this.organization + '/model/' + id + '/delete');
+    }
+
+    train(id: Number) {
+      return this.http.put('/api/' + this.organization + '/model/' + id + '/train', {});
     }
 
     updateParams(params: Word2VecParams, id: Number) {
-      return this.http.put('/api/klaut-learning2/model/' + id + '/param', params);
+      return this.http.put('/api/' + this.organization + '/model/' + id + '/param', params);
     }
 
     update(model: ModelDto, id: Number) {
-      return this.http.put('/api/klaut-learning2/model/' + id + '/update', model);
+      return this.http.put('/api/' + this.organization + '/model/' + id + '/update', model);
     }
 
     uploadFile(file: any, id: Number): Observable<HttpEvent<{}>> {
@@ -34,7 +42,7 @@ export class ModelService {
  
       formdata.append('fileToUpload', file);
   
-      const req = new HttpRequest('PUT', '/api/klaut-learning2/model/' + id + '/source', formdata, {
+      const req = new HttpRequest('PUT', '/api/' + this.organization + '/model/' + id + '/source', formdata, {
         reportProgress: true,
         responseType: 'text'
       });

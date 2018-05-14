@@ -29,16 +29,14 @@ export class LoginComponent implements OnInit {
 
   login() {
       this.loading = true;
-      localStorage.setItem('currentUser', JSON.stringify('mäh'));
-      this.router.navigate([this.returnUrl]);
-      // this.authenticationService.login(this.model.username, this.model.organization, this.model.password)
-      //     .subscribe(
-      //         data => {
-      //             this.router.navigate([this.returnUrl]);
-      //         },
-      //         error => {
-      //             this.loading = false;
-      //         });
+      this.authenticationService.login(this.model.username, this.model.organization, this.model.password)
+          .subscribe(
+              data => {
+                  this.router.navigate([this.returnUrl]);
+              },
+              error => {
+                  this.loading = false;
+              });
 
   }
 }
