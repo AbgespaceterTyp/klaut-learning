@@ -3,6 +3,7 @@ import { Word2Vec } from '../../../_models';
 import { ModelService } from '../../../_services';
 import { Timeouts } from 'selenium-webdriver';
 import { timeout } from 'q';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-accordion-item',
@@ -14,11 +15,14 @@ export class AccordionItemComponent implements OnInit {
   @Input('opend') opend: boolean;
 
   paramTimeout = null
-  loading = false;
+  loadingParams = false;
 
+  loadingDesc = false;
 
   deleted = false;
   deleting = false;
+
+  progress: { percentage: number } = { percentage: 0 }
 
   constructor(private modelService: ModelService) { }
 
@@ -36,16 +40,31 @@ export class AccordionItemComponent implements OnInit {
 
   updateParams() {
     clearTimeout(this.paramTimeout);
-    this.loading = true;
+    this.loadingParams = true;
 
     this.paramTimeout = setTimeout(() => {
       this.modelService.updateParams(this.model.params, this.model.id)
       .subscribe(
         data => {
-          this.loading = false;
+          this.loadingParams = false;
         }
       );
     }, 500);
+  }
+
+  updateModel() {
+    clearTimeout(this.paramTimeout);
+    this.loadingDesc = true;
+
+    this.paramTimeout = setTimeout(() => {
+      this.modelService.update(this.model, this.model.id)
+      .subscribe(
+        data => {
+          this.loadingDesc = false;
+        }
+      );
+    }, 500);
+    
   }
 
   delete() {
@@ -56,10 +75,27 @@ export class AccordionItemComponent implements OnInit {
         this.deleted = true;
         this.deleting = false;
         console.log(data);
-        
       }
     )
-    
+  }
+
+  uploadFile(event) {
+    this.progress.percentage = 0;
+    let files = event.target.files;
+    if (files.length > 0) {
+      this.modelService.uploadFile(files[0], this.model.id)
+      .subscribe(
+        event => {
+          if (event.type === HttpEventType.UploadProgress) {
+            this.progress.percentage = Math.round(100 * event.loaded / event.total);
+            console.log(this.progress.percentage);
+            
+          } else if (event instanceof HttpResponse) {
+            console.log('File is completely uploaded!');
+          }
+        }
+      )
+    }
   }
 
 }

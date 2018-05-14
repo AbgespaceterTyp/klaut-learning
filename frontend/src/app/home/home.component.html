@@ -1,19 +1,19 @@
 <div class="spacer spacer--10"></div>
 <div class="form-inline">
   <div class="form-group mx-sm-3 mb-2">
-      <label for="description" class="sr-only">Name</label>
+      <label for="name" class="sr-only">Enter Name</label>
       <input type="text" class="form-control" 
-                id="description" placeholder="Name" 
+                id="name" placeholder="Enter Name" 
                 [(ngModel)]="modelDto.name"/>
     </div>
   <div class="form-group mx-sm-3 mb-2">
-    <label for="description" class="sr-only">Description</label>
+    <label for="description" class="sr-only">Enter Description</label>
     <textarea type="text" class="form-control form-description" 
-              id="description" placeholder="Description" 
+              id="description" placeholder="Enter Description" 
               [(ngModel)]="modelDto.description"></textarea>
   </div>
   <div class="form-group">
-    <label for="modelType" class="label-algo">Select Algorithm</label>
+    <label for="modelType" class="label-algo"></label>
     <select class="form-control mx-sm-3 mb-2" id="modelType" [(ngModel)]="modelDto.algorithm">
       <option>Word2Vec</option>
     </select>
