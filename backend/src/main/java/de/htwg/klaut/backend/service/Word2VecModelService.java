@@ -171,8 +171,10 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         }
 
         final Model modelToDelete = modelOptional.get();
-        for (String sourceUrlToDelete : modelToDelete.getSourceUrls()) {
-            s3StorageService.deleteSourceFile(sourceUrlToDelete);
+        if (modelToDelete.getSourceUrls() != null) {
+            for (String sourceUrlToDelete : modelToDelete.getSourceUrls()) {
+                s3StorageService.deleteSourceFile(sourceUrlToDelete);
+            }
         }
         modelRepository.deleteById(modelId);
     }
