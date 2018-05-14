@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import de.htwg.klaut.backend.model.Word2VecParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
+import de.htwg.klaut.backend.model.dto.IdDto;
 import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.service.IModelService;
 import lombok.extern.log4j.Log4j2;
@@ -39,17 +40,9 @@ public class ModelController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createModel(@PathVariable String organization, @RequestBody ModelDto modelDto) {
+    public ResponseEntity<IdDto> createModel(@PathVariable String organization, @RequestBody ModelDto modelDto) {
         final Model model = modelService.createModel(modelDto);
-        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-        String modelIdAsJson = null;
-        try {
-            modelIdAsJson = ow.writeValueAsString(model.getId());
-        } catch (JsonProcessingException e) {
-            log.error("failed to write model id as json", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-        return new ResponseEntity<>(modelIdAsJson, HttpStatus.CREATED);
+        return new ResponseEntity<>(new IdDto(model.getId()), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{modelId}/update")
