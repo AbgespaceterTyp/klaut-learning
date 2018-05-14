@@ -19,10 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -85,7 +83,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         }
         final Model modelToTrain = modelOptional.get();
         Set<String> sourceUrls = modelToTrain.getSourceUrls();
-        if (sourceUrls.isEmpty()) {
+        if (sourceUrls == null || sourceUrls.isEmpty()) {
             throw new SourceNotFoundException(modelId);
         }
 
@@ -143,6 +141,9 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             throw new SourceCreationException(modelId);
         }
 
+        if(modelToUpdate.getSourceUrls() == null){
+            modelToUpdate.setSourceUrls(new HashSet<>());
+        }
         modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());
         modelRepository.save(modelToUpdate);
     }
