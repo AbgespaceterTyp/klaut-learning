@@ -4,10 +4,10 @@ import de.htwg.klaut.backend.exception.ModelCreationException;
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
 import de.htwg.klaut.backend.exception.SourceCreationException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
-import de.htwg.klaut.backend.model.db.ModelTrainingData;
-import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
+import de.htwg.klaut.backend.model.db.ModelTrainingData;
+import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
@@ -120,7 +120,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         final ModelTrainingData trainingData = new ModelTrainingData();
         trainingData.setLastTrainingStart(DateTime.now().toDate());
         final Set<ModelTrainingData> modelTrainingDataSet = modelToTrain.getTrainingData();
-        if(modelTrainingDataSet == null){
+        if (modelTrainingDataSet == null) {
             modelToTrain.setTrainingData(new HashSet<>());
         }
         modelToTrain.getTrainingData().add(trainingData);
@@ -156,7 +156,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             throw new SourceCreationException(modelId);
         }
 
-        if(modelToUpdate.getSourceUrls() == null){
+        if (modelToUpdate.getSourceUrls() == null) {
             modelToUpdate.setSourceUrls(new HashSet<>());
         }
         modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());

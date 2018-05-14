@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.IOException;
-import java.util.HashSet;
 import java.util.Set;
 
 public class ModelTrainingDataConverter implements DynamoDBTypeConverter<String, Set<ModelTrainingData>> {

@@ -1,13 +1,9 @@
 package de.htwg.klaut.backend.service;
 
-import de.htwg.klaut.backend.exception.ModelNotFoundException;
 import de.htwg.klaut.backend.exception.SourceCreationException;
-import de.htwg.klaut.backend.exception.SourceNotFoundException;
-import de.htwg.klaut.backend.model.db.CompositeId;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.Optional;
 
