@@ -88,8 +88,6 @@ export class AccordionItemComponent implements OnInit {
         event => {
           if (event.type === HttpEventType.UploadProgress) {
             this.progress.percentage = Math.round(100 * event.loaded / event.total);
-            console.log(this.progress.percentage);
-            
           } else if (event instanceof HttpResponse) {
             console.log('File is completely uploaded!');
           }

@@ -30,14 +30,13 @@ export class HomeComponent implements OnInit {
   }
 
   addModel() {
-    console.log(this.modelDto);
-    
     if (this.modelDto.name.length > 3) {
       this.modelService.create(this.modelDto)
       .subscribe(data => {
+        let id = data as any;
         console.log("id", data);
         this.models.content.unshift({
-          id: data,
+          id: id.id,
           name: this.modelDto.name,
           algorithm: this.modelDto.algorithm,
           description: this.modelDto.description,
