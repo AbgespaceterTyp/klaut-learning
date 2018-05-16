@@ -8,8 +8,7 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 
-import { AuthGuard } from './_guards/index';
-import { AuthenticationService, ModelService } from './_services/index';
+import { AuthenticationService, ModelService, ErrorHttpInterceptor } from './_services/index';
 import { routing } from './app.routing';
 import { AccordionComponent } from './components/accordion/accordion-body/accordion.component';
 import { AccordionItemComponent } from './components/accordion/accordion-item/accordion-item.component';
@@ -30,8 +29,12 @@ import { AccordionItemComponent } from './components/accordion/accordion-item/ac
     routing
   ],
   providers: [
-    AuthGuard,
     AuthenticationService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorHttpInterceptor,
+      multi: true
+    },
     ModelService,
   ],
   bootstrap: [AppComponent]
