@@ -1,6 +1,6 @@
 runtime: java
 env: flex
-
+service: app
 runtime_config:
   jdk: openjdk8
 
@@ -8,5 +8,9 @@ handlers:
 - url: /.*
   script: this field is required, but ignored
 
-manual_scaling:
-  instances: 1
+automatic_scaling:
+  min_num_instances: 1
+  max_num_instances: 5
+  cool_down_period_sec: 120
+  cpu_utilization:
+    target_utilization: 0.6
