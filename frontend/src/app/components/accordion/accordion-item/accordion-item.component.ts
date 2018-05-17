@@ -82,6 +82,10 @@ export class AccordionItemComponent implements OnInit {
     )
   }
 
+  uploadDummy() {
+    document.getElementById(`uploadFile${this.model.id}`).click();
+  }
+  
   uploadFile(event) {
     this.progress.percentage = 0;
     this.progress.uploaded = false;
