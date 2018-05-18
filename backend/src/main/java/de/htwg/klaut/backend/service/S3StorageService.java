@@ -83,6 +83,6 @@ public class S3StorageService implements IS3StorageService {
         amazonS3.putObject(
                 new PutObjectRequest(bucketName, s3Key, inputStream, metadata)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
-        return String.valueOf(s3Key);
+        return s3Key;
     }
 }
