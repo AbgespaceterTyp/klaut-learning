@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -193,5 +194,14 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             }
         }
         modelRepository.deleteById(modelId);
+    }
+
+    @Override
+    public Collection<ModelTrainingData> getTrainingsData(CompositeId modelId) throws ModelNotFoundException {
+        Optional<Model> modelOptional = modelRepository.findById(modelId);
+        if (!modelOptional.isPresent()) {
+            throw new ModelNotFoundException(modelId);
+        }
+        return modelOptional.get().getTrainingData();
     }
 }
