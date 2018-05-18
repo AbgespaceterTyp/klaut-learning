@@ -2,6 +2,7 @@ package de.htwg.klaut.backend.config;
 
 import de.htwg.klaut.backend.service.OrganizationService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
@@ -36,10 +37,10 @@ public class OrganizationChecker extends GenericFilterBean {
         if (httpSession != null) {
             Object orgAttribute = httpSession.getAttribute(ORGANIZATION_SESSION_KEY);
             String currentOrganization = organizationService.getCurrentOrganization();
-
-            if (orgAttribute != null) {
+            // TODO JD Review, fixed possible NPE when current organization was null
+            if (orgAttribute != null && StringUtils.isNotEmpty(currentOrganization)) {
                 // User was already authenticated before
-                if (!currentOrganization.equals(orgAttribute.toString())) {
+                if (!orgAttribute.toString().equals(currentOrganization)) {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, WRONG_ORGANIZATION_MESSAGE);
                 }
             } else {
