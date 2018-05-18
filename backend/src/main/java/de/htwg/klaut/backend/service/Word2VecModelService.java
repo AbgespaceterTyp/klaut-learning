@@ -11,6 +11,7 @@ import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.deeplearning4j.text.sentenceiterator.BasicLineIterator;
 import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
@@ -21,9 +22,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
@@ -103,8 +102,12 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     private void updateAndTrainModel(InputStream inputStream, Model modelToTrain) {
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)){
-            BasicLineIterator iterator = new BasicLineIterator(bufferedInputStream);
+        try {
+            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            IOUtils.copy(inputStream, outputStream);
+            final ByteArrayInputStream newInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+
+            BasicLineIterator iterator = new BasicLineIterator(newInputStream);
             // Split on white spaces in the line to get words
             DefaultTokenizerFactory t = new DefaultTokenizerFactory();
             t.setTokenPreProcessor(new CommonPreprocessor());
@@ -143,8 +146,8 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             trainingData.setLastTrainingEnd(DateTime.now().toDate());
             trainingData.setModelUrl(modelUrlOpt.get());
             modelRepository.save(modelToTrain);
-        } catch (IOException e){
-            log.error(e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

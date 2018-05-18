@@ -26,7 +26,7 @@
         <aws-java-jdk.version>1.11.313</aws-java-jdk.version>
         <appengine.maven.plugin>1.3.2</appengine.maven.plugin>
         <swagger-ui.version>2.7.0</swagger-ui.version>
-        <dl4j.Version>1.0.0-alpha</dl4j.Version>
+        <dl4j.version>1.0.0-alpha</dl4j.version>
     </properties>
 
     <dependencies>
@@ -104,17 +104,18 @@
         <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-core</artifactId>
-            <version>${dl4j.Version}</version>
+            <version>${dl4j.version}</version>
         </dependency>
         <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-nlp</artifactId>
-            <version>${dl4j.Version}</version>
+            <version>${dl4j.version}</version>
         </dependency>
+        <!-- DL4J Backend -->
         <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-native-platform</artifactId>
-            <version>${dl4j.Version}</version>
+            <version>${dl4j.version}</version>
         </dependency>
 
         <!-- Logging -->
