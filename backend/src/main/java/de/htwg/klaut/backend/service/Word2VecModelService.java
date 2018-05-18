@@ -21,6 +21,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
@@ -100,46 +102,50 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         updateAndTrainModel(sourceFileOpt.get(), modelToTrain);
     }
 
-    private void updateAndTrainModel(InputStream sourceFile, Model modelToTrain) {
-        BasicLineIterator iterator = new BasicLineIterator(sourceFile);
-        // Split on white spaces in the line to get words
-        DefaultTokenizerFactory t = new DefaultTokenizerFactory();
-        t.setTokenPreProcessor(new CommonPreprocessor());
+    private void updateAndTrainModel(InputStream inputStream, Model modelToTrain) {
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream)){
+            BasicLineIterator iterator = new BasicLineIterator(bufferedInputStream);
+            // Split on white spaces in the line to get words
+            DefaultTokenizerFactory t = new DefaultTokenizerFactory();
+            t.setTokenPreProcessor(new CommonPreprocessor());
 
-        Word2VecParams params = (Word2VecParams) modelToTrain.getParams();
-        Word2Vec word2VecModel = new Word2Vec.Builder()
-                .minWordFrequency(params.getMinWordFrequency())
-                .iterations(params.getIterations())
-                .layerSize(params.getLayerSize())
-                .seed(params.getSeed())
-                .windowSize(params.getWindowSize())
-                .iterate(iterator)
-                .tokenizerFactory(t)
-                .build();
+            Word2VecParams params = (Word2VecParams) modelToTrain.getParams();
+            Word2Vec word2VecModel = new Word2Vec.Builder()
+                    .minWordFrequency(params.getMinWordFrequency())
+                    .iterations(params.getIterations())
+                    .layerSize(params.getLayerSize())
+                    .seed(params.getSeed())
+                    .windowSize(params.getWindowSize())
+                    .iterate(iterator)
+                    .tokenizerFactory(t)
+                    .build();
 
-        // Prepare training data
-        final ModelTrainingData trainingData = new ModelTrainingData();
-        trainingData.setLastTrainingStart(DateTime.now().toDate());
-        final Set<ModelTrainingData> modelTrainingDataSet = modelToTrain.getTrainingData();
-        if (modelTrainingDataSet == null) {
-            modelToTrain.setTrainingData(new HashSet<>());
+            // Prepare training data
+            final ModelTrainingData trainingData = new ModelTrainingData();
+            trainingData.setLastTrainingStart(DateTime.now().toDate());
+            final Set<ModelTrainingData> modelTrainingDataSet = modelToTrain.getTrainingData();
+            if (modelTrainingDataSet == null) {
+                modelToTrain.setTrainingData(new HashSet<>());
+            }
+            modelToTrain.getTrainingData().add(trainingData);
+            modelRepository.save(modelToTrain);
+
+            // Start training
+            word2VecModel.fit();
+
+            // TODO LG how to go on training with an existing model?
+            Optional<String> modelUrlOpt = s3StorageService.addSourceFile(word2VecModel);
+            if (!modelUrlOpt.isPresent()) {
+                throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
+            }
+
+            // Update training data after
+            trainingData.setLastTrainingEnd(DateTime.now().toDate());
+            trainingData.setModelUrl(modelUrlOpt.get());
+            modelRepository.save(modelToTrain);
+        } catch (IOException e){
+            log.error(e);
         }
-        modelToTrain.getTrainingData().add(trainingData);
-        modelRepository.save(modelToTrain);
-
-        // Start training
-        word2VecModel.fit();
-
-        // TODO LG how to go on training with an existing model?
-        Optional<String> modelUrlOpt = s3StorageService.addSourceFile(word2VecModel);
-        if (!modelUrlOpt.isPresent()) {
-            throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
-        }
-
-        // Update training data after
-        trainingData.setLastTrainingEnd(DateTime.now().toDate());
-        trainingData.setModelUrl(modelUrlOpt.get());
-        modelRepository.save(modelToTrain);
     }
 
     @Override
