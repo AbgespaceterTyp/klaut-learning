@@ -29,7 +29,7 @@ public class Model implements Serializable {
     @DynamoDBTypeConverted(converter = ModelParamConverter.class)
     private IModelParams params;
 
-    //@DynamoDBTypeConverted(converter = ModelTrainingDataConverter.class)
+    @DynamoDBTypeConverted(converter = ModelTrainingDataConverter.class)
     private Set<ModelTrainingData> trainingData;
 
     @DynamoDBAttribute
