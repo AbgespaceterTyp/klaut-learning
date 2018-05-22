@@ -8,11 +8,11 @@ export class AuthenticationService {
     constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
 
     login(username: string, organization: string, password: string) {
+        this.localStorageService.currentOrganization = organization;
         return this.http.get<any>('/api/' + organization + '/user/me', { headers: { 'Authorization': 'Basic ' + btoa(username + ":" + password) } })
             .map(user => {
                 if (user) {
                     this.localStorageService.currentUser = user.email;
-                    this.localStorageService.currentOrganization = organization;
                 }
                 return user;
             });

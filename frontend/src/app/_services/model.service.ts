@@ -8,34 +8,31 @@ import { Word2VecParams } from '../_models/params';
 
 @Injectable()
 export class ModelService {
-  private organization;
 
-  constructor(private http: HttpClient, private localStorageService: LocalStorageService) {
-    this.organization = localStorageService.currentOrganization
-  }
+  constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
 
   load() {
-    return this.http.get<any>('/api/' + this.organization + '/model');
+    return this.http.get<any>('/api/' + this.localStorageService.currentOrganization + '/model');
   }
 
   create(modelDto: ModelDto) {
-    return this.http.post('/api/' + this.organization + '/model', modelDto);
+    return this.http.post('/api/' + this.localStorageService.currentOrganization + '/model', modelDto);
   }
 
   delete(id: Number) {
-    return this.http.delete('/api/' + this.organization + '/model/' + id + '/delete');
+    return this.http.delete('/api/' + this.localStorageService.currentOrganization + '/model/' + id + '/delete');
   }
 
   train(id: Number) {
-    return this.http.put('/api/' + this.organization + '/model/' + id + '/train', {});
+    return this.http.put('/api/' + this.localStorageService.currentOrganization + '/model/' + id + '/train', {});
   }
 
   updateParams(params: Word2VecParams, id: Number) {
-    return this.http.put('/api/' + this.organization + '/model/' + id + '/param', params);
+    return this.http.put('/api/' + this.localStorageService.currentOrganization + '/model/' + id + '/param', params);
   }
 
   update(model: ModelDto, id: Number) {
-    return this.http.put('/api/' + this.organization + '/model/' + id + '/update', model);
+    return this.http.put('/api/' + this.localStorageService.currentOrganization + '/model/' + id + '/update', model);
   }
 
   uploadFile(file: any, id: Number): Observable<HttpEvent<{}>> {
@@ -43,7 +40,7 @@ export class ModelService {
 
     formdata.append('fileToUpload', file);
 
-    const req = new HttpRequest('PUT', '/api/' + this.organization + '/model/' + id + '/source', formdata, {
+    const req = new HttpRequest('PUT', '/api/' + this.localStorageService.currentOrganization + '/model/' + id + '/source', formdata, {
       reportProgress: true,
       responseType: 'text'
     });
