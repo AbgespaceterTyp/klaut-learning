@@ -3,51 +3,52 @@ import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
 import { ModelDto } from '../_models';
+import { LocalStorageService } from './localstorage.service';
 import { Word2VecParams } from '../_models/params';
 
 @Injectable()
 export class ModelService {
-    private organization;
-  
-    constructor(private http: HttpClient) { 
-      this.organization = localStorage.getItem('currentOrganization');
-    }
+  private organization;
 
-    load() {
-      return this.http.get<any>('/api/'+ this.organization +'/model');
-    }
+  constructor(private http: HttpClient, private localStorageService: LocalStorageService) {
+    this.organization = localStorageService.currentOrganization
+  }
 
-    create(modelDto: ModelDto) {
-      return this.http.post('/api/' + this.organization + '/model', modelDto);
-    }
+  load() {
+    return this.http.get<any>('/api/' + this.organization + '/model');
+  }
 
-    delete(id: Number) {
-      return this.http.delete('/api/' + this.organization + '/model/' + id + '/delete');
-    }
+  create(modelDto: ModelDto) {
+    return this.http.post('/api/' + this.organization + '/model', modelDto);
+  }
 
-    train(id: Number) {
-      return this.http.put('/api/' + this.organization + '/model/' + id + '/train', {});
-    }
+  delete(id: Number) {
+    return this.http.delete('/api/' + this.organization + '/model/' + id + '/delete');
+  }
 
-    updateParams(params: Word2VecParams, id: Number) {
-      return this.http.put('/api/' + this.organization + '/model/' + id + '/param', params);
-    }
+  train(id: Number) {
+    return this.http.put('/api/' + this.organization + '/model/' + id + '/train', {});
+  }
 
-    update(model: ModelDto, id: Number) {
-      return this.http.put('/api/' + this.organization + '/model/' + id + '/update', model);
-    }
+  updateParams(params: Word2VecParams, id: Number) {
+    return this.http.put('/api/' + this.organization + '/model/' + id + '/param', params);
+  }
 
-    uploadFile(file: any, id: Number): Observable<HttpEvent<{}>> {
-      let formdata: FormData = new FormData();
- 
-      formdata.append('fileToUpload', file);
-  
-      const req = new HttpRequest('PUT', '/api/' + this.organization + '/model/' + id + '/source', formdata, {
-        reportProgress: true,
-        responseType: 'text'
-      });
-  
-      return this.http.request(req);
-    }
-    
+  update(model: ModelDto, id: Number) {
+    return this.http.put('/api/' + this.organization + '/model/' + id + '/update', model);
+  }
+
+  uploadFile(file: any, id: Number): Observable<HttpEvent<{}>> {
+    let formdata: FormData = new FormData();
+
+    formdata.append('fileToUpload', file);
+
+    const req = new HttpRequest('PUT', '/api/' + this.organization + '/model/' + id + '/source', formdata, {
+      reportProgress: true,
+      responseType: 'text'
+    });
+
+    return this.http.request(req);
+  }
+
 }

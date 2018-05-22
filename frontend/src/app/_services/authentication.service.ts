@@ -1,31 +1,31 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { LocalStorageService } from './localstorage.service';
 import 'rxjs/add/operator/map'
 
 @Injectable()
 export class AuthenticationService {
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
 
     login(username: string, organization: string, password: string) {
-        return this.http.get<any>('/api/' + organization +'/user/me', { headers: { 'Authorization': 'Basic ' + btoa(username + ":" + password) } })
+        return this.http.get<any>('/api/' + organization + '/user/me', { headers: { 'Authorization': 'Basic ' + btoa(username + ":" + password) } })
             .map(user => {
-                if (user ) {
-                    localStorage.setItem('currentUser', user.email);
-                    localStorage.setItem('currentOrganization', organization);
+                if (user) {
+                    this.localStorageService.currentUser = user.email;
+                    this.localStorageService.currentOrganization = organization;
                 }
                 return user;
             });
     }
 
     callUserMe() {
-        let organization = localStorage.getItem('currentOrganization')
+        let organization = this.localStorageService.currentOrganization
         return this.http.get('/api/' + organization + '/user/me');
     }
 
     logout() {
         // remove user from local storage to log user out
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('currentOrganization');
-        
+        this.localStorageService.removeCurrentOrganization();
+        this.localStorageService.removeCurrentUser();
     }
 }
