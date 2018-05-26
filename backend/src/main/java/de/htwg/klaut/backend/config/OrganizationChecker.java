@@ -37,7 +37,6 @@ public class OrganizationChecker extends GenericFilterBean {
         if (httpSession != null) {
             Object orgAttribute = httpSession.getAttribute(ORGANIZATION_SESSION_KEY);
             String currentOrganization = organizationService.getCurrentOrganization();
-            // TODO JD Review, fixed possible NPE when current organization was null
             if (orgAttribute != null && StringUtils.isNotEmpty(currentOrganization)) {
                 // User was already authenticated before
                 if (!orgAttribute.toString().equals(currentOrganization)) {
