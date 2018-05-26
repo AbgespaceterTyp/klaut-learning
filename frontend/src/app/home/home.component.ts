@@ -9,7 +9,7 @@ import { Word2Vec, ModelDto } from '../_models/index';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  models: any;
+  models: ModelDto[];
 
   modelDto: ModelDto = {
     description: "",
@@ -23,7 +23,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.modelService.load()
     .subscribe(data => {
-      this.models = data;
+      this.models = data.content;
       console.log(this.models);
       
     });
@@ -34,7 +34,7 @@ export class HomeComponent implements OnInit {
       this.modelService.create(this.modelDto)
       .subscribe(data => {
         let id = data as any;
-        this.models.content.unshift({
+        this.models.unshift({
           id: id.id,
           name: this.modelDto.name,
           algorithm: this.modelDto.algorithm,

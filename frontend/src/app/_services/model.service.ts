@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
-import { ModelDto } from '../_models';
+import { ModelDto , Pageable} from '../_models';
 import { LocalStorageService } from './localstorage.service';
 import { Word2VecParams } from '../_models/params';
 
@@ -12,7 +12,7 @@ export class ModelService {
   constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
 
   load() {
-    return this.http.get<any>('/api/' + this.localStorageService.currentOrganization + '/model');
+    return this.http.get<Pageable<ModelDto>>('/api/' + this.localStorageService.currentOrganization + '/model');
   }
 
   create(modelDto: ModelDto) {

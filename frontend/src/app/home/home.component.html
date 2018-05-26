@@ -20,5 +20,5 @@
     </div>
   <button class="btn btn-primary mb-2"(click)="addModel()" [disabled]="modelDto.name.length < 3"><i class="fa fa-plus fa-lg"></i></button>
 </div>
-<app-accordion [models]="models.content"
+<app-accordion [models]="models"
                *ngIf="models"></app-accordion>
