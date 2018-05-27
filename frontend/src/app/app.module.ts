@@ -12,6 +12,8 @@ import { AuthenticationService, ModelService, ErrorHttpInterceptor, LocalStorage
 import { routing } from './app.routing';
 import { AccordionComponent } from './components/accordion/accordion-body/accordion.component';
 import { AccordionItemComponent } from './components/accordion/accordion-item/accordion-item.component';
+import { UserComponent } from './user/user.component';
+import { UserService } from './_services/user.service';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,8 @@ import { AccordionItemComponent } from './components/accordion/accordion-item/ac
     HomeComponent,
     RegisterComponent,
     AccordionComponent,
-    AccordionItemComponent
+    AccordionItemComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -36,6 +39,7 @@ import { AccordionItemComponent } from './components/accordion/accordion-item/ac
       multi: true
     },
     ModelService,
+    UserService,
     LocalStorageService
   ],
   bootstrap: [AppComponent]

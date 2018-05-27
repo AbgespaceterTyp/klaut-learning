@@ -21,6 +21,12 @@ export class OrganizationDto {
     private iconUrl: String) { }
 }
 
+export class UserDto {
+  constructor(private email: String,
+    private firstName: String,
+    private lastName: String) { }
+}
+
 // TODO: add other necessary properties to Pageable
 export class Pageable<T> {
   constructor(public content: T[]) { }
