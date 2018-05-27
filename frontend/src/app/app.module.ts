@@ -8,11 +8,10 @@ import { LoginComponent } from './login/login.component';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 
-import { AuthenticationService, ModelService, OrganizationService, ErrorHttpInterceptor, LocalStorageService } from './_services/index';
+import { AuthenticationService, ModelService, ErrorHttpInterceptor, LocalStorageService } from './_services/index';
 import { routing } from './app.routing';
 import { AccordionComponent } from './components/accordion/accordion-body/accordion.component';
 import { AccordionItemComponent } from './components/accordion/accordion-item/accordion-item.component';
-import { OrganizationListComponent } from './organization-list/organization-list.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +20,7 @@ import { OrganizationListComponent } from './organization-list/organization-list
     HomeComponent,
     RegisterComponent,
     AccordionComponent,
-    AccordionItemComponent,
-    OrganizationListComponent
+    AccordionItemComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +36,6 @@ import { OrganizationListComponent } from './organization-list/organization-list
       multi: true
     },
     ModelService,
-    OrganizationService,
     LocalStorageService
   ],
   bootstrap: [AppComponent]
