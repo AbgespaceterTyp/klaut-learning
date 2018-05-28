@@ -1,0 +1,24 @@
+.footer {
+  font-size: 12px;
+  height: 24px;
+  background-color: #3333;
+  
+  &-content {
+    margin-left: 2px;
+    position: relative;
+    top: 3px;
+  }
+
+  &-list {
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+    &__item {
+      display: inline-block;
+    }
+  }
+}
+
+.nav-link {
+  padding: 0;
+}

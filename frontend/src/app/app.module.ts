@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './pages/login/login.component';
 import { HomeComponent } from './pages/home/home.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { ImpressumComponent } from './pages/impressum/impressum.component';
 
 import { AuthenticationService, ModelService, ErrorHttpInterceptor, LocalStorageService } from './_services/index';
 import { routing } from './app.routing';
@@ -18,6 +19,7 @@ import { UserService } from './_services/user.service';
 import { LoadingComponent } from './components/loading/loading.component';
 
 import { CookieLawModule } from 'angular2-cookie-law';
+import { FooterComponent } from './components/footer/footer.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { CookieLawModule } from 'angular2-cookie-law';
     AccordionComponent,
     AccordionItemComponent,
     UserComponent,
-    LoadingComponent
+    LoadingComponent,
+    FooterComponent,
+    ImpressumComponent
   ],
   imports: [
     BrowserModule,
