@@ -113,4 +113,13 @@ export class AccordionItemComponent implements OnInit {
       });
   }
 
+  trainable(): boolean {
+    for(let key of Object.keys(this.model.params)) {
+      if(this.model.params[key] < 1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }

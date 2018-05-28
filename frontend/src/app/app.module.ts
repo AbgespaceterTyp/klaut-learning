@@ -14,6 +14,7 @@ import { AccordionComponent } from './components/accordion/accordion-body/accord
 import { AccordionItemComponent } from './components/accordion/accordion-item/accordion-item.component';
 import { UserComponent } from './user/user.component';
 import { UserService } from './_services/user.service';
+import { LoadingComponent } from './loading/loading.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { UserService } from './_services/user.service';
     RegisterComponent,
     AccordionComponent,
     AccordionItemComponent,
-    UserComponent
+    UserComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,
