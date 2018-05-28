@@ -22,7 +22,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
@@ -45,7 +48,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     @Override
     public Page<Model> getModels(Pageable pageable) {
         log.debug("loading models");
-        return modelRepository.findByOrOrganization(organizationService.getCurrentOrganization(), pageable);
+        return modelRepository.findByOrganization(organizationService.getCurrentOrganization(), pageable);
     }
 
     @Override

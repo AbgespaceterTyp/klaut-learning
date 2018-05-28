@@ -12,5 +12,5 @@ import org.springframework.data.domain.Pageable;
 @EnableScanCount
 public interface IModelRepository extends DynamoDBPagingAndSortingRepository<Model, CompositeId> {
 
-    Page<Model> findByOrOrganization(String organization, Pageable pageable);
+    Page<Model> findByOrganization(String organization, Pageable pageable);
 }
