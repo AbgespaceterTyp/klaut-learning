@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { UserService } from '../_services/user.service';
-import { UserDto } from '../_models';
+import { Component, OnInit, Input } from '@angular/core';
+import { UserService } from '../../_services/user.service';
+import { UserDto, OrganizationDto } from '../../_models';
 
 @Component({
   selector: 'app-user',
@@ -8,6 +8,7 @@ import { UserDto } from '../_models';
   styleUrls: ['./user.component.scss']
 })
 export class UserComponent implements OnInit {
+  @Input('organization') organization: OrganizationDto;
 
   users: UserDto[];
 

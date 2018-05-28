@@ -23,9 +23,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.modelService.load()
     .subscribe(data => {
-      this.models = data.content;
-      console.log(this.models);
-      
+      this.models = data.content;            
     });
   }
 

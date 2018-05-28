@@ -16,9 +16,9 @@ export class ModelDto {
 }
 
 export class OrganizationDto {
-  constructor(private name: String,
-    private key: String,
-    private iconUrl: String) { }
+  constructor(public name: String,
+    public key: String,
+    public iconUrl: String) { }
 }
 
 export class UserDto {

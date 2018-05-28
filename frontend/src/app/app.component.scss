@@ -11,3 +11,12 @@
     float: right;
   }
 }
+
+.organization:hover {
+  cursor: pointer;
+  cursor: hand;
+}
+.organization {
+  outline: 0; 
+  margin-right: 12px;
+} 
