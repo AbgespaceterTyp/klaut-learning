@@ -1,7 +1,7 @@
 import { Component, OnInit, style } from '@angular/core';
 
-import { ModelService } from '../_services/index';
-import { Word2Vec, ModelDto } from '../_models/index';
+import { ModelService } from '../../_services/index';
+import { Word2Vec, ModelDto } from '../../_models/index';
 
 @Component({
   selector: 'app-home',
