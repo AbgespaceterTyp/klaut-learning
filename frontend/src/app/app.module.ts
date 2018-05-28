@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
@@ -15,6 +16,8 @@ import { AccordionItemComponent } from './components/accordion/accordion-item/ac
 import { UserComponent } from './user/user.component';
 import { UserService } from './_services/user.service';
 import { LoadingComponent } from './loading/loading.component';
+
+import { CookieLawModule } from 'angular2-cookie-law';
 
 @NgModule({
   declarations: [
@@ -31,7 +34,9 @@ import { LoadingComponent } from './loading/loading.component';
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    routing
+    routing,
+    BrowserAnimationsModule,
+    CookieLawModule
   ],
   providers: [
     AuthenticationService,
