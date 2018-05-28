@@ -2,6 +2,7 @@ import { Component, OnInit, style } from '@angular/core';
 
 import { ModelService } from '../../_services/index';
 import { Word2Vec, ModelDto } from '../../_models/index';
+import { enable, destroy } from 'splash-screen';
 
 @Component({
   selector: 'app-home',
@@ -21,9 +22,11 @@ export class HomeComponent implements OnInit {
   constructor(private modelService: ModelService) { }
 
   ngOnInit() {
+    enable("windcatcher");
     this.modelService.load()
     .subscribe(data => {
-      this.models = data.content;            
+      this.models = data.content; 
+      destroy();
     });
   }
 

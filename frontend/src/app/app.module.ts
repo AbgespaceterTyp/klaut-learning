@@ -18,6 +18,7 @@ import { UserComponent } from './components/user/user.component';
 import { UserService } from './_services/user.service';
 import { LoadingComponent } from './components/loading/loading.component';
 import { CookieLawModule } from 'angular2-cookie-law';
+
 import { FooterComponent } from './components/footer/footer.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
 
