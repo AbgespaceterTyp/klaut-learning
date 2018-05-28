@@ -12,6 +12,8 @@ import { enable, destroy } from 'splash-screen';
 export class HomeComponent implements OnInit {
   models: ModelDto[];
 
+  loading: boolean = false;
+
   modelDto: ModelDto = {
     description: "",
     name: "",
@@ -22,16 +24,20 @@ export class HomeComponent implements OnInit {
   constructor(private modelService: ModelService) { }
 
   ngOnInit() {
+    this.loading = true;    
     enable("windcatcher");
     this.modelService.load()
     .subscribe(data => {
       this.models = data.content; 
       destroy();
+      this.loading = false;
     });
   }
 
   addModel() {
     if (this.modelDto.name.length > 3) {
+      this.loading = true;
+      enable("windcatcher");
       this.modelService.create(this.modelDto)
       .subscribe(data => {
         let id = data as any;
@@ -41,6 +47,10 @@ export class HomeComponent implements OnInit {
           algorithm: this.modelDto.algorithm,
           description: this.modelDto.description,
         })
+        this.modelDto.description = "";
+        this.modelDto.name = "";
+        destroy();
+        this.loading = false;
       });
     }
   }
