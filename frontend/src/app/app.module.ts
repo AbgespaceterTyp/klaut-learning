@@ -15,7 +15,7 @@ import { AccordionComponent } from './components/accordion/accordion-body/accord
 import { AccordionItemComponent } from './components/accordion/accordion-item/accordion-item.component';
 import { UserComponent } from './user/user.component';
 import { UserService } from './_services/user.service';
-import { LoadingComponent } from './loading/loading.component';
+import { LoadingComponent } from './components/loading/loading.component';
 
 import { CookieLawModule } from 'angular2-cookie-law';
 
