@@ -33,7 +33,7 @@ public class Model implements Serializable {
     private Set<ModelTrainingData> trainingData;
 
     @DynamoDBAttribute
-    private Set<String> sourceUrls;
+    private String sourceUrl;
 
     private boolean training;
 
@@ -104,12 +104,12 @@ public class Model implements Serializable {
         this.trainingData = trainingData;
     }
 
-    public Set<String> getSourceUrls() {
-        return sourceUrls;
+    public String getSourceUrl() {
+        return sourceUrl;
     }
 
-    public void setSourceUrls(Set<String> sourceUrls) {
-        this.sourceUrls = sourceUrls;
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
     }
 
     public boolean isTraining() {

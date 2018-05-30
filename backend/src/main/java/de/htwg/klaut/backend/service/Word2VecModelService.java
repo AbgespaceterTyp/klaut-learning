@@ -12,6 +12,7 @@ import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.deeplearning4j.text.sentenceiterator.BasicLineIterator;
 import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
@@ -24,12 +25,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 @Service
 @Log4j2
@@ -38,11 +39,14 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     private final IModelRepository modelRepository;
     private final IS3StorageService s3StorageService;
     private final IOrganizationService organizationService;
+    private final ScheduledThreadPoolExecutor executor;
 
     public Word2VecModelService(IModelRepository modelRepository, IS3StorageService s3StorageService, IOrganizationService organizationService) {
         this.modelRepository = modelRepository;
         this.s3StorageService = s3StorageService;
         this.organizationService = organizationService;
+
+        executor = new ScheduledThreadPoolExecutor(3);
     }
 
     @Override
@@ -89,22 +93,32 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             throw new ModelNotFoundException(modelId);
         }
         final Model modelToTrain = modelOptional.get();
-        Set<String> sourceUrls = modelToTrain.getSourceUrls();
-        if (sourceUrls == null || sourceUrls.isEmpty()) {
+        String sourceUrl = modelToTrain.getSourceUrl();
+        if (StringUtils.isEmpty(sourceUrl)) {
             throw new SourceNotFoundException(modelId);
         }
 
-        // TODO LG we just take first source url here, check if it is possible to use more than one source file
-        final String sourceUrl = sourceUrls.iterator().next();
-        Optional<InputStream> sourceFileOpt = s3StorageService.getSourceFile(sourceUrl);
-        if (!sourceFileOpt.isPresent()) {
-            throw new SourceNotFoundException(modelId);
+        // Prepare training data
+        final ModelTrainingData trainingData = new ModelTrainingData();
+        trainingData.setLastTrainingStart(DateTime.now().toDate());
+        final Set<ModelTrainingData> modelTrainingDataSet = modelToTrain.getTrainingData();
+        if (modelTrainingDataSet == null) {
+            modelToTrain.setTrainingData(new HashSet<>());
         }
+        modelToTrain.getTrainingData().add(trainingData);
+        modelRepository.save(modelToTrain);
 
-        updateAndTrainModel(sourceFileOpt.get(), modelToTrain);
+        executor.execute(() -> {
+            Optional<InputStream> sourceFileOpt = s3StorageService.getSourceFile(sourceUrl);
+            if (!sourceFileOpt.isPresent()) {
+                throw new SourceNotFoundException(modelId);
+            }
+
+            updateAndTrainModel(sourceFileOpt.get(), modelToTrain, trainingData);
+        });
     }
 
-    private void updateAndTrainModel(InputStream inputStream, Model modelToTrain) {
+    private void updateAndTrainModel(InputStream inputStream, Model modelToTrain, ModelTrainingData trainingData) {
         try {
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             IOUtils.copy(inputStream, outputStream);
@@ -126,16 +140,6 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
                     .tokenizerFactory(t)
                     .build();
 
-            // Prepare training data
-            final ModelTrainingData trainingData = new ModelTrainingData();
-            trainingData.setLastTrainingStart(DateTime.now().toDate());
-            final Set<ModelTrainingData> modelTrainingDataSet = modelToTrain.getTrainingData();
-            if (modelTrainingDataSet == null) {
-                modelToTrain.setTrainingData(new HashSet<>());
-            }
-            modelToTrain.getTrainingData().add(trainingData);
-            modelRepository.save(modelToTrain);
-
             // Start training
             word2VecModel.fit();
 
@@ -149,8 +153,13 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             trainingData.setLastTrainingEnd(DateTime.now().toDate());
             trainingData.setModelUrl(modelUrlOpt.get());
             modelRepository.save(modelToTrain);
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (SourceCreationException e) {
+            modelToTrain.getTrainingData().remove(trainingData);
+            modelRepository.save(modelToTrain);
+            throw e;
+        } catch (Exception e) {
+            modelToTrain.getTrainingData().remove(trainingData);
+            modelRepository.save(modelToTrain);
         }
     }
 
@@ -169,10 +178,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             throw new SourceCreationException(modelId);
         }
 
-        if (modelToUpdate.getSourceUrls() == null) {
-            modelToUpdate.setSourceUrls(new HashSet<>());
-        }
-        modelToUpdate.getSourceUrls().add(sourceUrlOpt.get());
+        modelToUpdate.setSourceUrl(sourceUrlOpt.get());
         modelRepository.save(modelToUpdate);
     }
 
@@ -200,10 +206,8 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         }
 
         final Model modelToDelete = modelOptional.get();
-        if (modelToDelete.getSourceUrls() != null) {
-            for (String sourceUrlToDelete : modelToDelete.getSourceUrls()) {
-                s3StorageService.deleteSourceFile(sourceUrlToDelete);
-            }
+        if (StringUtils.isNotEmpty(modelToDelete.getSourceUrl())) {
+            s3StorageService.deleteSourceFile(modelToDelete.getSourceUrl());
         }
         modelRepository.deleteById(modelId);
     }
