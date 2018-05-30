@@ -39,12 +39,15 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     private final IModelRepository modelRepository;
     private final IS3StorageService s3StorageService;
     private final IOrganizationService organizationService;
+    private final ModelTrainer modelTrainer;
+
     private final ScheduledThreadPoolExecutor executor;
 
-    public Word2VecModelService(IModelRepository modelRepository, IS3StorageService s3StorageService, IOrganizationService organizationService) {
+    public Word2VecModelService(IModelRepository modelRepository, IS3StorageService s3StorageService, IOrganizationService organizationService, ModelTrainer modelTrainer) {
         this.modelRepository = modelRepository;
         this.s3StorageService = s3StorageService;
         this.organizationService = organizationService;
+        this.modelTrainer = modelTrainer;
 
         executor = new ScheduledThreadPoolExecutor(3);
     }
@@ -93,8 +96,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             throw new ModelNotFoundException(modelId);
         }
         final Model modelToTrain = modelOptional.get();
-        String sourceUrl = modelToTrain.getSourceUrl();
-        if (StringUtils.isEmpty(sourceUrl)) {
+        if (StringUtils.isEmpty(modelToTrain.getSourceUrl())) {
             throw new SourceNotFoundException(modelId);
         }
 
@@ -109,58 +111,15 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         modelRepository.save(modelToTrain);
 
         executor.execute(() -> {
-            Optional<InputStream> sourceFileOpt = s3StorageService.getSourceFile(sourceUrl);
-            if (!sourceFileOpt.isPresent()) {
-                throw new SourceNotFoundException(modelId);
+            try {
+                modelTrainer.train(modelToTrain, trainingData);
+            } catch (Exception e) {
+                // Remove current training data in case of exceptions
+                modelToTrain.getTrainingData().remove(trainingData);
+            } finally {
+                modelRepository.save(modelToTrain);
             }
-
-            updateAndTrainModel(sourceFileOpt.get(), modelToTrain, trainingData);
         });
-    }
-
-    private void updateAndTrainModel(InputStream inputStream, Model modelToTrain, ModelTrainingData trainingData) {
-        try {
-            final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            IOUtils.copy(inputStream, outputStream);
-            final ByteArrayInputStream newInputStream = new ByteArrayInputStream(outputStream.toByteArray());
-
-            BasicLineIterator iterator = new BasicLineIterator(newInputStream);
-            // Split on white spaces in the line to get words
-            DefaultTokenizerFactory t = new DefaultTokenizerFactory();
-            t.setTokenPreProcessor(new CommonPreprocessor());
-
-            Word2VecParams params = (Word2VecParams) modelToTrain.getParams();
-            Word2Vec word2VecModel = new Word2Vec.Builder()
-                    .minWordFrequency(params.getMinWordFrequency())
-                    .iterations(params.getIterations())
-                    .layerSize(params.getLayerSize())
-                    .seed(params.getSeed())
-                    .windowSize(params.getWindowSize())
-                    .iterate(iterator)
-                    .tokenizerFactory(t)
-                    .build();
-
-            // Start training
-            word2VecModel.fit();
-
-            // TODO LG how to go on training with an existing model?
-            Optional<String> modelUrlOpt = s3StorageService.addSourceFile(word2VecModel);
-            if (!modelUrlOpt.isPresent()) {
-                throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
-            }
-
-            // Update training data after
-            trainingData.setLastTrainingEnd(DateTime.now().toDate());
-            trainingData.setModelUrl(modelUrlOpt.get());
-            modelRepository.save(modelToTrain);
-        } catch (SourceCreationException e) {
-            modelToTrain.getTrainingData().remove(trainingData);
-            modelRepository.save(modelToTrain);
-            throw e;
-        } catch (Exception e) {
-            modelToTrain.getTrainingData().remove(trainingData);
-            modelRepository.save(modelToTrain);
-        }
     }
 
     @Override
