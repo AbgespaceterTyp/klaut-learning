@@ -35,6 +35,8 @@ public class Model implements Serializable {
     @DynamoDBAttribute
     private Set<String> sourceUrls;
 
+    private boolean training;
+
     @DynamoDBHashKey(attributeName = "organization")
     public String getOrganization() {
         return compositeId.getOrganization();
@@ -106,5 +108,22 @@ public class Model implements Serializable {
 
     public void setSourceUrls(Set<String> sourceUrls) {
         this.sourceUrls = sourceUrls;
+    }
+
+    public boolean isTraining() {
+        final Set<ModelTrainingData> trainingsData = getTrainingData();
+        if(trainingsData == null || trainingsData.isEmpty()){
+            return false;
+        }
+        for (ModelTrainingData trainingData : trainingsData) {
+            if(trainingData.getLastTrainingEnd() == null){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setTraining(boolean training) {
+        this.training = training;
     }
 }
