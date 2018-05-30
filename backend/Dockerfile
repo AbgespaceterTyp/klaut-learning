@@ -1,0 +1,12 @@
+FROM openjdk:8-jdk-alpine
+EXPOSE 8080
+COPY target/*jar backend.jar
+
+ARG AMAZON_ACCESSKEY
+ARG AMAZON_SECRETKEY
+ARG REDIS_PASSWORD
+
+ENV AMAZON_ACCESSKEY $AMAZON_ACCESSKEY
+ENV AMAZON_SECRETKEY $AMAZON_SECRETKEY
+ENV REDIS_PASSWORD $REDIS_PASSWORD
+CMD java -jar -Dspring.profiles.active=prod -Damazon.aws.accesskey=$AMAZON_ACCESSKEY -Damazon.aws.secretkey=$AMAZON_SECRETKEY -Dspring.redis.password=$REDIS_PASSWORD backend*.jar

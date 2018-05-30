@@ -1,0 +1,53 @@
+stages:
+  - build
+  - deploy
+
+build:backend:
+  image: maven:3.3-jdk-8
+  stage: build
+  only:
+    - deployment
+  artifacts:
+    untracked: true
+  script:
+  - cd backend
+  - mvn install
+
+build:frontend:
+  image: node:9.11.1
+  stage: build
+  only:
+    - deployment
+  artifacts:
+    untracked: true
+  script:
+  - cd frontend
+  - npm install
+  - npm run build
+  
+deploy:backend:
+  image: google/cloud-sdk
+  stage: deploy
+  only:
+    - deployment  
+  dependencies: 
+  - build:backend
+  script:
+  - cd backend
+  - echo "$SECRETS" > secrets.yaml
+  - echo "$GOOGLE_KEY" > key.json
+  - gcloud auth activate-service-account --key-file key.json
+  - gcloud app deploy --project klaut-learning -q
+  
+deploy:frontend:
+  image: google/cloud-sdk
+  stage: deploy
+  only:
+    - deployment
+  dependencies: 
+  - build:frontend
+  script:
+  - cd frontend
+  - echo "$GOOGLE_KEY" > key.json
+  - gcloud auth activate-service-account --key-file key.json
+  - gcloud app deploy --project klaut-learning -q

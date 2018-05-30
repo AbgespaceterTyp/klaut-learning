@@ -1,12 +1,6 @@
-runtime: java
+runtime: custom
 env: flex
 service: app
-runtime_config:
-  jdk: openjdk8
-
-handlers:
-- url: /.*
-  script: this field is required, but ignored
 
 resources:
   cpu: 2
@@ -23,3 +17,6 @@ automatic_scaling:
   cool_down_period_sec: 120
   cpu_utilization:
     target_utilization: 0.6
+
+includes:
+- secrets.yaml
