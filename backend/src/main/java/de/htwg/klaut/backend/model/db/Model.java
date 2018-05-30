@@ -128,6 +128,10 @@ public class Model implements Serializable {
         return false;
     }
 
+    public void setTraining(boolean training) {
+        this.training = training;
+    }
+
     public long getTrainingDuration() {
         trainingDuration = 0;
 
@@ -142,5 +146,9 @@ public class Model implements Serializable {
             }
         }
         return trainingDuration;
+    }
+
+    public void setTrainingDuration(long trainingDuration) {
+        this.trainingDuration = trainingDuration;
     }
 }
