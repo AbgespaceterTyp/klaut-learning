@@ -37,6 +37,8 @@ public class Model implements Serializable {
 
     private boolean training;
 
+    private long trainingDuration;
+
     @DynamoDBHashKey(attributeName = "organization")
     public String getOrganization() {
         return compositeId.getOrganization();
@@ -111,19 +113,34 @@ public class Model implements Serializable {
     }
 
     public boolean isTraining() {
+        training = false;
+
         final Set<ModelTrainingData> trainingsData = getTrainingData();
         if(trainingsData == null || trainingsData.isEmpty()){
             return false;
         }
         for (ModelTrainingData trainingData : trainingsData) {
             if(trainingData.getLastTrainingEnd() == null){
+                training = true;
                 return true;
             }
         }
         return false;
     }
 
-    public void setTraining(boolean training) {
-        this.training = training;
+    public long getTrainingDuration() {
+        trainingDuration = 0;
+
+        final Set<ModelTrainingData> trainingsData = getTrainingData();
+        if(trainingsData == null || trainingsData.isEmpty()){
+            return trainingDuration;
+        }
+        for (ModelTrainingData trainingData : trainingsData) {
+            if(trainingData.getLastTrainingEnd() == null && trainingData.getLastTrainingStart() != null){
+                trainingDuration = System.currentTimeMillis() - trainingData.getLastTrainingStart().getTime();
+                return trainingDuration;
+            }
+        }
+        return trainingDuration;
     }
 }
