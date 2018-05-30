@@ -5,8 +5,6 @@ stages:
 build:backend:
   image: maven:3.3-jdk-8
   stage: build
-  only:
-    - deployment
   artifacts:
     untracked: true
   script:
@@ -16,8 +14,6 @@ build:backend:
 build:frontend:
   image: node:9.11.1
   stage: build
-  only:
-    - deployment
   artifacts:
     untracked: true
   script:
@@ -28,8 +24,6 @@ build:frontend:
 deploy:backend:
   image: google/cloud-sdk
   stage: deploy
-  only:
-    - deployment  
   dependencies: 
   - build:backend
   script:
@@ -42,8 +36,6 @@ deploy:backend:
 deploy:frontend:
   image: google/cloud-sdk
   stage: deploy
-  only:
-    - deployment
   dependencies: 
   - build:frontend
   script:
