@@ -140,12 +140,12 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public InputStream getSourceFile(ModelTrainingDataDto modelTrainingDataDto) throws SourceNotFoundException {
-        final Optional<InputStream> modelSourceFile = s3StorageService.getSourceFile(modelTrainingDataDto.getModelUrl());
+    public InputStream getSourceFile(String modelSourceUrl) throws SourceNotFoundException {
+        final Optional<InputStream> modelSourceFile = s3StorageService.getSourceFile(modelSourceUrl);
         if(modelSourceFile.isPresent()){
             return modelSourceFile.get();
         }
-        throw new SourceNotFoundException(modelTrainingDataDto.getModelUrl());
+        throw new SourceNotFoundException(modelSourceUrl);
     }
 
     @Override
@@ -183,10 +183,10 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public Collection<String> test(ModelTrainingDataDto trainingDataDto, String testWord) throws ModelNotFoundException, SourceNotFoundException {
-        log.debug("test model for training data {} with word {}", trainingDataDto, testWord);
+    public Collection<String> test(String modelSourceUrl, String testWord) throws ModelNotFoundException, SourceNotFoundException {
+        log.debug("test model at {} with word {}", modelSourceUrl, testWord);
 
-        return modelTester.test(trainingDataDto.getModelUrl(), testWord);
+        return modelTester.test(modelSourceUrl, testWord);
     }
 
     private Model get(CompositeId modelId) {

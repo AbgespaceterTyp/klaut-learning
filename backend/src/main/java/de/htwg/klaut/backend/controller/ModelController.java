@@ -44,7 +44,7 @@ public class ModelController {
     }
 
     @GetMapping(path = "{modelId}/trainData")
-    public ResponseEntity<Collection<ModelTrainingDataDto>> trainingsData(@PathVariable String organization, @PathVariable String modelId) {
+    public ResponseEntity<Collection<ModelTrainingDataDto>> trainingData(@PathVariable String organization, @PathVariable String modelId) {
         final Collection<ModelTrainingData> trainingsData = modelService.getTrainingData(new CompositeId(organization, modelId));
         List<ModelTrainingDataDto> results = new LinkedList<>();
         for (ModelTrainingData trainingData : trainingsData) {
@@ -54,19 +54,19 @@ public class ModelController {
     }
 
     @GetMapping(path = "{modelId}/test")
-    public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @RequestParam ModelTrainingDataDto trainingDataDto, @RequestParam String testWord) {
-        final Collection<String> testResults = modelService.test(trainingDataDto, testWord);
+    public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @RequestParam String modelSourceUrl, @RequestParam String testWord) {
+        final Collection<String> testResults = modelService.test(modelSourceUrl, testWord);
         return new ResponseEntity<>(new ModelTestResultDto(testResults), HttpStatus.OK);
     }
 
     @GetMapping(path = "{modelId}/download")
-    public void download(@RequestParam ModelTrainingDataDto trainingDataDto, HttpServletResponse response) {
+    public void download(@RequestParam String modelSourceUrl, HttpServletResponse response) {
         try {
-            InputStream is = modelService.getSourceFile(trainingDataDto);
+            InputStream is = modelService.getSourceFile(modelSourceUrl);
             IOUtils.copy(is, response.getOutputStream());
             response.flushBuffer();
         } catch (IOException ex) {
-            log.error("Failed to download model file for training data {}", trainingDataDto);
+            log.error("Failed to download model file for training data {}", modelSourceUrl);
         }
     }
 

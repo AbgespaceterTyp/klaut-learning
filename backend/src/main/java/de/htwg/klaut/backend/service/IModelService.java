@@ -32,7 +32,7 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
 
     Model addSourceFile(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException;
 
-    InputStream getSourceFile(ModelTrainingDataDto modelId) throws SourceNotFoundException;
+    InputStream getSourceFile(String modelSourceUrl) throws SourceNotFoundException;
 
     Model setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
 
@@ -40,5 +40,5 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
 
     Collection<ModelTrainingData> getTrainingData(CompositeId modelId) throws ModelNotFoundException;
 
-    Collection<String> test(ModelTrainingDataDto trainingDataDto, String testWord) throws ModelNotFoundException, SourceNotFoundException;
+    Collection<String> test(String modelSourceUrl, String testWord) throws ModelNotFoundException, SourceNotFoundException;
 }
