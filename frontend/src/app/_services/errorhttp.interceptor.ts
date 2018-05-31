@@ -3,6 +3,7 @@ import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse
 import { Observable } from 'rxjs/Observable';
 import { Router } from '@angular/router';
 import { LocalStorageService } from './localstorage.service';
+import { destroy } from 'splash-screen';
 import 'rxjs/add/operator/do';
 import 'rxjs/add/observable/empty';
 
@@ -26,6 +27,7 @@ export class ErrorHttpInterceptor implements HttpInterceptor {
     }
 
     private navigateToLogin() {
+        destroy();
         this.router.navigate(['/login']);
     }
 }
