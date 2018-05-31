@@ -65,12 +65,11 @@ public class S3StorageService implements IS3StorageService {
         final File modelFile = new File(System.getProperty("java.io.tmpdir") + modelFileName + ".model");
         WordVectorSerializer.writeWord2VecModel(word2Vec, modelFile);
 
-        try (FileInputStream fileInputStream = new FileInputStream(modelFile)) {
-            return Optional.of(addFile(modelFile.length(), modelFileName, fileInputStream));
+        try (FileInputStream fis = new FileInputStream(modelFile)) {
+            return Optional.of(addFile(modelFile.length(), modelFileName, fis));
         } catch (IOException e) {
             log.error("Failed to add source file " + modelFileName);
         } finally {
-            // Remove from temp dir after upload
             FileUtils.deleteQuietly(modelFile);
         }
         return Optional.empty();

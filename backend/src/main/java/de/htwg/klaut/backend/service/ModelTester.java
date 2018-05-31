@@ -4,6 +4,7 @@ import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.db.ModelTrainingData;
 import de.htwg.klaut.backend.model.dto.ModelTrainingDataDto;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
@@ -33,13 +34,17 @@ public class ModelTester {
         // Write model to temp directory
         String modelFileName = UUID.randomUUID().toString();
         final File modelFile = new File(System.getProperty("java.io.tmpdir") + modelFileName + ".model");
-        try {
-            IOUtils.copy(sourceFile.get(), new FileOutputStream(modelFile));
+        modelFile.deleteOnExit();
+
+        try (FileOutputStream fos = new FileOutputStream(modelFile)){
+            IOUtils.copy(sourceFile.get(), fos);
+            final Word2Vec word2VecModelToTest = WordVectorSerializer.readWord2VecModel(modelFile);
+            return word2VecModelToTest.wordsNearestSum(testWord, 10);
         } catch (IOException e) {
             log.error("Failed to test model", e);
             throw new SourceNotFoundException(sourceUrl);
+        } finally {
+            FileUtils.deleteQuietly(modelFile);
         }
-        final Word2Vec word2VecModelToTest = WordVectorSerializer.readWord2VecModel(modelFile);
-        return word2VecModelToTest.wordsNearestSum(testWord, 10);
     }
 }
