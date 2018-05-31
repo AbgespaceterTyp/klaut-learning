@@ -39,6 +39,8 @@ public class ModelTester {
         try (FileOutputStream fos = new FileOutputStream(modelFile)){
             IOUtils.copy(sourceFile.get(), fos);
             final Word2Vec word2VecModelToTest = WordVectorSerializer.readWord2VecModel(modelFile);
+            // Important: test word must be in lower case or dl4j will throw NullPointerException
+            // (because all words in vocabulary are stored in lower case)
             return word2VecModelToTest.wordsNearestSum(testWord.toLowerCase(), 10);
         } catch (IOException e) {
             log.error("Failed to test model", e);
