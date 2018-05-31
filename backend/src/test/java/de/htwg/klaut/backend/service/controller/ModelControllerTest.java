@@ -5,8 +5,10 @@ import de.htwg.klaut.backend.exception.ModelNotFoundException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
+import de.htwg.klaut.backend.model.db.ModelTrainingData;
 import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.service.IModelService;
+import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,6 +61,18 @@ public class ModelControllerTest {
     }
 
     @Test
+    public void shouldReturnTrainingData() throws Exception {
+        Mockito.when(modelService.getTrainingData(createSampleModelId())).thenReturn(createSampleTrainingData());
+
+        mockMvc.perform(get("/{organization}/model/{modelId}/trainData", organization, modelId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$", hasSize(1)));
+    }
+
+
+
+    @Test
     public void shouldDeleteModel() throws Exception {
         mockMvc.perform(delete("/{organization}/model/{modelId}/delete", organization, modelId))
                 .andExpect(status().isOk());
@@ -94,6 +108,18 @@ public class ModelControllerTest {
         model.setDescription("Test Desc");
         model.setAlgorithm("Word2Vec");
         results.add(model);
+
+        return results;
+    }
+
+    private List<ModelTrainingData> createSampleTrainingData() {
+        List<ModelTrainingData> results = new LinkedList<>();
+
+        final ModelTrainingData modelTrainingData = new ModelTrainingData();
+        modelTrainingData.setModelUrl("someSampleUrl");
+        modelTrainingData.setLastTrainingStart(DateTime.now().toDate());
+        modelTrainingData.setLastTrainingEnd(DateTime.now().toDate());
+        results.add(modelTrainingData);
 
         return results;
     }
