@@ -1,5 +1,6 @@
 package de.htwg.klaut.backend.service.controller;
 
+import de.htwg.klaut.backend.controller.IModelControllerPathConst;
 import de.htwg.klaut.backend.controller.ModelController;
 import de.htwg.klaut.backend.exception.ModelNotFoundException;
 import de.htwg.klaut.backend.exception.SourceNotFoundException;
@@ -54,7 +55,7 @@ public class ModelControllerTest {
     public void shouldReturnListOfModelsForOrganization() throws Exception {
         Mockito.when(modelService.list()).thenReturn(createSampleModels());
 
-        mockMvc.perform(get("/{organization}/model", organization))
+        mockMvc.perform(get("/" + IModelControllerPathConst.CONTROLLER_MAPPING, organization))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$", hasSize(1)));
@@ -64,17 +65,61 @@ public class ModelControllerTest {
     public void shouldReturnTrainingData() throws Exception {
         Mockito.when(modelService.getTrainingData(createSampleModelId())).thenReturn(createSampleTrainingData());
 
-        mockMvc.perform(get("/{organization}/model/{modelId}/trainData", organization, modelId))
+        mockMvc.perform(get("/" + IModelControllerPathConst.CONTROLLER_MAPPING + "/" + IModelControllerPathConst.TRAIN_DATA_MAPPING, organization, modelId))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
                 .andExpect(jsonPath("$", hasSize(1)));
     }
 
+    @Test
+    public void shouldFailOnReturningTrainingDataWhenModelNotExists() throws Exception {
+        Mockito.when(modelService.getTrainingData(createSampleModelId())).thenThrow(ModelNotFoundException.class);
 
+        mockMvc.perform(get("/" + IModelControllerPathConst.CONTROLLER_MAPPING + "/" + IModelControllerPathConst.TRAIN_DATA_MAPPING, organization, modelId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldReturnSynonymsForTestInput() throws Exception {
+        final String sourceUrl = "some model url";
+        final String testWord = "graf";
+        Mockito.when(modelService.test(sourceUrl, testWord)).thenReturn(createSampleSynonyms());
+
+        mockMvc.perform(get("/" + IModelControllerPathConst.CONTROLLER_MAPPING + "/" + IModelControllerPathConst.TEST_MAPPING, organization, modelId)
+                .param("modelSourceUrl", sourceUrl)
+                .param("testWord", testWord))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.results", hasSize(3)));
+    }
+
+    @Test
+    public void shouldFailOnReturningSynonymsWhenModelNotExists() throws Exception {
+        final String sourceUrl = "some model url";
+        final String testWord = "graf";
+        Mockito.when(modelService.test(sourceUrl, testWord)).thenThrow(ModelNotFoundException.class);
+
+        mockMvc.perform(get("/" + IModelControllerPathConst.CONTROLLER_MAPPING + "/" + IModelControllerPathConst.TEST_MAPPING, organization, modelId)
+                .param("modelSourceUrl", sourceUrl)
+                .param("testWord", testWord))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void shouldFailOnReturningSynonymsWhenSourceNotExists() throws Exception {
+        final String sourceUrl = "some model url";
+        final String testWord = "graf";
+        Mockito.when(modelService.test(sourceUrl, testWord)).thenThrow(SourceNotFoundException.class);
+
+        mockMvc.perform(get("/" + IModelControllerPathConst.CONTROLLER_MAPPING + "/" + IModelControllerPathConst.TEST_MAPPING, organization, modelId)
+                .param("modelSourceUrl", sourceUrl)
+                .param("testWord", testWord))
+                .andExpect(status().isNotFound());
+    }
 
     @Test
     public void shouldDeleteModel() throws Exception {
-        mockMvc.perform(delete("/{organization}/model/{modelId}/delete", organization, modelId))
+        mockMvc.perform(delete("/" + IModelControllerPathConst.CONTROLLER_MAPPING + "/" + IModelControllerPathConst.DELETE_MAPPING, organization, modelId))
                 .andExpect(status().isOk());
     }
 
@@ -82,7 +127,7 @@ public class ModelControllerTest {
     public void shouldFailOnDeleteWhenModelNotExist() throws Exception {
         Mockito.when(modelService.delete(createSampleModelId())).thenThrow(ModelNotFoundException.class);
 
-        mockMvc.perform(delete("/{organization}/model/{modelId}/delete", organization, modelId))
+        mockMvc.perform(delete("/" + IModelControllerPathConst.CONTROLLER_MAPPING + "/" + IModelControllerPathConst.DELETE_MAPPING, organization, modelId))
                 .andExpect(status().isNotFound());
     }
 
@@ -90,7 +135,7 @@ public class ModelControllerTest {
     public void shouldFailOnDeleteWhenSourceFilesNotExist() throws Exception {
         Mockito.when(modelService.delete(createSampleModelId())).thenThrow(SourceNotFoundException.class);
 
-        mockMvc.perform(delete("/{organization}/model/{modelId}/delete", organization, modelId))
+        mockMvc.perform(delete("/" + IModelControllerPathConst.CONTROLLER_MAPPING + "/" + IModelControllerPathConst.DELETE_MAPPING, organization, modelId))
                 .andExpect(status().isNotFound());
     }
 
@@ -120,6 +165,16 @@ public class ModelControllerTest {
         modelTrainingData.setLastTrainingStart(DateTime.now().toDate());
         modelTrainingData.setLastTrainingEnd(DateTime.now().toDate());
         results.add(modelTrainingData);
+
+        return results;
+    }
+
+    private List<String> createSampleSynonyms() {
+        List<String> results = new LinkedList<>();
+
+        results.add("Graf");
+        results.add("Herr");
+        results.add("Junge");
 
         return results;
     }

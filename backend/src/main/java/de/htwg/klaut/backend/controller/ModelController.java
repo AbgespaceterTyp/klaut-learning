@@ -12,8 +12,6 @@ import de.htwg.klaut.backend.model.dto.ModelTrainingDataDto;
 import de.htwg.klaut.backend.service.IModelService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Controller
-@RequestMapping("{organization}/model")
+@RequestMapping(IModelControllerPathConst.CONTROLLER_MAPPING)
 @Log4j2
 public class ModelController {
 
@@ -43,7 +41,7 @@ public class ModelController {
         return new ResponseEntity<>(modelService.list(), HttpStatus.OK);
     }
 
-    @GetMapping(path = "{modelId}/trainData")
+    @GetMapping(path = IModelControllerPathConst.TRAIN_DATA_MAPPING)
     public ResponseEntity<Collection<ModelTrainingDataDto>> trainingData(@PathVariable String organization, @PathVariable String modelId) {
         final Collection<ModelTrainingData> trainingsData = modelService.getTrainingData(new CompositeId(organization, modelId));
         List<ModelTrainingDataDto> results = new LinkedList<>();
@@ -53,13 +51,13 @@ public class ModelController {
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
-    @GetMapping(path = "{modelId}/test")
+    @GetMapping(path = IModelControllerPathConst.TEST_MAPPING)
     public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @RequestParam String modelSourceUrl, @RequestParam String testWord) {
         final Collection<String> testResults = modelService.test(modelSourceUrl, testWord);
         return new ResponseEntity<>(new ModelTestResultDto(testResults), HttpStatus.OK);
     }
 
-    @GetMapping(path = "{modelId}/download")
+    @GetMapping(path = IModelControllerPathConst.DOWNLOAD_MAPPING)
     public void download(@RequestParam String modelSourceUrl, HttpServletResponse response) {
         try {
             InputStream is = modelService.getSourceFile(modelSourceUrl);
@@ -76,25 +74,25 @@ public class ModelController {
         return new ResponseEntity<>(new IdDto(model.getId()), HttpStatus.CREATED);
     }
 
-    @PutMapping(path = "{modelId}/update")
+    @PutMapping(path = IModelControllerPathConst.UPDATE_MAPPING)
     public ResponseEntity update(@PathVariable String organization, @RequestBody ModelDto modelDto, @PathVariable String modelId) {
         modelService.update(new CompositeId(organization, modelId), modelDto);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = "{modelId}/param")
+    @PutMapping(path = IModelControllerPathConst.PARAM_MAPPING)
     public ResponseEntity setParameter(@PathVariable String organization, @RequestBody Word2VecParams params, @PathVariable String modelId) {
         modelService.setParams(new CompositeId(organization, modelId), params);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = "{modelId}/train")
+    @PutMapping(path = IModelControllerPathConst.TRAIN_MAPPING)
     public ResponseEntity train(@PathVariable String organization, @PathVariable String modelId) {
         modelService.train(new CompositeId(organization, modelId));
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = "{modelId}/source")
+    @PutMapping(path = IModelControllerPathConst.SOURCE_MAPPING)
     public ResponseEntity addSource(@PathVariable String organization, @RequestBody MultipartFile fileToUpload, @PathVariable String modelId) {
         if (fileToUpload.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -103,7 +101,7 @@ public class ModelController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(path = "{modelId}/delete")
+    @DeleteMapping(path = IModelControllerPathConst.DELETE_MAPPING)
     public ResponseEntity delete(@PathVariable String organization, @PathVariable String modelId) {
         modelService.delete(new CompositeId(organization, modelId));
         return ResponseEntity.ok().build();
