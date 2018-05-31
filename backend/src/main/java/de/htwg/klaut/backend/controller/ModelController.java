@@ -39,8 +39,8 @@ public class ModelController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Model>> list(@PathVariable String organization, Pageable pageable) {
-        return new ResponseEntity<>(modelService.list(pageable), HttpStatus.OK);
+    public ResponseEntity<Collection<Model>> list(@PathVariable String organization) {
+        return new ResponseEntity<>(modelService.list(), HttpStatus.OK);
     }
 
     @GetMapping(path = "{modelId}/trainData")

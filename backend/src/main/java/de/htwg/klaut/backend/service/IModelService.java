@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
-    Page<Model> list(Pageable pageable);
+    Collection<Model> list();
 
     Model create(ModelDto modelDto) throws ModelCreationException;
 
