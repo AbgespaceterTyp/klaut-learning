@@ -54,8 +54,8 @@ public class ModelController {
     }
 
     @GetMapping(path = "{modelId}/test")
-    public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @PathVariable String modelId, @RequestParam String testWord) {
-        final Collection<String> testResults = modelService.test(new CompositeId(organization, modelId), testWord);
+    public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @RequestParam ModelTrainingDataDto trainingDataDto, @RequestParam String testWord) {
+        final Collection<String> testResults = modelService.test(trainingDataDto, testWord);
         return new ResponseEntity<>(new ModelTestResultDto(testResults), HttpStatus.OK);
     }
 

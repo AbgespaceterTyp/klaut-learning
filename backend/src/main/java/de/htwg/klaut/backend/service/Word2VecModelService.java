@@ -172,22 +172,16 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
     @Override
     public Collection<ModelTrainingData> getTrainingData(CompositeId modelId) throws ModelNotFoundException {
-        log.debug("trainingsdata for model {}", modelId);
+        log.debug("training data for model {}", modelId);
 
         return get(modelId).getTrainingData();
     }
 
     @Override
-    public Collection<String> test(CompositeId modelId, String testWord) throws ModelNotFoundException, SourceNotFoundException {
-        log.debug("test model {} with word {}", modelId, testWord);
+    public Collection<String> test(ModelTrainingDataDto trainingDataDto, String testWord) throws ModelNotFoundException, SourceNotFoundException {
+        log.debug("test model for training data {} with word {}", trainingDataDto, testWord);
 
-        final Model modelToTest = get(modelId);
-        final Set<ModelTrainingData> trainingData = modelToTest.getTrainingData();
-        if (trainingData == null || trainingData.isEmpty()) {
-            throw new SourceNotFoundException(modelId);
-        }
-        // TODO choose training data to use
-        return modelTester.test(trainingData.iterator().next(), testWord);
+        return modelTester.test(trainingDataDto.getModelUrl(), testWord);
     }
 
     private Model get(CompositeId modelId) {

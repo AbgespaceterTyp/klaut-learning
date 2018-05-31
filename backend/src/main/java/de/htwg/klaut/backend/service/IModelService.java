@@ -40,5 +40,5 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
 
     Collection<ModelTrainingData> getTrainingData(CompositeId modelId) throws ModelNotFoundException;
 
-    Collection<String> test(CompositeId modelId, String testWord) throws ModelNotFoundException, SourceNotFoundException;
+    Collection<String> test(ModelTrainingDataDto trainingDataDto, String testWord) throws ModelNotFoundException, SourceNotFoundException;
 }
