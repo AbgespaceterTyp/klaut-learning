@@ -84,7 +84,7 @@
         </div>
       </div>
       <div *ngIf="model.trainingData && model.trainingData.length > 0">
-        <app-model-testing [trainingData]="model.trainingData"></app-model-testing>
+        <app-model-testing [modelId]="model.id" [trainingData]="model.trainingData"></app-model-testing>
       </div>
     </div>
   </div>

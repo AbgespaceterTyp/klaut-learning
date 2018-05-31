@@ -4,6 +4,7 @@
   </div>
   <div class="col-sm-4">
     <select class="form-control" id="" name="trainingData" [(ngModel)]="selectedTrainingData">
+      <option [ngValue]="null" disabled selected>--Choose a trained model--</option>
       <option *ngFor="let item of tdata" [ngValue]="item.url">{{item.endTime}}</option>
     </select>
   </div>
