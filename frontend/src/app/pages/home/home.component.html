@@ -18,7 +18,7 @@
       <option>Word2Vec</option>
     </select>
     </div>
-  <button class="btn btn-primary mb-2"(click)="addModel()" [disabled]="modelDto.name.length < 3 || loading"><i class="fa fa-plus fa-lg"></i></button>
+  <button class="btn btn-light mb-2"(click)="addModel()" [disabled]="modelDto.name.length < 3 || loading"><i class="fa fa-plus fa-lg"></i></button>
 </div>
 <app-accordion [models]="models"
                *ngIf="models"></app-accordion>

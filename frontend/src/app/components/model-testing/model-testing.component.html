@@ -1,0 +1,24 @@
+<div class="row">
+  <div class="section">
+    <span class="section__title">Testing</span>
+  </div>
+  <div class="col-sm-4">
+    <select class="form-control" id="" name="trainingData" [(ngModel)]="selectedTrainingData">
+      <option *ngFor="let item of tdata" [ngValue]="item.url">{{item.endTime}}</option>
+    </select>
+  </div>
+  <div class="col-sm-1">
+    <button type="button" class="btn btn-link" (click)="download()" [disabled]="!selectedTrainingData">
+      <i class="fa fa-download fa-lg"></i>
+    </button>
+  </div>
+</div>
+<div class="spacer spacer--50"></div>
+<div class="row">
+  <div class="col-sm-2">
+    <input type="text">
+  </div>
+  <div class="col-sm-8">
+    <input type="text">
+  </div>
+</div>

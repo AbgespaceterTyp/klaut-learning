@@ -1,4 +1,5 @@
 import { Word2VecParams } from "./params";
+import { TrainingData } from "./training";
 
 export {
   Word2Vec,
@@ -16,7 +17,7 @@ class Word2Vec {
   params: Word2VecParams;
   sourceUrl: String;
   training: Boolean;
-  trainingData: Object;
+  trainingData: [TrainingData];
   trainingDuration: Number;
 }
 

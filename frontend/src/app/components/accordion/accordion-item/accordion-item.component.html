@@ -1,100 +1,92 @@
 <div class="card">
-    <div class="card-header" id="headingOne">
-      <h5 class="mb-0">
-        <button class="btn btn-link" type="button" 
-                data-toggle="collapse" [attr.data-target]="'#'+ model.id" 
-                aria-expanded="false" [attr.aria-controls]="model.id">
-            {{model.name}}
-        </button>
-        <h6 class="column-heading">{{model.algorithm}}</h6> <app-loading [loading]="deleting"></app-loading>
-        <span *ngIf="deleted" class="badge badge-danger">Deleted</span>
-        <span *ngIf="model.training && !deleted" class="badge badge-success">Currently In Training</span>
-        <button type="button" class="btn btn-link btn-link--red pull-right" (click)="delete()"
-                [disabled]="deleted || deleting"><i class="fa fa-trash fa-lg"></i></button>
-      </h5>
-    </div>
-
-    <div id="{{model.id}}" class="collapse" [class.show]="opend" aria-labelledby="headingOne" data-parent="#accordion">
-      <div class="card-body">
-      <div *ngIf="!progress.uploaded" class="progress">
-          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [ngStyle]="{width:progress.percentage+'%'}" 
-               attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-            <h5 class="column-heading">Description</h5> <app-loading [loading]="loadingDesc"></app-loading>
-            <div class="input-group">
-              <textarea class="form-control textarea-description" aria-label="With textarea"
-                        [(ngModel)]="model.description" [disabled]="deleted"
-                        (change)="updateModel()"></textarea>
-            </div>
-          </div>
-
-          <div class="col-sm-4">
-            <h5 class="column-heading">Params</h5> <app-loading [loading]="loadingParams"></app-loading>
-            <span *ngIf="model.params">
-              <div class="form-group row">
-                <label for="minWordFrequency" class="col-sm-7 col-form-label">minWordFrequency</label>
-                <div class="col-sm-4">
-                  <input type="number" class="form-control"
-                         id="minWordFrequency" min="0" [(ngModel)]="model.params.minWordFrequency"
-                         (change)="updateParams()" [disabled]="deleted"> 
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="iterations" class="col-sm-7 col-form-label">iterations</label>
-                <div class="col-sm-4">
-                  <input type="number" class="form-control" 
-                         id="iterations" min="0" [(ngModel)]="model.params.iterations"
-                         (change)="updateParams()" [disabled]="deleted">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="layerSize" class="col-sm-7 col-form-label">layerSize</label>
-                <div class="col-sm-4">
-                  <input type="number" class="form-control" 
-                         id="layerSize" min="0" [(ngModel)]="model.params.layerSize"
-                         (change)="updateParams()" [disabled]="deleted">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="seed" class="col-sm-7 col-form-label">seed</label>
-                <div class="col-sm-4">
-                  <input type="number" class="form-control" 
-                        id="seed" min="0" [(ngModel)]="model.params.seed"
-                        (change)="updateParams()" [disabled]="deleted">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="windowSize" class="col-sm-7 col-form-label">windowSize</label>
-                <div class="col-sm-4">
-                  <input type="number" class="form-control" 
-                         id="windowSize" min="0" [(ngModel)]="model.params.windowSize"
-                         (change)="updateParams()" [disabled]="deleted">
-                </div>
-              </div>
-            </span>
-            
-          </div> 
-          <div class="col-sm-2">
-            <h5 class="column-heading">Actions</h5> <app-loading [loading]="deleting || startTraining"></app-loading>
-            <div>
-              <button type="button" class="btn btn--fullWidth btn-primary" (click)="train()"
-                      [disabled]="deleted || deleting || 
+  <div class="card-header" id="headingOne">
+    <h5 class="mb-0">
+      <button class="btn btn-link" type="button" data-toggle="collapse" [attr.data-target]="'#'+ model.id" aria-expanded="false"
+        [attr.aria-controls]="model.id">
+        {{model.name}}
+      </button>
+      <h6 class="column-heading">{{model.algorithm}}</h6>
+      <app-loading [loading]="deleting || startTraining"></app-loading>
+      <span *ngIf="deleted" class="badge badge-danger">Deleted</span>
+      <span *ngIf="model.training && !deleted" class="badge badge-success">Currently In Training</span>
+      <button type="button" class="btn btn-link btn-link--red pull-right" (click)="delete()" [disabled]="deleted || deleting">
+        <i class="fa fa-trash fa-lg"></i>
+      </button>
+      <button type="button" class="btn btn-link pull-right" value="" [disabled]="deleted || deleting || 
+                     uploadingFile || model.training || startTraining" (click)="uploadDummy()">
+        <i class="fa fa-upload fa-lg"></i>
+      </button>
+      <button type="button" class="btn btn-link pull-right" (click)="train()" [disabled]="deleted || deleting || 
                                   !trainable() || uploadingFile || 
                                   (model.sourceUrl == null) || model.training ||
-                                  startTraining"><i class="fa fa-play fa-lg"></i></button>
-            </div>
-            <div>
-              <input type="file" accept=".txt" id="uploadFile{{model.id}}" 
-                     style="display: none;" (change)="uploadFile($event)" />
-              <button type="button" class="btn btn--fullWidth btn-success" 
-                     value="" [disabled]="deleted || deleting || 
-                     uploadingFile || model.training || startTraining"
-                     (click)="uploadDummy()"><i class="fa fa-upload fa-lg"></i></button>
-            </div>
+                                  startTraining">
+        <i class="fa fa-play fa-lg"></i>
+      </button>
+    </h5>
+  </div>
+
+  <div id="{{model.id}}" class="collapse" [class.show]="opend" aria-labelledby="headingOne" data-parent="#accordion">
+    <div class="card-body">
+      <div *ngIf="!progress.uploaded" class="progress">
+        <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [ngStyle]="{width:progress.percentage+'%'}"
+          attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+      <div class="row">
+        <div class="section">
+          <span class="section__title">Configuration</span>
+        </div>
+        <div class="col-sm-6">
+          <app-loading [loading]="loadingDesc"></app-loading>
+          <div class="input-group">
+            <textarea class="form-control textarea-description" aria-label="With textarea" [(ngModel)]="model.description" [disabled]="deleted"
+              (change)="updateModel()"></textarea>
           </div>
         </div>
+
+        <div class="col-sm-4">
+          <app-loading [loading]="loadingParams"></app-loading>
+          <span *ngIf="model.params">
+            <div class="form-group row">
+              <label for="minWordFrequency" class="col-sm-7 col-form-label">minWordFrequency</label>
+              <div class="col-sm-4">
+                <input type="number" class="form-control" id="minWordFrequency" min="0" [(ngModel)]="model.params.minWordFrequency" (change)="updateParams()"
+                  [disabled]="deleted">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="iterations" class="col-sm-7 col-form-label">iterations</label>
+              <div class="col-sm-4">
+                <input type="number" class="form-control" id="iterations" min="0" [(ngModel)]="model.params.iterations" (change)="updateParams()"
+                  [disabled]="deleted">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="layerSize" class="col-sm-7 col-form-label">layerSize</label>
+              <div class="col-sm-4">
+                <input type="number" class="form-control" id="layerSize" min="0" [(ngModel)]="model.params.layerSize" (change)="updateParams()"
+                  [disabled]="deleted">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="seed" class="col-sm-7 col-form-label">seed</label>
+              <div class="col-sm-4">
+                <input type="number" class="form-control" id="seed" min="0" [(ngModel)]="model.params.seed" (change)="updateParams()" [disabled]="deleted">
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="windowSize" class="col-sm-7 col-form-label">windowSize</label>
+              <div class="col-sm-4">
+                <input type="number" class="form-control" id="windowSize" min="0" [(ngModel)]="model.params.windowSize" (change)="updateParams()"
+                  [disabled]="deleted">
+              </div>
+            </div>
+          </span>
+        </div>
+      </div>
+      <div *ngIf="model.trainingData && model.trainingData.length > 0">
+        <app-model-testing [trainingData]="model.trainingData"></app-model-testing>
       </div>
     </div>
   </div>
+  <input type="file" accept=".txt" id="uploadFile{{model.id}}" style="display: none;" (change)="uploadFile($event)" />
+</div>

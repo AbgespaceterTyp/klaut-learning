@@ -1,6 +1,5 @@
 <div class="accordion" id="accordion" *ngIf="models && models.length > 0">
-  <span
-  *ngFor="let model of models; let index = index">
-  <app-accordion-item [model]="model" [opend]="index < 1"></app-accordion-item>
+  <span *ngFor="let model of models; let index = index">
+    <app-accordion-item [model]="model" [opend]="index < 1"></app-accordion-item>
   </span>
 </div>

@@ -21,6 +21,7 @@ import { CookieLawModule } from 'angular2-cookie-law';
 
 import { FooterComponent } from './components/footer/footer.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
+import { ModelTestingComponent } from './components/model-testing/model-testing.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { OrganizationComponent } from './pages/organization/organization.compone
     LoadingComponent,
     FooterComponent,
     ImpressumComponent,
-    OrganizationComponent
+    OrganizationComponent,
+    ModelTestingComponent
   ],
   imports: [
     BrowserModule,
