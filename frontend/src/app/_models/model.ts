@@ -10,7 +10,7 @@ export {
 }
 
 class Word2Vec {
-  id?: Number;
+  id?: String;
   name: String;
   algorithm: String;
   description: String;
@@ -22,7 +22,7 @@ class Word2Vec {
 }
 
 class ModelDto {
-  id?: Number;
+  id?: String;
   name: String;
   description: String;
   algorithm: String;

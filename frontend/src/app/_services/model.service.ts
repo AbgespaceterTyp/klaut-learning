@@ -19,23 +19,23 @@ export class ModelService {
     return this.http.post('/api/' + this.localStorageService.currentOrganization.key + '/model', modelDto);
   }
 
-  delete(id: Number) {
+  delete(id: String) {
     return this.http.delete('/api/' + this.localStorageService.currentOrganization.key + '/model/' + id + '/delete');
   }
 
-  train(id: Number) {
+  train(id: String) {
     return this.http.put('/api/' + this.localStorageService.currentOrganization.key + '/model/' + id + '/train', {});
   }
 
-  updateParams(params: Word2VecParams, id: Number) {
+  updateParams(params: Word2VecParams, id: String) {
     return this.http.put('/api/' + this.localStorageService.currentOrganization.key + '/model/' + id + '/param', params);
   }
 
-  update(model: ModelDto, id: Number) {
+  update(model: ModelDto, id: String) {
     return this.http.put('/api/' + this.localStorageService.currentOrganization.key + '/model/' + id + '/update', model);
   }
 
-  uploadFile(file: any, id: Number): Observable<HttpEvent<{}>> {
+  uploadFile(file: any, id: String): Observable<HttpEvent<{}>> {
     let formdata: FormData = new FormData();
 
     formdata.append('fileToUpload', file);
@@ -48,11 +48,11 @@ export class ModelService {
     return this.http.request(req);
   }
 
-  download(id: Number, sourceUrl: String) {
+  download(id: String, sourceUrl: String) {
  
   }
 
-  test(id: Number, sourceUrl: String, testWord: String) {
+  test(id: String, sourceUrl: String, testWord: String) {
     let Params = new HttpParams();
 
     // Begin assigning parameters

@@ -5,7 +5,7 @@ import { ModelService } from '../../_services';
 @Component({selector: 'app-model-testing', templateUrl: './model-testing.component.html', styleUrls: ['./model-testing.component.scss']})
 export class ModelTestingComponent implements OnInit {
   @Input('trainingData')trainingData : [TrainingData];
-  @Input('modelId')modelId : Number;
+  @Input('modelId')modelId : String;
 
 
   selectedTrainingData: String = null;
