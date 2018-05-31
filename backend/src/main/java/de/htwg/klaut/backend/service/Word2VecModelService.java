@@ -11,25 +11,14 @@ import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.deeplearning4j.models.word2vec.Word2Vec;
-import org.deeplearning4j.text.sentenceiterator.BasicLineIterator;
-import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreprocessor;
-import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 @Service
@@ -40,26 +29,32 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     private final IS3StorageService s3StorageService;
     private final IOrganizationService organizationService;
     private final ModelTrainer modelTrainer;
+    private final ModelTester modelTester;
 
     private final ScheduledThreadPoolExecutor executor;
 
-    public Word2VecModelService(IModelRepository modelRepository, IS3StorageService s3StorageService, IOrganizationService organizationService, ModelTrainer modelTrainer) {
+    public Word2VecModelService(IModelRepository modelRepository,
+                                IS3StorageService s3StorageService,
+                                IOrganizationService organizationService,
+                                ModelTrainer modelTrainer,
+                                ModelTester modelTester) {
         this.modelRepository = modelRepository;
         this.s3StorageService = s3StorageService;
         this.organizationService = organizationService;
         this.modelTrainer = modelTrainer;
+        this.modelTester = modelTester;
 
         executor = new ScheduledThreadPoolExecutor(3);
     }
 
     @Override
-    public Page<Model> getModels(Pageable pageable) {
+    public Page<Model> list(Pageable pageable) {
         log.debug("loading models");
         return modelRepository.findByOrganization(organizationService.getCurrentOrganization(), pageable);
     }
 
     @Override
-    public Model createModel(ModelDto modelDto) throws ModelCreationException {
+    public Model create(ModelDto modelDto) throws ModelCreationException {
         log.debug("creating model with values {}", modelDto);
         try {
             final Model model = new Model();
@@ -74,7 +69,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void updateModel(CompositeId modelId, ModelDto modelDto) throws ModelNotFoundException {
+    public void update(CompositeId modelId, ModelDto modelDto) throws ModelNotFoundException {
         log.debug("updating model {} with values {}", modelId, modelDto);
         try {
             final Model modelToUpdate = modelRepository.findById(modelId).get();
@@ -88,17 +83,15 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void trainModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
+    public void train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("starting training of model {}", modelId);
 
-        Optional<Model> modelOptional = modelRepository.findById(modelId);
-        if (!modelOptional.isPresent()) {
-            throw new ModelNotFoundException(modelId);
-        }
-        final Model modelToTrain = modelOptional.get();
+        final Model modelToTrain = get(modelId);
         if (StringUtils.isEmpty(modelToTrain.getSourceUrl())) {
             throw new SourceNotFoundException(modelId);
         }
+
+        modelToTrain.getTrainingData().clear();
 
         // Prepare training data
         final ModelTrainingData trainingData = new ModelTrainingData();
@@ -124,7 +117,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void addSourceFileToModel(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException {
+    public void addSourceFile(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException {
         log.debug("adding source file {} to model {}", file.getName(), modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
@@ -143,7 +136,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void setModelParams(CompositeId modelId, Word2VecParams modelParams) throws ModelNotFoundException {
+    public void setParams(CompositeId modelId, Word2VecParams modelParams) throws ModelNotFoundException {
         log.debug("set params {} to model {}", modelParams, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
@@ -157,15 +150,10 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void deleteModel(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
+    public void delete(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("deleting model {}", modelId);
 
-        Optional<Model> modelOptional = modelRepository.findById(modelId);
-        if (!modelOptional.isPresent()) {
-            throw new ModelNotFoundException(modelId);
-        }
-
-        final Model modelToDelete = modelOptional.get();
+        final Model modelToDelete = get(modelId);
         if (StringUtils.isNotEmpty(modelToDelete.getSourceUrl())) {
             s3StorageService.deleteSourceFile(modelToDelete.getSourceUrl());
         }
@@ -173,11 +161,30 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public Collection<ModelTrainingData> getTrainingsData(CompositeId modelId) throws ModelNotFoundException {
+    public Collection<ModelTrainingData> getTrainingData(CompositeId modelId) throws ModelNotFoundException {
+        log.debug("trainingsdata for model {}", modelId);
+
+        return get(modelId).getTrainingData();
+    }
+
+    @Override
+    public Collection<String> test(CompositeId modelId, String testWord) throws ModelNotFoundException, SourceNotFoundException {
+        log.debug("test model {} with word {}", modelId, testWord);
+
+        final Model modelToTest = get(modelId);
+        final Set<ModelTrainingData> trainingData = modelToTest.getTrainingData();
+        if (trainingData == null || trainingData.isEmpty()) {
+            throw new SourceNotFoundException(modelId);
+        }
+        // TODO choose training data to use
+        return modelTester.test(trainingData.iterator().next(), testWord);
+    }
+
+    private Model get(CompositeId modelId) {
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (!modelOptional.isPresent()) {
             throw new ModelNotFoundException(modelId);
         }
-        return modelOptional.get().getTrainingData();
+        return modelOptional.get();
     }
 }

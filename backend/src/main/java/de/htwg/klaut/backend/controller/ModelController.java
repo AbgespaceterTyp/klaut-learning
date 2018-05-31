@@ -7,6 +7,7 @@ import de.htwg.klaut.backend.model.db.ModelTrainingData;
 import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.dto.IdDto;
 import de.htwg.klaut.backend.model.dto.ModelDto;
+import de.htwg.klaut.backend.model.dto.ModelTestResultDto;
 import de.htwg.klaut.backend.model.dto.ModelTrainingDataDto;
 import de.htwg.klaut.backend.service.IModelService;
 import lombok.extern.log4j.Log4j2;
@@ -34,13 +35,13 @@ public class ModelController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<Model>> getModels(@PathVariable String organization, Pageable pageable) {
-        return new ResponseEntity<>(modelService.getModels(pageable), HttpStatus.OK);
+    public ResponseEntity<Page<Model>> list(@PathVariable String organization, Pageable pageable) {
+        return new ResponseEntity<>(modelService.list(pageable), HttpStatus.OK);
     }
 
     @GetMapping(path = "{modelId}/trainData")
-    public ResponseEntity<Collection<ModelTrainingDataDto>> getTrainingsData(@PathVariable String organization, @PathVariable String modelId) {
-        final Collection<ModelTrainingData> trainingsData = modelService.getTrainingsData(new CompositeId(organization, modelId));
+    public ResponseEntity<Collection<ModelTrainingDataDto>> trainingsData(@PathVariable String organization, @PathVariable String modelId) {
+        final Collection<ModelTrainingData> trainingsData = modelService.getTrainingData(new CompositeId(organization, modelId));
         List<ModelTrainingDataDto> results = new LinkedList<>();
         for (ModelTrainingData trainingData : trainingsData) {
             results.add(new ModelTrainingDataDto(trainingData));
@@ -48,27 +49,38 @@ public class ModelController {
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
+    @GetMapping(path = "{modelId}/test")
+    public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @PathVariable String modelId, @RequestParam String testWord){
+        final Collection<String> testResults = modelService.test(new CompositeId(organization, modelId), testWord);
+        return new ResponseEntity<>(new ModelTestResultDto(testResults), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "{modelId}/download")
+    public void download(){
+
+    }
+
     @PostMapping
-    public ResponseEntity<IdDto> createModel(@PathVariable String organization, @RequestBody ModelDto modelDto) {
-        final Model model = modelService.createModel(modelDto);
+    public ResponseEntity<IdDto> create(@PathVariable String organization, @RequestBody ModelDto modelDto) {
+        final Model model = modelService.create(modelDto);
         return new ResponseEntity<>(new IdDto(model.getId()), HttpStatus.CREATED);
     }
 
     @PutMapping(path = "{modelId}/update")
-    public ResponseEntity updateModel(@PathVariable String organization, @RequestBody ModelDto modelDto, @PathVariable String modelId) {
-        modelService.updateModel(new CompositeId(organization, modelId), modelDto);
+    public ResponseEntity update(@PathVariable String organization, @RequestBody ModelDto modelDto, @PathVariable String modelId) {
+        modelService.update(new CompositeId(organization, modelId), modelDto);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "{modelId}/param")
     public ResponseEntity setParameter(@PathVariable String organization, @RequestBody Word2VecParams params, @PathVariable String modelId) {
-        modelService.setModelParams(new CompositeId(organization, modelId), params);
+        modelService.setParams(new CompositeId(organization, modelId), params);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(path = "{modelId}/train")
-    public ResponseEntity trainModel(@PathVariable String organization, @PathVariable String modelId) {
-        modelService.trainModel(new CompositeId(organization, modelId));
+    public ResponseEntity train(@PathVariable String organization, @PathVariable String modelId) {
+        modelService.train(new CompositeId(organization, modelId));
         return ResponseEntity.noContent().build();
     }
 
@@ -77,13 +89,13 @@ public class ModelController {
         if (fileToUpload.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
-        modelService.addSourceFileToModel(new CompositeId(organization, modelId), fileToUpload);
+        modelService.addSourceFile(new CompositeId(organization, modelId), fileToUpload);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping(path = "{modelId}/delete")
-    public ResponseEntity deleteModel(@PathVariable String organization, @PathVariable String modelId) {
-        modelService.deleteModel(new CompositeId(organization, modelId));
+    public ResponseEntity delete(@PathVariable String organization, @PathVariable String modelId) {
+        modelService.delete(new CompositeId(organization, modelId));
         return ResponseEntity.ok().build();
     }
 }

@@ -58,7 +58,7 @@ public class ModelTrainer {
     }
 
     private Word2Vec trainModel(BasicLineIterator iterator, Model modelToTrain) {
-        // Split on white spaces in the line to get words
+        // Split on white spaces in the line to list words
         DefaultTokenizerFactory t = new DefaultTokenizerFactory();
         t.setTokenPreProcessor(new CommonPreprocessor());
 

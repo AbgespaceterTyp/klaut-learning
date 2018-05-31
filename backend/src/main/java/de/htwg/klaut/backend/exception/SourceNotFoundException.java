@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class SourceNotFoundException extends RuntimeException {
 
     public SourceNotFoundException(String sourceUrl) {
-        super("found no source with at " + sourceUrl);
+        super("found no source at " + sourceUrl);
     }
 
     public SourceNotFoundException(CompositeId modelId) {
