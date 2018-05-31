@@ -9,6 +9,7 @@ import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.model.db.ModelTrainingData;
 import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.dto.ModelDto;
+import de.htwg.klaut.backend.model.dto.ModelTrainingDataDto;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
+import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -91,8 +94,6 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             throw new SourceNotFoundException(modelId);
         }
 
-        modelToTrain.getTrainingData().clear();
-
         // Prepare training data
         final ModelTrainingData trainingData = new ModelTrainingData();
         trainingData.setLastTrainingStart(DateTime.now().toDate());
@@ -133,6 +134,15 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
         modelToUpdate.setSourceUrl(sourceUrlOpt.get());
         modelRepository.save(modelToUpdate);
+    }
+
+    @Override
+    public InputStream getSourceFile(ModelTrainingDataDto modelTrainingDataDto) throws SourceNotFoundException {
+        final Optional<InputStream> modelSourceFile = s3StorageService.getSourceFile(modelTrainingDataDto.getModelUrl());
+        if(modelSourceFile.isPresent()){
+            return modelSourceFile.get();
+        }
+        throw new SourceNotFoundException(modelTrainingDataDto.getModelUrl());
     }
 
     @Override

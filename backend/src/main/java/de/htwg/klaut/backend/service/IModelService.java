@@ -10,13 +10,16 @@ import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.model.db.ModelTrainingData;
 import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.model.dto.ModelTestResultDto;
+import de.htwg.klaut.backend.model.dto.ModelTrainingDataDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
     Page<Model> list(Pageable pageable);
@@ -28,6 +31,8 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
     void train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 
     void addSourceFile(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException;
+
+    InputStream getSourceFile(ModelTrainingDataDto modelId) throws SourceNotFoundException;
 
     void setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
 

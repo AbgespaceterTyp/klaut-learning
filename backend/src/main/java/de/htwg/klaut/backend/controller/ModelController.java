@@ -11,6 +11,7 @@ import de.htwg.klaut.backend.model.dto.ModelTestResultDto;
 import de.htwg.klaut.backend.model.dto.ModelTrainingDataDto;
 import de.htwg.klaut.backend.service.IModelService;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,14 +54,20 @@ public class ModelController {
     }
 
     @GetMapping(path = "{modelId}/test")
-    public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @PathVariable String modelId, @RequestParam String testWord){
+    public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @PathVariable String modelId, @RequestParam String testWord) {
         final Collection<String> testResults = modelService.test(new CompositeId(organization, modelId), testWord);
         return new ResponseEntity<>(new ModelTestResultDto(testResults), HttpStatus.OK);
     }
 
     @GetMapping(path = "{modelId}/download")
-    public void download(){
-
+    public void download(@RequestParam ModelTrainingDataDto trainingDataDto, HttpServletResponse response) {
+        try {
+            InputStream is = modelService.getSourceFile(trainingDataDto);
+            IOUtils.copy(is, response.getOutputStream());
+            response.flushBuffer();
+        } catch (IOException ex) {
+            log.error("Failed to download model file for training data {}", trainingDataDto);
+        }
     }
 
     @PostMapping
