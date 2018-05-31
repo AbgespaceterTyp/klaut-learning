@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -22,8 +23,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.LinkedList;
 import java.util.List;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -40,9 +43,19 @@ public class ModelControllerTest {
     private ModelController modelController;
 
     @Before
-    public void setUp(){
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(modelController).build();
+    }
+
+    @Test
+    public void shouldReturnListOfModelsForOrganization() throws Exception {
+        Mockito.when(modelService.list()).thenReturn(createSampleModels());
+
+        mockMvc.perform(get("/{organization}/model", organization))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$", hasSize(1)));
     }
 
     @Test
@@ -67,11 +80,11 @@ public class ModelControllerTest {
                 .andExpect(status().isNotFound());
     }
 
-    private CompositeId createSampleModelId(){
-        return new CompositeId(organization,modelId);
+    private CompositeId createSampleModelId() {
+        return new CompositeId(organization, modelId);
     }
 
-    private List<Model> createSampleModels(){
+    private List<Model> createSampleModels() {
         List<Model> results = new LinkedList<>();
 
         final Model model = new Model();
@@ -80,6 +93,7 @@ public class ModelControllerTest {
         model.setName("Test Model");
         model.setDescription("Test Desc");
         model.setAlgorithm("Word2Vec");
+        results.add(model);
 
         return results;
     }
