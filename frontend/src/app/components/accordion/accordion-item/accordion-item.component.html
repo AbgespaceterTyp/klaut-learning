@@ -8,6 +8,7 @@
         </button>
         <h6 class="column-heading">{{model.algorithm}}</h6> <app-loading [loading]="deleting"></app-loading>
         <span *ngIf="deleted" class="badge badge-danger">Deleted</span>
+        <span *ngIf="model.training && !deleted" class="badge badge-success">Currently In Training</span>
         <button type="button" class="btn btn-link btn-link--red pull-right" (click)="delete()"
                 [disabled]="deleted || deleting"><i class="fa fa-trash fa-lg"></i></button>
       </h5>
@@ -75,17 +76,21 @@
             </span>
             
           </div> 
-          <div class="col-sm-1">
-            <h5 class="column-heading">Actions</h5> <app-loading [loading]="deleting"></app-loading>
+          <div class="col-sm-2">
+            <h5 class="column-heading">Actions</h5> <app-loading [loading]="deleting || startTraining"></app-loading>
             <div>
               <button type="button" class="btn btn--fullWidth btn-primary" (click)="train()"
-                      [disabled]="(deleted || deleting) || !trainable()"><i class="fa fa-play fa-lg"></i></button>
+                      [disabled]="deleted || deleting || 
+                                  !trainable() || uploadingFile || 
+                                  (model.sourceUrl == null) || model.training ||
+                                  startTraining"><i class="fa fa-play fa-lg"></i></button>
             </div>
             <div>
               <input type="file" accept=".txt" id="uploadFile{{model.id}}" 
                      style="display: none;" (change)="uploadFile($event)" />
               <button type="button" class="btn btn--fullWidth btn-success" 
-                     value="" [disabled]="deleted || deleting"
+                     value="" [disabled]="deleted || deleting || 
+                     uploadingFile || model.training || startTraining"
                      (click)="uploadDummy()"><i class="fa fa-upload fa-lg"></i></button>
             </div>
           </div>

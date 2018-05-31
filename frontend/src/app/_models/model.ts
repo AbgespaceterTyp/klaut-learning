@@ -1,33 +1,45 @@
 import { Word2VecParams } from "./params";
 
-export class Word2Vec {
+export {
+  Word2Vec,
+  ModelDto,
+  OrganizationDto,
+  UserDto,
+  Pageable,
+}
+
+class Word2Vec {
   id?: Number;
   name: String;
   algorithm: String;
   description: String;
-  params: Word2VecParams
+  params: Word2VecParams;
+  sourceUrl: String;
+  training: Boolean;
+  trainingData: Object;
+  trainingDuration: Number;
 }
 
-export class ModelDto {
+class ModelDto {
   id?: Number;
   name: String;
   description: String;
   algorithm: String;
 }
 
-export class OrganizationDto {
+class OrganizationDto {
   constructor(public name: String,
     public key: String,
     public iconUrl: String) { }
 }
 
-export class UserDto {
+class UserDto {
   constructor(private email: String,
     private firstName: String,
     private lastName: String) { }
 }
 
 // TODO: add other necessary properties to Pageable
-export class Pageable<T> {
+class Pageable<T> {
   constructor(public content: T[]) { }
 }
