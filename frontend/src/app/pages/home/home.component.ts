@@ -25,7 +25,7 @@ export class HomeComponent implements OnInit {
       .modelService
       .load()
       .subscribe(data => {
-        this.models = data.content;
+        this.models = data;
         destroy();
         this.loading = false;
       });

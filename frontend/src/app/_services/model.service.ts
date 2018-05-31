@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest, HttpEvent, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
 import { ModelDto, Pageable } from '../_models';
@@ -12,7 +12,7 @@ export class ModelService {
   constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
 
   load() {    
-    return this.http.get<Pageable<ModelDto>>('/api/' + this.localStorageService.currentOrganization.key + '/model');
+    return this.http.get<ModelDto[]>('/api/' + this.localStorageService.currentOrganization.key + '/model');
   }
 
   create(modelDto: ModelDto) {
@@ -47,5 +47,19 @@ export class ModelService {
 
     return this.http.request(req);
   }
+
+  download(id: Number, sourceUrl: String) {
+ 
+  }
+
+  test(id: Number, sourceUrl: String, testWord: String) {
+    let Params = new HttpParams();
+
+    // Begin assigning parameters
+    Params = Params.append('modelSourceUrl', sourceUrl as string);
+    Params = Params.append('testWord', testWord as string);
+    return this.http.get('/api/' + this.localStorageService.currentOrganization.key + '/model/' + id + '/test' , {params: Params})
+  }
+
 
 }
