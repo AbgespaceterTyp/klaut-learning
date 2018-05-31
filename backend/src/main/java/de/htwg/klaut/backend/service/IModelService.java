@@ -26,17 +26,17 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
 
     Model create(ModelDto modelDto) throws ModelCreationException;
 
-    void update(CompositeId modelId, ModelDto modelDto) throws ModelNotFoundException;
+    Model update(CompositeId modelId, ModelDto modelDto) throws ModelNotFoundException;
 
-    void train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
+    Model train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 
-    void addSourceFile(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException;
+    Model addSourceFile(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException;
 
     InputStream getSourceFile(ModelTrainingDataDto modelId) throws SourceNotFoundException;
 
-    void setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
+    Model setParams(CompositeId modelId, MODEL_PARAM_TYPE modelParams) throws ModelNotFoundException;
 
-    void delete(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
+    Model delete(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 
     Collection<ModelTrainingData> getTrainingData(CompositeId modelId) throws ModelNotFoundException;
 

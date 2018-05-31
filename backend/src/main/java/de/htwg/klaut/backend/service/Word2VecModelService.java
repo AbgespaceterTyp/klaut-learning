@@ -72,7 +72,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void update(CompositeId modelId, ModelDto modelDto) throws ModelNotFoundException {
+    public Model update(CompositeId modelId, ModelDto modelDto) throws ModelNotFoundException {
         log.debug("updating model {} with values {}", modelId, modelDto);
         try {
             final Model modelToUpdate = modelRepository.findById(modelId).get();
@@ -80,13 +80,14 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             modelToUpdate.setDescription(modelDto.getDescription());
             modelToUpdate.setAlgorithm(modelDto.getAlgorithm());
             modelRepository.save(modelToUpdate);
+            return modelToUpdate;
         } catch (Exception e) {
             throw new ModelCreationException(modelDto.getName());
         }
     }
 
     @Override
-    public void train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
+    public Model train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("starting training of model {}", modelId);
 
         final Model modelToTrain = get(modelId);
@@ -115,10 +116,11 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
                 modelRepository.save(modelToTrain);
             }
         });
+        return modelToTrain;
     }
 
     @Override
-    public void addSourceFile(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException {
+    public Model addSourceFile(CompositeId modelId, MultipartFile file) throws ModelNotFoundException, SourceCreationException {
         log.debug("adding source file {} to model {}", file.getName(), modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
@@ -134,6 +136,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
         modelToUpdate.setSourceUrl(sourceUrlOpt.get());
         modelRepository.save(modelToUpdate);
+        return modelToUpdate;
     }
 
     @Override
@@ -146,7 +149,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public void setParams(CompositeId modelId, Word2VecParams modelParams) throws ModelNotFoundException {
+    public Model setParams(CompositeId modelId, Word2VecParams modelParams) throws ModelNotFoundException {
         log.debug("set params {} to model {}", modelParams, modelId);
 
         Optional<Model> modelOptional = modelRepository.findById(modelId);
@@ -157,10 +160,11 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         final Model modelToUpdate = modelOptional.get();
         modelToUpdate.setParams(modelParams);
         modelRepository.save(modelToUpdate);
+        return modelToUpdate;
     }
 
     @Override
-    public void delete(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
+    public Model delete(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("deleting model {}", modelId);
 
         final Model modelToDelete = get(modelId);
@@ -168,6 +172,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
             s3StorageService.deleteSourceFile(modelToDelete.getSourceUrl());
         }
         modelRepository.deleteById(modelId);
+        return modelToDelete;
     }
 
     @Override
