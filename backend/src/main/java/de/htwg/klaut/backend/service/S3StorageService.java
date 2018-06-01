@@ -49,9 +49,14 @@ public class S3StorageService implements IS3StorageService {
 
     @Override
     public Optional<String> addSourceFile(MultipartFile file) throws SourceCreationException {
+        return addSourceFile(file, organizationService.getCurrentOrganization());
+    }
+
+    @Override
+    public Optional<String> addSourceFile(MultipartFile file, String organization) throws SourceCreationException {
         String fileName = UUID.randomUUID().toString() + ".txt";
         try {
-            return Optional.of(addFile(file.getSize(), fileName, file.getInputStream()));
+            return Optional.of(addFile(file.getSize(), fileName, file.getInputStream(), organization));
         } catch (IOException e) {
             log.error("Failed to add source file " + fileName);
         }
@@ -60,13 +65,18 @@ public class S3StorageService implements IS3StorageService {
 
     @Override
     public Optional<String> addSourceFile(Word2Vec word2Vec) throws SourceCreationException {
+        return addSourceFile(word2Vec, organizationService.getCurrentOrganization());
+    }
+
+    @Override
+    public Optional<String> addSourceFile(Word2Vec word2Vec, String organization) throws SourceCreationException {
         // Write model to temp directory
         String modelFileName = UUID.randomUUID().toString();
         final File modelFile = new File(System.getProperty("java.io.tmpdir") + modelFileName + ".model");
         WordVectorSerializer.writeWord2VecModel(word2Vec, modelFile);
 
         try (FileInputStream fis = new FileInputStream(modelFile)) {
-            return Optional.of(addFile(modelFile.length(), modelFileName, fis));
+            return Optional.of(addFile(modelFile.length(), modelFileName, fis, organization));
         } catch (IOException e) {
             log.error("Failed to add source file " + modelFileName);
         } finally {
@@ -75,8 +85,8 @@ public class S3StorageService implements IS3StorageService {
         return Optional.empty();
     }
 
-    private String addFile(long contentLength, String fileName, InputStream inputStream) {
-        String s3Key = organizationService.getCurrentOrganization() + "/" + fileName;
+    private String addFile(long contentLength, String fileName, InputStream inputStream, String organization) {
+        String s3Key = organization + "/" + fileName;
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(contentLength);
         amazonS3.putObject(

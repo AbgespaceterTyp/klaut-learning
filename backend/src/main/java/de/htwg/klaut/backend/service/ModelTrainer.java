@@ -29,7 +29,7 @@ public class ModelTrainer {
         this.s3StorageService = s3StorageService;
     }
 
-    public Model train(Model modelToTrain, ModelTrainingData trainingData) throws IOException {
+    public Model train(Model modelToTrain, ModelTrainingData trainingData, String organization) throws IOException {
         BasicLineIterator iterator = prepareSourceFile(modelToTrain);
         Word2Vec word2VecModel = trainModel(iterator, modelToTrain);
 

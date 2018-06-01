@@ -105,9 +105,13 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         modelToTrain.getTrainingData().add(trainingData);
         modelRepository.save(modelToTrain);
 
+        // Store current organization before async execution of model training
+        // to ensure setting the correct one on training
+        final String organization = organizationService.getCurrentOrganization();
+
         executor.execute(() -> {
             try {
-                modelTrainer.train(modelToTrain, trainingData);
+                modelTrainer.train(modelToTrain, trainingData, organization);
             } catch (Exception e) {
                 log.error("Failed to train model " + modelId, e);
                 // Remove current training data in case of exceptions
