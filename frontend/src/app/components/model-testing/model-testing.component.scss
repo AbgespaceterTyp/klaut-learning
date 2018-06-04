@@ -23,7 +23,11 @@
     &__item {
       margin-right: 12px;
       display: inline;
-
+      
+      &:hover {
+        cursor: pointer;
+      }
+      
       &::before {
         margin-right: 0.3em;
         content: "\ffed";

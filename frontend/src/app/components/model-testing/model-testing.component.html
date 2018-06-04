@@ -23,7 +23,7 @@
   <div class="synonyms">
     <p>Found Synonyms:</p> 
     <ul class="synonyms-list">
-      <li class="synonyms-list__item" *ngFor="let syn of synonyms">{{syn}}</li>
+      <li class="synonyms-list__item" *ngFor="let syn of synonyms" (click)="copyAndTestSynonym($event)">{{syn}}</li>
     </ul>
   </div>
 </div>

@@ -69,7 +69,10 @@ export class ModelTestingComponent implements OnInit {
     }, 500);
   }
 
-  
+  copyAndTestSynonym(event) {
+    this.testWord = event.target.textContent;
+    this.testModel();
+  }
   
   sortByDate(): void {
     this.tdata.sort((a , b) => {
@@ -80,4 +83,6 @@ export class ModelTestingComponent implements OnInit {
   private getTime(date?: Date) {
     return date != null ? date.getTime() : 0;
   }
+
+  
 }
