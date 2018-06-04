@@ -9,7 +9,7 @@ build:backend:
     untracked: true
   script:
   - cd backend
-  - mvn install
+  - mvn install -q
 
 build:frontend:
   image: node:9.11.1
