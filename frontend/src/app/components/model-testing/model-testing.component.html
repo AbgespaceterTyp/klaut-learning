@@ -13,13 +13,17 @@
       <i class="fa fa-download fa-lg"></i>
     </button>
   </div>
-</div>
-<div class="spacer spacer--50"></div>
-<div class="row">
-  <div class="col-sm-2">
-    <input type="text">
+  <div class="col-sm-4">
+    <input class="form-control" [class.loading]="testing" type="text" placeholder="Enter Test Word" [(ngModel)]="testWord" (change)="testModel()"
+           [disabled]="!selectedTrainingData">
   </div>
-  <div class="col-sm-8">
-    <input type="text">
+</div>
+<div class="spacer spacer--20"></div>
+<div *ngIf="synonyms" class="row">
+  <div class="synonyms">
+    <p>Found Synonyms:</p> 
+    <ul class="synonyms-list">
+      <li class="synonyms-list__item" *ngFor="let syn of synonyms">{{syn}}</li>
+    </ul>
   </div>
 </div>

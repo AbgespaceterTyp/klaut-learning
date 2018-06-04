@@ -5,6 +5,7 @@ import 'rxjs/add/operator/map'
 import { ModelDto, Pageable } from '../_models';
 import { LocalStorageService } from './localstorage.service';
 import { Word2VecParams } from '../_models/params';
+import { Word2VecTestingResponse } from '../_models/testing';
 
 @Injectable()
 export class ModelService {
@@ -55,11 +56,8 @@ export class ModelService {
   test(id: String, sourceUrl: String, testWord: String) {
     let Params = new HttpParams();
 
-    // Begin assigning parameters
     Params = Params.append('modelSourceUrl', sourceUrl as string);
-    Params = Params.append('testWord', testWord as string);
-    return this.http.get('/api/' + this.localStorageService.currentOrganization.key + '/model/' + id + '/test' , {params: Params})
+    Params = Params.append('testWord', testWord.trim() as string);
+    return this.http.get<Word2VecTestingResponse>('/api/' + this.localStorageService.currentOrganization.key + '/model/' + id + '/test' , {params: Params})
   }
-
-
 }

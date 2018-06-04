@@ -9,7 +9,11 @@ export class ModelTestingComponent implements OnInit {
 
 
   selectedTrainingData: String = null;
-
+  paramTimeout = null
+  testWord = "";
+  testing = false;
+  synonyms: [String] = null;
+  
   tdata: [{
     endTimeLong: number;
     endTime: String;
@@ -22,11 +26,13 @@ export class ModelTestingComponent implements OnInit {
     this.tdata.pop();
     this.trainingData.forEach(element => {
       let d: Date = new Date(element.lastTrainingEnd);
-      this.tdata.push({
-        endTimeLong: element.lastTrainingEnd,
-        endTime: d.toDateString() + ' ' + d.toLocaleTimeString(),
-        url: element.modelUrl
-      })
+      if (element.lastTrainingEnd) {
+        this.tdata.push({
+          endTimeLong: element.lastTrainingEnd,
+          endTime: d.toDateString() + ' ' + d.toLocaleTimeString(),
+          url: element.modelUrl
+        });
+      }
     });
     console.log(this.tdata);
     
@@ -44,10 +50,20 @@ export class ModelTestingComponent implements OnInit {
   }
 
   test() {
-    this.modelService.test(this.modelId, this.selectedTrainingData, 'Text')
-    .subscribe(data => {
-      console.log(data);
-    })
+    
+  }
+
+  testModel() {
+    this.testing = true;
+    clearTimeout(this.paramTimeout);
+    
+    this.paramTimeout = setTimeout(() => {
+      this.modelService.test(this.modelId, this.selectedTrainingData, this.testWord)
+        .subscribe(data => {
+          this.synonyms = data.results;
+          this.testing = false
+        })
+    }, 500);
   }
 
 }

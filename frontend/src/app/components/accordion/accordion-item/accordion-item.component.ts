@@ -106,6 +106,7 @@ export class AccordionItemComponent implements OnInit {
           } else if (event instanceof HttpResponse) {
             this.progress.uploaded = true;
             this.uploadingFile = false;
+            this.model.sourceUrl = "please relaod";
             console.log('File is completely uploaded!');
           }
         })

@@ -1,15 +1,8 @@
 import { Word2VecParams } from "./params";
 import { TrainingData } from "./training";
+import { Word2VecTestingResponse } from "./testing";
 
-export {
-  Word2Vec,
-  ModelDto,
-  OrganizationDto,
-  UserDto,
-  Pageable,
-}
-
-class Word2Vec {
+export class Word2Vec {
   id?: String;
   name: String;
   algorithm: String;
@@ -21,26 +14,26 @@ class Word2Vec {
   trainingDuration: Number;
 }
 
-class ModelDto {
+export class ModelDto {
   id?: String;
   name: String;
   description: String;
   algorithm: String;
 }
 
-class OrganizationDto {
+export class OrganizationDto {
   constructor(public name: String,
     public key: String,
     public iconUrl: String) { }
 }
 
-class UserDto {
+export class UserDto {
   constructor(private email: String,
     private firstName: String,
     private lastName: String) { }
 }
 
 // TODO: add other necessary properties to Pageable
-class Pageable<T> {
+export class Pageable<T> {
   constructor(public content: T[]) { }
 }

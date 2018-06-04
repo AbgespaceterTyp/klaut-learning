@@ -6,7 +6,7 @@
         {{model.name}}
       </button>
       <h6 class="column-heading">{{model.algorithm}}</h6>
-      <app-loading [loading]="deleting || startTraining"></app-loading>
+      <app-loading [loading]="deleting || startTraining || loadingDesc || loadingParams"></app-loading>
       <span *ngIf="deleted" class="badge badge-danger">Deleted</span>
       <span *ngIf="model.training && !deleted" class="badge badge-success">Currently In Training</span>
       <button type="button" class="btn btn-link btn-link--red pull-right" (click)="delete()" [disabled]="deleted || deleting">
@@ -16,10 +16,10 @@
                      uploadingFile || model.training || startTraining" (click)="uploadDummy()">
         <i class="fa fa-upload fa-lg"></i>
       </button>
-      <button type="button" class="btn btn-link pull-right" (click)="train()" [disabled]="deleted || deleting || 
-                                  !trainable() || uploadingFile || 
-                                  (model.sourceUrl == null) || model.training ||
-                                  startTraining">
+      <button type="button" class="btn btn-link pull-right" (click)="train()" 
+              [disabled]="deleted || deleting || !trainable() || uploadingFile || 
+                         (model.sourceUrl == null) || model.training ||
+                         startTraining">
         <i class="fa fa-play fa-lg"></i>
       </button>
     </h5>
@@ -36,7 +36,6 @@
           <span class="section__title">Configuration</span>
         </div>
         <div class="col-sm-6">
-          <app-loading [loading]="loadingDesc"></app-loading>
           <div class="input-group">
             <textarea class="form-control textarea-description" aria-label="With textarea" [(ngModel)]="model.description" [disabled]="deleted"
               (change)="updateModel()"></textarea>
@@ -44,7 +43,6 @@
         </div>
 
         <div class="col-sm-4">
-          <app-loading [loading]="loadingParams"></app-loading>
           <span *ngIf="model.params">
             <div class="form-group row">
               <label for="minWordFrequency" class="col-sm-7 col-form-label">minWordFrequency</label>
