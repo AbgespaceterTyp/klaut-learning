@@ -34,8 +34,7 @@ export class ModelTestingComponent implements OnInit {
         });
       }
     });
-    console.log(this.tdata);
-    
+    this.sortByDate();
   }
 
   download() {
@@ -60,10 +59,25 @@ export class ModelTestingComponent implements OnInit {
     this.paramTimeout = setTimeout(() => {
       this.modelService.test(this.modelId, this.selectedTrainingData, this.testWord)
         .subscribe(data => {
-          this.synonyms = data.results;
+          if (data.results.length < 1) {
+            this.synonyms = ["none"];
+          } else {
+            this.synonyms = data.results;
+          }
           this.testing = false
         })
     }, 500);
   }
 
+  
+  
+  sortByDate(): void {
+    this.tdata.sort((a , b) => {
+      return this.getTime(new Date(b.endTimeLong)) - this.getTime(new Date(a.endTimeLong));
+    });
+  }
+  
+  private getTime(date?: Date) {
+    return date != null ? date.getTime() : 0;
+  }
 }

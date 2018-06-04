@@ -11,7 +11,11 @@
 }
 .synonyms {
   padding-left: 15px;
-  
+
+  & > p {
+    margin-bottom: 4px;
+  }
+
   &-list {
     display: inline;
     padding-left: 12px;
