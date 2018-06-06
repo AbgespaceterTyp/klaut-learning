@@ -41,6 +41,11 @@ public class ModelController {
         return new ResponseEntity<>(modelService.list(), HttpStatus.OK);
     }
 
+    @GetMapping(path = IModelControllerPathConst.GET_MAPPING)
+    public ResponseEntity<Model> get(@PathVariable String organization, @PathVariable String modelId) {
+        return new ResponseEntity<>(modelService.get(new CompositeId(organization, modelId)), HttpStatus.OK);
+    }
+
     @GetMapping(path = IModelControllerPathConst.TRAIN_DATA_MAPPING)
     public ResponseEntity<Collection<ModelTrainingDataDto>> trainingData(@PathVariable String organization, @PathVariable String modelId) {
         final Collection<ModelTrainingData> trainingsData = modelService.getTrainingData(new CompositeId(organization, modelId));

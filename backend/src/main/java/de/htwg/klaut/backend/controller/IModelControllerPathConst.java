@@ -2,6 +2,7 @@ package de.htwg.klaut.backend.controller;
 
 public interface IModelControllerPathConst {
     static String CONTROLLER_MAPPING = "{organization}/model";
+    static String GET_MAPPING = "{modelId}";
     static String TRAIN_DATA_MAPPING = "{modelId}/trainData";
     static String TEST_MAPPING = "{modelId}/test";
     static String DOWNLOAD_MAPPING = "{modelId}/download";

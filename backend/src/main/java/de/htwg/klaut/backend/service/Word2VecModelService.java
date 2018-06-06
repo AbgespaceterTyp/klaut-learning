@@ -9,19 +9,18 @@ import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.model.db.ModelTrainingData;
 import de.htwg.klaut.backend.model.db.Word2VecParams;
 import de.htwg.klaut.backend.model.dto.ModelDto;
-import de.htwg.klaut.backend.model.dto.ModelTrainingDataDto;
 import de.htwg.klaut.backend.repository.IModelRepository;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.html.Option;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 @Service
@@ -54,6 +53,11 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     public Collection<Model> list() {
         log.debug("loading models");
         return modelRepository.findByOrganization(organizationService.getCurrentOrganization());
+    }
+
+    @Override
+    public Model get(CompositeId modelId) throws ModelNotFoundException {
+        return getModelById(modelId);
     }
 
     @Override
@@ -146,7 +150,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     @Override
     public InputStream getSourceFile(String modelSourceUrl) throws SourceNotFoundException {
         final Optional<InputStream> modelSourceFile = s3StorageService.getSourceFile(modelSourceUrl);
-        if(modelSourceFile.isPresent()){
+        if (modelSourceFile.isPresent()) {
             return modelSourceFile.get();
         }
         throw new SourceNotFoundException(modelSourceUrl);
@@ -193,7 +197,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         return modelTester.test(modelSourceUrl, testWord);
     }
 
-    private Model get(CompositeId modelId) {
+    private Model getModelById(CompositeId modelId) {
         Optional<Model> modelOptional = modelRepository.findById(modelId);
         if (!modelOptional.isPresent()) {
             throw new ModelNotFoundException(modelId);
