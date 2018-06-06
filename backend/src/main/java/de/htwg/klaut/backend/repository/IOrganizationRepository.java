@@ -8,4 +8,6 @@ import org.socialsignin.spring.data.dynamodb.repository.EnableScanCount;
 @EnableScan
 @EnableScanCount
 public interface IOrganizationRepository extends DynamoDBPagingAndSortingRepository<Organization, String> {
+
+    Organization findByKey(String key);
 }

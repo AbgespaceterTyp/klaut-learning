@@ -1,6 +1,7 @@
 package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.model.db.Organization;
+import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 import de.htwg.klaut.backend.repository.IOrganizationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,5 +32,12 @@ public class OrganizationService implements IOrganizationService {
     @Override
     public void setCurrentOrganization(String organization) {
         currentOrganization.set(organization);
+    }
+
+    @Override
+    public SubscriptionInformation getSubscription() {
+        // TODO handle exceptions when no organization found (should never happen;) )
+        final Organization organization = organizationRepository.findByKey(currentOrganization.get());
+        return organization.getSubscriptionInformation();
     }
 }

@@ -24,4 +24,7 @@ public class Organization {
     @NonNull
     @DynamoDBAttribute
     private String iconUrl;
+
+    @DynamoDBAttribute
+    SubscriptionInformation subscriptionInformation;
 }

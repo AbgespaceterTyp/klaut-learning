@@ -1,6 +1,7 @@
 package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.model.db.Organization;
+import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 
 public interface IOrganizationService {
 
@@ -24,4 +25,6 @@ public interface IOrganizationService {
      * @param organization the organization to set
      */
     void setCurrentOrganization(String organization);
+
+    SubscriptionInformation getSubscription();
 }
