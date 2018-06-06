@@ -8,9 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("{organization}")
@@ -33,5 +31,11 @@ public class OrganizationController {
     @GetMapping(path = "subscription")
     public ResponseEntity<SubscriptionInformationDto> subscription(@PathVariable String organization) {
         return new ResponseEntity<>(new SubscriptionInformationDto(organizationService.getSubscription()), HttpStatus.OK);
+    }
+
+    @PutMapping(path = "subscription/")
+    public ResponseEntity setParameter(@PathVariable String organization, @RequestBody SubscriptionInformationDto subscriptionInformationDto) {
+        organizationService.updateSubscription(subscriptionInformationDto);
+        return ResponseEntity.noContent().build();
     }
 }
