@@ -22,7 +22,7 @@ import { CookieLawModule } from 'angular2-cookie-law';
 import { FooterComponent } from './components/footer/footer.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
 import { ModelTestingComponent } from './components/model-testing/model-testing.component';
-
+import 'moment-duration-format';
 @NgModule({
   declarations: [
     AppComponent,

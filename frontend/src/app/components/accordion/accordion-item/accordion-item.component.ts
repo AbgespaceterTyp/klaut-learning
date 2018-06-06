@@ -4,8 +4,8 @@ import {ModelService} from '../../../_services';
 import {Timeouts} from 'selenium-webdriver';
 import {timeout} from 'q';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
-import { faCoffee } from '@fortawesome/free-solid-svg-icons';
-
+import * as moment from 'moment';
+import 'moment-duration-format';
 
 @Component({selector: 'app-accordion-item', templateUrl: './accordion-item.component.html', styleUrls: ['./accordion-item.component.scss']})
 export class AccordionItemComponent implements OnInit {
@@ -15,7 +15,6 @@ export class AccordionItemComponent implements OnInit {
   paramTimeout = null
   loadingParams = false;
   loadingModel = false;
-  faCoffee = faCoffee;
 
   loadingDesc = false;
 
@@ -23,7 +22,7 @@ export class AccordionItemComponent implements OnInit {
   deleting = false;
 
   startTraining = false;
-
+  trainingDuration = "";
   uploadingFile = false;
 
   progress : {
@@ -53,8 +52,10 @@ export class AccordionItemComponent implements OnInit {
     this.modelService.loadModel(this.model.id)
       .subscribe(
         data => {
-          console.log(data);
           this.loadingModel = false;
+          this.model = data;
+          
+          this.trainingDuration = moment.duration(this.model.trainingDuration as number, "ms").format("mm:ss");
       });
   }
 
@@ -95,7 +96,6 @@ export class AccordionItemComponent implements OnInit {
       .subscribe(data => {
         this.deleted = true;
         this.deleting = false;
-        console.log(data);
       })
   }
 
@@ -146,7 +146,4 @@ export class AccordionItemComponent implements OnInit {
     }
     return true;
   }
-
- 
-
 }

@@ -8,7 +8,7 @@
       <h6 class="column-heading">{{model.algorithm}}</h6>
       <app-loading [loading]="deleting || startTraining || loadingDesc || loadingParams"></app-loading>
       <span *ngIf="deleted" class="badge badge-danger">Deleted</span>
-      <span *ngIf="model.training && !deleted" class="badge badge-success">Currently In Training</span>
+      <span *ngIf="model.training && !deleted" class="badge badge-success">Currently In Training {{trainingDuration}}</span>
       <button type="button" class="btn btn-link btn-link--red pull-right" (click)="delete()" [disabled]="deleted || deleting">
         <i class="fa fa-trash fa-lg"></i>
       </button>
