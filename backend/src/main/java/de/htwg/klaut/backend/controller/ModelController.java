@@ -25,10 +25,12 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import static de.htwg.klaut.backend.controller.IModelControllerPathConst.CONTROLLER_MAPPING;
+
 @Controller
-@RequestMapping(IModelControllerPathConst.CONTROLLER_MAPPING)
+@RequestMapping(CONTROLLER_MAPPING)
 @Log4j2
-public class ModelController {
+public class ModelController implements IModelControllerPathConst {
 
     private IModelService<Word2VecParams> modelService;
 
@@ -41,12 +43,12 @@ public class ModelController {
         return new ResponseEntity<>(modelService.list(), HttpStatus.OK);
     }
 
-    @GetMapping(path = IModelControllerPathConst.GET_MAPPING)
+    @GetMapping(path = GET_MAPPING)
     public ResponseEntity<Model> get(@PathVariable String organization, @PathVariable String modelId) {
         return new ResponseEntity<>(modelService.get(new CompositeId(organization, modelId)), HttpStatus.OK);
     }
 
-    @GetMapping(path = IModelControllerPathConst.TRAIN_DATA_MAPPING)
+    @GetMapping(path = TRAIN_DATA_MAPPING)
     public ResponseEntity<Collection<ModelTrainingDataDto>> trainingData(@PathVariable String organization, @PathVariable String modelId) {
         final Collection<ModelTrainingData> trainingsData = modelService.getTrainingData(new CompositeId(organization, modelId));
         List<ModelTrainingDataDto> results = new LinkedList<>();
@@ -56,13 +58,13 @@ public class ModelController {
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
-    @GetMapping(path = IModelControllerPathConst.TEST_MAPPING)
+    @GetMapping(path = TEST_MAPPING)
     public ResponseEntity<ModelTestResultDto> test(@PathVariable String organization, @RequestParam String modelSourceUrl, @RequestParam String testWord) {
         final Collection<String> testResults = modelService.test(modelSourceUrl, testWord);
         return new ResponseEntity<>(new ModelTestResultDto(testResults), HttpStatus.OK);
     }
 
-    @GetMapping(path = IModelControllerPathConst.DOWNLOAD_MAPPING)
+    @GetMapping(path = DOWNLOAD_MAPPING)
     public void download(@RequestParam String modelSourceUrl, HttpServletResponse response) {
         try {
             InputStream is = modelService.getSourceFile(modelSourceUrl);
@@ -79,25 +81,25 @@ public class ModelController {
         return new ResponseEntity<>(new IdDto(model.getId()), HttpStatus.CREATED);
     }
 
-    @PutMapping(path = IModelControllerPathConst.UPDATE_MAPPING)
+    @PutMapping(path = UPDATE_MAPPING)
     public ResponseEntity update(@PathVariable String organization, @RequestBody ModelDto modelDto, @PathVariable String modelId) {
         modelService.update(new CompositeId(organization, modelId), modelDto);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = IModelControllerPathConst.PARAM_MAPPING)
+    @PutMapping(path = PARAM_MAPPING)
     public ResponseEntity setParameter(@PathVariable String organization, @RequestBody Word2VecParams params, @PathVariable String modelId) {
         modelService.setParams(new CompositeId(organization, modelId), params);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = IModelControllerPathConst.TRAIN_MAPPING)
+    @PutMapping(path = TRAIN_MAPPING)
     public ResponseEntity train(@PathVariable String organization, @PathVariable String modelId) {
         modelService.train(new CompositeId(organization, modelId));
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping(path = IModelControllerPathConst.SOURCE_MAPPING)
+    @PutMapping(path = SOURCE_MAPPING)
     public ResponseEntity addSource(@PathVariable String organization, @RequestBody MultipartFile fileToUpload, @PathVariable String modelId) {
         if (fileToUpload.isEmpty()) {
             return ResponseEntity.badRequest().build();
@@ -106,7 +108,7 @@ public class ModelController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping(path = IModelControllerPathConst.DELETE_MAPPING)
+    @DeleteMapping(path = DELETE_MAPPING)
     public ResponseEntity delete(@PathVariable String organization, @PathVariable String modelId) {
         modelService.delete(new CompositeId(organization, modelId));
         return ResponseEntity.ok().build();
