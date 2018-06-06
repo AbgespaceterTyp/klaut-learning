@@ -33,9 +33,9 @@ public class ModelTrainer {
         BasicLineIterator iterator = prepareSourceFile(modelToTrain);
         Word2Vec word2VecModel = trainModel(iterator, modelToTrain);
 
-        Optional<String> modelUrlOpt = s3StorageService.addSourceFile(word2VecModel);
+        Optional<String> modelUrlOpt = s3StorageService.addSourceFile(word2VecModel, organization);
         if (!modelUrlOpt.isPresent()) {
-            throw new SourceCreationException(new CompositeId(modelToTrain.getOrganization(), modelToTrain.getId()));
+            throw new SourceCreationException(new CompositeId(organization, modelToTrain.getId()));
         }
 
         // Update training data after
@@ -44,7 +44,7 @@ public class ModelTrainer {
         return modelToTrain;
     }
 
-    private BasicLineIterator prepareSourceFile(Model modelToTrain) throws IOException{
+    private BasicLineIterator prepareSourceFile(Model modelToTrain) throws IOException {
         Optional<InputStream> sourceFileOpt = s3StorageService.getSourceFile(modelToTrain.getSourceUrl());
         if (!sourceFileOpt.isPresent()) {
             throw new SourceNotFoundException(modelToTrain.getId());
