@@ -13,16 +13,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
-@RequestMapping("{organization}/user")
-public class UserController {
+@RequestMapping("{organization}")
+public class OrganizationController {
 
     private final IOrganizationService organizationService;
 
-    public UserController(IOrganizationService organizationService){
+    public OrganizationController(IOrganizationService organizationService){
         this.organizationService = organizationService;
     }
 
-    @GetMapping(path = "me")
+    @GetMapping(path = "user/me")
     public ResponseEntity<UserDto> currentUser(@PathVariable String organization) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
