@@ -20,7 +20,8 @@ public class OrganizationService implements IOrganizationService {
 
     @Override
     public Organization createOrganization(String name, String iconUrl) {
-        return organizationRepository.save(new Organization(name, iconUrl));
+        // TODO set correct organization key
+        return organizationRepository.save(new Organization(name, iconUrl, name.trim().toLowerCase(), new SubscriptionInformation()));
     }
 
 
