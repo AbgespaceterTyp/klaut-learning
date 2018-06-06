@@ -4,6 +4,8 @@ import {ModelService} from '../../../_services';
 import {Timeouts} from 'selenium-webdriver';
 import {timeout} from 'q';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
+import { faCoffee } from '@fortawesome/free-solid-svg-icons';
+
 
 @Component({selector: 'app-accordion-item', templateUrl: './accordion-item.component.html', styleUrls: ['./accordion-item.component.scss']})
 export class AccordionItemComponent implements OnInit {
@@ -12,6 +14,8 @@ export class AccordionItemComponent implements OnInit {
 
   paramTimeout = null
   loadingParams = false;
+  loadingModel = false;
+  faCoffee = faCoffee;
 
   loadingDesc = false;
 
@@ -44,6 +48,16 @@ export class AccordionItemComponent implements OnInit {
     }
   }
 
+  updateModel() {
+    this.loadingModel = true;
+    this.modelService.loadModel(this.model.id)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.loadingModel = false;
+      });
+  }
+
   updateParams() {
     clearTimeout(this.paramTimeout);
     this.loadingParams = true;
@@ -58,7 +72,7 @@ export class AccordionItemComponent implements OnInit {
     }, 500);
   }
 
-  updateModel() {
+  updateModelText() {
     clearTimeout(this.paramTimeout);
     this.loadingDesc = true;
 
@@ -120,7 +134,6 @@ export class AccordionItemComponent implements OnInit {
       .train(this.model.id)
       .subscribe(data => {
         this.model.training = true;
-        console.log('training', data);
         this.startTraining = false;
       });
   }
@@ -133,5 +146,7 @@ export class AccordionItemComponent implements OnInit {
     }
     return true;
   }
+
+ 
 
 }

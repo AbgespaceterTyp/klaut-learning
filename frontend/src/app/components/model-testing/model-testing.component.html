@@ -15,7 +15,7 @@
   </div>
   <div class="col-sm-4">
     <input class="form-control" [class.loading]="testing" type="text" placeholder="Enter Test Word" [(ngModel)]="testWord" (change)="testModel()"
-           [disabled]="!selectedTrainingData">
+           [disabled]="!selectedTrainingData || testing">
   </div>
 </div>
 <div class="spacer spacer--20"></div>
