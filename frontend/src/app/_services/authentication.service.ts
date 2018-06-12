@@ -3,25 +3,37 @@ import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from './localstorage.service';
 import { OrganizationService } from './organization.service';
 import 'rxjs/add/operator/map'
-import { OrganizationDto } from '../_models';
+import 'rxjs/add/operator/mergeMap'
+import { OrganizationDto, SearchOrganizationRequestDto, SearchOrganizationResponsetDto } from '../_models';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class AuthenticationService {
     constructor(private http: HttpClient, private localStorageService: LocalStorageService, private organizationService: OrganizationService) { }
 
-    login(username: string, organization: string, password: string) {
-        this.localStorageService.currentOrganization = new OrganizationDto("", organization, "");
-
-        return this.http.get<any>('/api/' + organization + '/user/me', { headers: { 'Authorization': 'Basic ' + btoa(username + ":" + password) } })
-            .map(user => {
-                if (user) {
-                    this.localStorageService.currentUser = user.email;
-                    this.organizationService.loadCurrent();
+    login(username: string, organizationName: string, password: string) {
+        return this.fetchOrganizationKey(organizationName)
+            .flatMap(organizationKey => {
+                this.localStorageService.currentOrganization = new OrganizationDto(organizationName, organizationKey);
+                return this.http.get<any>('/api/' + organizationKey + '/user/me',
+                    { headers: { 'Authorization': 'Basic ' + btoa(username + ":" + password) } })
+                    .map(user => {
+                        if (user) {
+                            this.localStorageService.currentUser = user.email;
+                        }
+                        return user;
+                    });
+            })
+    }
+    private fetchOrganizationKey(organizationName: string): Observable<String> {
+        let searchOrganizationRequestDto: SearchOrganizationRequestDto = new SearchOrganizationRequestDto(organizationName);
+        return this.http.post<SearchOrganizationResponsetDto>('/api/organization/key', searchOrganizationRequestDto)
+            .map(searchOrganizationResponsetDto => {
+                if (searchOrganizationResponsetDto) {
+                    return searchOrganizationResponsetDto.organizationKey
                 }
-                return user;
             });
     }
-
     loggedIn() {
         return this.localStorageService.currentUser &&
             this.localStorageService.currentOrganization ? true : false

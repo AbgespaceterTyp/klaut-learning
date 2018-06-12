@@ -10,9 +10,4 @@ import { Word2VecParams } from '../_models/params';
 export class OrganizationService {
 
     constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
-
-    loadCurrent() {
-        // TODO: Load from backend
-        this.localStorageService.currentOrganization = new OrganizationDto("test", "klaut-learning2", "https://picsum.photos/300/300/?random");
-    }
 }

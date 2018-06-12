@@ -12,13 +12,12 @@ export class LocalStorageService {
         let name = localStorage[LocalStorageService.ORG_NAME]
         let key = localStorage[LocalStorageService.ORG_KEY]
         let iconUrl = localStorage[LocalStorageService.ORG_ICON]
-        return new OrganizationDto(name, key, iconUrl)
+        return new OrganizationDto(name, key)
     }
 
     set currentOrganization(organization: OrganizationDto) {
         localStorage[LocalStorageService.ORG_KEY] = organization.key;
         localStorage[LocalStorageService.ORG_NAME] = organization.name;
-        localStorage[LocalStorageService.ORG_ICON] = organization.iconUrl;
     }
 
     removeCurrentOrganization() {

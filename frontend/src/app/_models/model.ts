@@ -23,8 +23,7 @@ export class ModelDto {
 
 export class OrganizationDto {
   constructor(public name: String,
-    public key: String,
-    public iconUrl: String) { }
+    public key: String) { }
 }
 
 export class UserDto {
@@ -32,6 +31,15 @@ export class UserDto {
     private firstName: String,
     private lastName: String) { }
 }
+
+export class SearchOrganizationRequestDto {
+  constructor(private organizationName: String) { }
+}
+
+export class SearchOrganizationResponsetDto {
+  constructor(public organizationKey: String) { }
+}
+
 
 // TODO: add other necessary properties to Pageable
 export class Pageable<T> {
