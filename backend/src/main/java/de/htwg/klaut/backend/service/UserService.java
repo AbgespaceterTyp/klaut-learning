@@ -2,26 +2,33 @@ package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.model.db.CloudUser;
 import de.htwg.klaut.backend.repository.IUserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class UserService implements UserDetailsService, IUserService {
 
     private IUserRepository userRepository;
 
     private IOrganizationService organizationService;
 
-    public UserService(IUserRepository userRepository, IOrganizationService organizationService) {
+    private PasswordEncoder passwordEncoder;
+
+    public UserService(IUserRepository userRepository, IOrganizationService organizationService,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.organizationService = organizationService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -29,7 +36,7 @@ public class UserService implements UserDetailsService, IUserService {
         // Username = email
         String currentOrganization = organizationService.getCurrentOrganization();
 
-        Optional<CloudUser> cloudUser = userRepository.readByEmailAndOrganization(s, currentOrganization);
+        Optional<CloudUser> cloudUser = userRepository.findByEmailAndOrganization(s, currentOrganization);
 
         if (cloudUser.isPresent()) {
             CloudUser user = cloudUser.get();
@@ -43,5 +50,21 @@ public class UserService implements UserDetailsService, IUserService {
     @Override
     public CloudUser save(CloudUser cloudUser) {
         return userRepository.save(cloudUser);
+    }
+
+    @Override
+    public CloudUser create(String email, String firstName, String lastName, String password, String organizationKey) {
+        log.debug("creating user", email);
+
+        String passwordHash = passwordEncoder.encode(password);
+        CloudUser user = CloudUser.builder()
+                .email(email)
+                .firstName(firstName)
+                .lastName(lastName)
+                .passwordHash(passwordHash)
+                .build();
+        user.setOrganization(organizationKey);
+
+        return save(user);
     }
 }

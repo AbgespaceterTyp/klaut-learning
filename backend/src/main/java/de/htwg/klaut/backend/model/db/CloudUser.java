@@ -2,31 +2,28 @@ package de.htwg.klaut.backend.model.db;
 
 import com.amazonaws.services.dynamodbv2.datamodeling.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
 import org.springframework.data.annotation.Id;
 
 @DynamoDBTable(tableName = "user")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class CloudUser {
 
     @Id
     private CompositeId compositeId;
 
-    @NonNull
     @DynamoDBAttribute
     private String email;
 
-    @NonNull
     @DynamoDBAttribute
     private String firstName;
 
-    @NonNull
     @DynamoDBAttribute
     private String lastName;
 
-    @NonNull
     @DynamoDBAttribute
     private String passwordHash;
 

@@ -11,5 +11,5 @@ import java.util.Optional;
 @EnableScan
 @EnableScanCount
 public interface IUserRepository extends DynamoDBPagingAndSortingRepository<CloudUser, CompositeId> {
-    Optional<CloudUser> readByEmailAndOrganization(String email, String organization);
+    Optional<CloudUser> findByEmailAndOrganization(String email, String organization);
 }

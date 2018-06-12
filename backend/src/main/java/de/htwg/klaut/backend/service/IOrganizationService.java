@@ -4,6 +4,8 @@ import de.htwg.klaut.backend.model.db.Organization;
 import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 import de.htwg.klaut.backend.model.dto.SubscriptionInformationDto;
 
+import java.util.Optional;
+
 public interface IOrganizationService {
 
     /**
@@ -30,4 +32,6 @@ public interface IOrganizationService {
     SubscriptionInformation getSubscription();
 
     SubscriptionInformation updateSubscription(SubscriptionInformationDto subscriptionInformationDto);
+
+    Optional<Organization> findByName(String name);
 }

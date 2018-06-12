@@ -1,5 +1,6 @@
 package de.htwg.klaut.backend.config;
 
+import de.htwg.klaut.backend.controller.IOrganizationControllerPathConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +16,14 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private static final String[] AUTH_WHITELIST = {
+    public static final String[] AUTH_WHITELIST = {
             // -- swagger ui
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v2/api-docs",
-            "/webjars/**"
+            "/webjars/**",
+            IOrganizationControllerPathConst.ORGANIZATION_MAPPING,
+            IOrganizationControllerPathConst.ORGANIZATION_KEY_MAPPING
     };
 
     @Autowired
@@ -59,4 +62,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(organizationFilter, BasicAuthenticationFilter.class);
     }
+
 }
