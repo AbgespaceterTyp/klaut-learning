@@ -2,6 +2,7 @@ import {Component, OnInit, Input} from '@angular/core';
 import {TrainingData} from '../../_models/training';
 import { ModelService } from '../../_services';
 
+
 @Component({selector: 'app-model-testing', templateUrl: './model-testing.component.html', styleUrls: ['./model-testing.component.scss']})
 export class ModelTestingComponent implements OnInit {
   @Input('trainingData')trainingData : [TrainingData];
@@ -35,21 +36,16 @@ export class ModelTestingComponent implements OnInit {
       }
     });
     this.sortByDate();
+    
   }
 
   download() {
-    console.log(this.selectedTrainingData);
-    this.modelService.download(this.modelId, this.selectedTrainingData);
-    // .subscribe(blob => {
-    //   var link=document.createElement('a');
-    //   link.href=window.URL.createObjectURL(blob);
-    //   link.download="any name + extension";
-    //   link.click();
+    // console.log(this.selectedTrainingData);
+    // this.modelService.download(this.modelId, this.selectedTrainingData)
+    // .subscribe(data => {
+    //   const fileName = getFileNameFromResponseContentDisposition(data);
+    //   saveFile(data.blob(), fileName);
     // });
-  }
-
-  test() {
-    
   }
 
   testModel() {

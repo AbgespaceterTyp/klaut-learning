@@ -14,6 +14,10 @@ export class OrganizationComponent implements OnInit {
 
   ngOnInit() {
     this.organization = this.localStorageService.currentOrganization;
+    this.organizationService.getSubscription().subscribe(data => {
+      console.log(data);
+
+    })
   }
 
 }

@@ -1,6 +1,5 @@
 import { Word2VecParams } from "./params";
 import { TrainingData } from "./training";
-import { Word2VecTestingResponse } from "./testing";
 
 export class Word2Vec {
   id?: String;

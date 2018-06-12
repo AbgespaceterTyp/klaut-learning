@@ -54,7 +54,8 @@ export class ModelService {
   }
 
   download(id: String, sourceUrl: String) {
- 
+    let params = new HttpParams().set('modelSourceUrl', sourceUrl as string);
+    this.http.get('/api/' + this.localStorageService.currentOrganization.key + '/model/' + id + '/download', { params: params })
   }
 
   test(id: String, sourceUrl: String, testWord: String) {

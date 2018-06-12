@@ -1,4 +1,46 @@
 <div class="mt-2">
   <h2 class="text-center">{{organization.name}}</h2>
 </div>
-<app-user [organization]="organization"></app-user>
+<div class="accordion" id="organization">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h5 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Users
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#organization">
+      <div class="card-body" id="orgBody">
+        <app-user [organization]="organization"></app-user>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h5 class="mb-0">
+        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+          Subscription
+        </button>
+      </h5>
+    </div>
+
+    <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#organization">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-4">
+            <p>Remaining Training</p>
+            <p>5</p>
+          </div>
+          <div class="col-sm-4">
+            <p>Subscription Level</p>
+          </div>
+          <div class="col-sm-4">
+            <p>Max. Upload sourcefile size (kb)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
