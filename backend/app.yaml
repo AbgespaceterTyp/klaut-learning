@@ -12,7 +12,7 @@ resources:
     size_gb: 0.5
 
 automatic_scaling:
-  min_num_instances: 0
+  min_num_instances: 1
   max_num_instances: 5
   cool_down_period_sec: 120
   cpu_utilization:
