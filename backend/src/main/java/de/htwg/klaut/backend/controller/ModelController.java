@@ -1,15 +1,13 @@
 package de.htwg.klaut.backend.controller;
 
 
-import de.htwg.klaut.backend.model.db.CompositeId;
-import de.htwg.klaut.backend.model.db.Model;
-import de.htwg.klaut.backend.model.db.ModelTrainingData;
-import de.htwg.klaut.backend.model.db.Word2VecParams;
+import de.htwg.klaut.backend.model.db.*;
 import de.htwg.klaut.backend.model.dto.IdDto;
 import de.htwg.klaut.backend.model.dto.ModelDto;
 import de.htwg.klaut.backend.model.dto.ModelTestResultDto;
 import de.htwg.klaut.backend.model.dto.ModelTrainingDataDto;
 import de.htwg.klaut.backend.service.IModelService;
+import de.htwg.klaut.backend.service.IOrganizationService;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
@@ -33,9 +31,11 @@ import static de.htwg.klaut.backend.controller.IModelControllerPathConst.CONTROL
 public class ModelController implements IModelControllerPathConst {
 
     private IModelService<Word2VecParams> modelService;
+    private final IOrganizationService organizationService;
 
-    public ModelController(IModelService<Word2VecParams> modelService) {
+    public ModelController(IModelService<Word2VecParams> modelService, IOrganizationService organizationService) {
         this.modelService = modelService;
+        this.organizationService = organizationService;
     }
 
     @GetMapping
@@ -95,7 +95,18 @@ public class ModelController implements IModelControllerPathConst {
 
     @PutMapping(path = TRAIN_MAPPING)
     public ResponseEntity train(@PathVariable String organization, @PathVariable String modelId) {
+        final SubscriptionInformation subscription = organizationService.getSubscription();
+        if(modelService.getAmountOfModelsInTraining() >= subscription.getMaxTrainings()){
+            return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).build();
+        }
+
         modelService.train(new CompositeId(organization, modelId));
+
+        // Update subscription after training started
+        final int remainingTrainings = subscription.getRemainingTrainings()-1;
+        subscription.setRemainingTrainings(remainingTrainings);
+        organizationService.updateSubscription(subscription);
+
         return ResponseEntity.noContent().build();
     }
 
@@ -104,6 +115,13 @@ public class ModelController implements IModelControllerPathConst {
         if (fileToUpload.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
+
+        long kbToUpload = fileToUpload.getSize() * 1024;
+        final SubscriptionInformation subscription = organizationService.getSubscription();
+        if(kbToUpload > subscription.getMaxUploadInKb()){
+            return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).build();
+        }
+
         modelService.addSourceFile(new CompositeId(organization, modelId), fileToUpload);
         return ResponseEntity.noContent().build();
     }

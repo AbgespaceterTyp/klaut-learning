@@ -33,7 +33,7 @@ public class OrganizationController {
     }
 
     @PostMapping(IOrganizationControllerPathConst.SUBSCRIPTION_MAPPING)
-    public ResponseEntity setParameter(@PathVariable String organization, @RequestBody SubscriptionInformationDto subscriptionInformationDto) {
+    public ResponseEntity updateSubscription(@PathVariable String organization, @RequestBody SubscriptionInformationDto subscriptionInformationDto) {
         organizationService.updateSubscription(subscriptionInformationDto);
         return ResponseEntity.noContent().build();
     }

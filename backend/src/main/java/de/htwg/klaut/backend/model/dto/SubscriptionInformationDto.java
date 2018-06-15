@@ -3,7 +3,9 @@ package de.htwg.klaut.backend.model.dto;
 import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 import de.htwg.klaut.backend.model.db.SubscriptionLevel;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
 @Data
 public class SubscriptionInformationDto {
     private int maxTrainings = 1; // 1 default value for free subscription

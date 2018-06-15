@@ -1,6 +1,7 @@
 package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.exception.OrganizationCreationException;
+import de.htwg.klaut.backend.exception.OrganizationNotFoundException;
 import de.htwg.klaut.backend.model.db.Organization;
 import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 import de.htwg.klaut.backend.model.dto.SubscriptionInformationDto;
@@ -30,7 +31,9 @@ public interface IOrganizationService {
      */
     void setCurrentOrganization(String organization);
 
-    SubscriptionInformation getSubscription();
+    SubscriptionInformation getSubscription() throws OrganizationNotFoundException;
+
+    SubscriptionInformation updateSubscription(SubscriptionInformation subscriptionInformation) throws OrganizationNotFoundException;
 
     SubscriptionInformation updateSubscription(SubscriptionInformationDto subscriptionInformationDto);
 

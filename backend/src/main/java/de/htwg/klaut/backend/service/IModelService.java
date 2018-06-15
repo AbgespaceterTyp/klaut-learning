@@ -102,6 +102,12 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
      */
     Model delete(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
 
+
+    /**
+     * @return the amount of models in training
+     */
+    int getAmountOfModelsInTraining();
+
     /**
      * Get {@Link Collection<ModelTrainingData>} for {@Link Model} with given {@Link CompositeId}.
      *

@@ -59,6 +59,11 @@ public class OrganizationService implements IOrganizationService {
     }
 
     @Override
+    public SubscriptionInformation updateSubscription(SubscriptionInformation subscriptionInformation) throws OrganizationNotFoundException {
+        return updateSubscription(new SubscriptionInformationDto(subscriptionInformation));
+    }
+
+    @Override
     public SubscriptionInformation updateSubscription(SubscriptionInformationDto subscriptionInformationDto) throws OrganizationNotFoundException {
         final Organization organization = get(currentOrganization.get());
         SubscriptionInformation subscriptionInformationToUpdate = organization.getSubscriptionInformation();
@@ -67,7 +72,24 @@ public class OrganizationService implements IOrganizationService {
         }
         subscriptionInformationToUpdate.setSubscriptionLevel(subscriptionInformationDto.getSubscriptionLevel());
         subscriptionInformationToUpdate.setRemainingTrainings(subscriptionInformationToUpdate.getRemainingTrainings() + subscriptionInformationDto.getRemainingTrainings());
-        subscriptionInformationToUpdate.setMaxTrainings(subscriptionInformationDto.getMaxTrainings());
+
+        switch (subscriptionInformationDto.getSubscriptionLevel()){
+            case FREE:
+                subscriptionInformationToUpdate.setMaxTrainings(1);
+                break;
+            case COOPER:
+                subscriptionInformationToUpdate.setMaxTrainings(5);
+                break;
+            case SILVER:
+                subscriptionInformationToUpdate.setMaxTrainings(10);
+                break;
+            case GOLD:
+                subscriptionInformationToUpdate.setMaxTrainings(25);
+                break;
+            case PLATIN:
+                subscriptionInformationToUpdate.setMaxTrainings(50);
+                break;
+        }
 
         // Previous subscription was free? -> upgrade max upload size in kb
         // This needs to be done only once when upgrading from free to any other subscription level
@@ -75,6 +97,9 @@ public class OrganizationService implements IOrganizationService {
                 !SubscriptionLevel.FREE.equals(subscriptionInformationDto.getSubscriptionLevel())) {
             subscriptionInformationToUpdate.setMaxUploadInKb(SubscriptionInformation.NORMAL_SUBS_MAX_UPLOAD_IN_KB);
         }
+
+        organization.setSubscriptionInformation(subscriptionInformationToUpdate);
+        organizationRepository.save(organization);
         return subscriptionInformationToUpdate;
     }
 

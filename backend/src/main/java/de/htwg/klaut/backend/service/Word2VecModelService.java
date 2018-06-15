@@ -191,6 +191,19 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
+    public int getAmountOfModelsInTraining() {
+        int result = 0;
+
+        final Collection<Model> modelsForOrganization = modelRepository.findByOrganization(organizationService.getCurrentOrganization());
+        for (Model model : modelsForOrganization) {
+           if(model.isTraining()){
+               result++;
+           }
+        }
+        return result;
+    }
+
+    @Override
     public Collection<String> test(String modelSourceUrl, String testWord) throws ModelNotFoundException, SourceNotFoundException {
         log.debug("test model at {} with word {}", modelSourceUrl, testWord);
 

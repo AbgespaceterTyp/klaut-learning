@@ -32,26 +32,4 @@ public class SubscriptionConverter implements DynamoDBTypeConverter<String, Subs
         }
         return null;
     }
-
-   /* @Override
-    public String convert(IModelParams modelParams) {
-        try {
-            return mapper.writeValueAsString(modelParams);
-        } catch (JsonProcessingException e) {
-            logger.error(e);
-        }
-        return null;
-    }
-
-    @Override
-    public IModelParams unconvert(String s) {
-        try {
-            // TODO LG allow other param types too
-            return mapper.readValue(s, Word2VecParams.class);
-        } catch (IOException e) {
-            logger.error(e);
-        }
-        return null;
-    }*/
-
 }
