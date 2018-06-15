@@ -22,7 +22,6 @@ export class OrganizationComponent implements OnInit {
     this.organizationService.getSubscription()
       .subscribe(data => {
         this.subscription = data;
-        console.log(this.subscription);
         this.loadingSubscription = false;
       })
   }

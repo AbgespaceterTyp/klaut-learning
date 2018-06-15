@@ -9,18 +9,17 @@
       <app-loading [loading]="deleting || startTraining || loadingDesc || loadingParams"></app-loading>
       <span *ngIf="deleted" class="badge badge-danger">Deleted</span>
       <span *ngIf="model.training && !deleted" class="badge badge-success">Currently In Training {{trainingDuration}}</span>
-      <button type="button" class="btn btn-link btn-link--red pull-right" (click)="delete()" [disabled]="deleted || deleting">
+      <button type="button" class="btn btn-link btn-link--red pull-right" (click)="delete()" [disabled]="deleted || deleting || model.training ||  startTraining">
         <i class="fa fa-trash fa-lg"></i>
       </button>
-      <button type="button" class="btn btn-link pull-right" value="" [disabled]="deleted || deleting || 
-        uploadingFile || model.training || startTraining" (click)="uploadDummy()">
+      <button type="button" class="btn btn-link pull-right" value="" [disabled]="deleted || deleting || uploadingFile ||
+                         model.training || startTraining" (click)="uploadDummy()">
         <i class="fa fa-upload fa-lg"></i>
       </button>
       <button type="button" class="btn btn-link pull-right" (click)="updateModel()" [disabled]="deleted || deleting || !trainable()">
         <i class="fa fa-sync fa-lg" [class.fa-spin]="loadingModel"></i>
       </button>
-      <button type="button" class="btn btn-link pull-right" (click)="train()" 
-              [disabled]="deleted || deleting || !trainable() || uploadingFile || 
+      <button type="button" class="btn btn-link pull-right" (click)="train()" [disabled]="deleted || deleting || !trainable() || uploadingFile ||
                          (model.sourceUrl == null) || model.training ||
                          startTraining">
         <i class="fa fa-play fa-lg"></i>

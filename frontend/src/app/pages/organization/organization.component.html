@@ -28,7 +28,7 @@
     </div>
 
     <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#organization">
-      <div class="card-body">
+      <div class="card-body" id="subBody">
         <table class="table table-hover">
           <thead class="thead-light">
             <tr>
@@ -43,22 +43,15 @@
             <tr>
               <td>
                 <p *ngIf="subscription">{{subscription.maxTrainings}}</p>
-                <p>test</p>
               </td>
               <td>
-                <p>Remaining Training</p>
                 <p *ngIf="subscription">{{subscription.remainingTrainings}}</p>
               </td>
               <td>
-                <p>Max. Upload sourcefile size (kb)</p>
                 <p *ngIf="subscription">{{subscription.maxUploadInKb}}</p>
-                <p>test</p>
               </td>
-
               <td>
-                <p>Subscription Level</p>
                 <p *ngIf="subscription">{{subscription.subscriptionLevel}}</p>
-                <p>test</p>
               </td>
             </tr>
           </tbody>

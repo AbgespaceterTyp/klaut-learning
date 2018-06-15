@@ -21,9 +21,7 @@ export class HomeComponent implements OnInit {
   ngOnInit() {
     this.loading = true;
     enable("windcatcher");
-    this
-      .modelService
-      .load()
+    this.modelService.load()
       .subscribe(data => {
         this.models = data;
         destroy();
@@ -35,14 +33,10 @@ export class HomeComponent implements OnInit {
     if (this.modelDto.name.length > 3) {
       this.loading = true;
       enable("windcatcher");
-      this
-        .modelService
-        .create(this.modelDto)
+      this.modelService.create(this.modelDto)
         .subscribe(data => {
           let id = data as any;
-          this
-            .models
-            .unshift({id: id.id, name: this.modelDto.name, algorithm: this.modelDto.algorithm, description: this.modelDto.description})
+          this.models.unshift({id: id.id, name: this.modelDto.name, algorithm: this.modelDto.algorithm, description: this.modelDto.description});
           this.modelDto.description = "";
           this.modelDto.name = "";
           destroy();

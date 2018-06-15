@@ -1,8 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Word2Vec} from '../../../_models';
 import {ModelService} from '../../../_services';
-import {Timeouts} from 'selenium-webdriver';
-import {timeout} from 'q';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
 import * as moment from 'moment';
 import 'moment-duration-format';
@@ -54,7 +52,7 @@ export class AccordionItemComponent implements OnInit {
         data => {
           this.loadingModel = false;
           this.model = data;
-          
+
           this.trainingDuration = moment.duration(this.model.trainingDuration as number, "ms").format("mm:ss");
       });
   }
@@ -64,9 +62,7 @@ export class AccordionItemComponent implements OnInit {
     this.loadingParams = true;
 
     this.paramTimeout = setTimeout(() => {
-      this
-        .modelService
-        .updateParams(this.model.params, this.model.id)
+      this.modelService.updateParams(this.model.params, this.model.id)
         .subscribe(data => {
           this.loadingParams = false;
         });
@@ -78,9 +74,7 @@ export class AccordionItemComponent implements OnInit {
     this.loadingDesc = true;
 
     this.paramTimeout = setTimeout(() => {
-      this
-        .modelService
-        .update(this.model, this.model.id)
+      this.modelService.update(this.model, this.model.id)
         .subscribe(data => {
           this.loadingDesc = false;
         });
@@ -90,9 +84,7 @@ export class AccordionItemComponent implements OnInit {
 
   delete() {
     this.deleting = true;
-    this
-      .modelService
-      .delete(this.model.id)
+    this.modelService.delete(this.model.id)
       .subscribe(data => {
         this.deleted = true;
         this.deleting = false;
@@ -111,9 +103,7 @@ export class AccordionItemComponent implements OnInit {
     this.progress.uploaded = false;
     let files = event.target.files;
     if (files.length > 0) {
-      this
-        .modelService
-        .uploadFile(files[0], this.model.id)
+      this.modelService.uploadFile(files[0], this.model.id)
         .subscribe(event => {
           if (event.type === HttpEventType.UploadProgress) {
             this.progress.percentage = Math.round(100 * event.loaded / event.total);
@@ -129,11 +119,13 @@ export class AccordionItemComponent implements OnInit {
 
   train() {
     this.startTraining = true;
-    this
-      .modelService
-      .train(this.model.id)
+    this.modelService.train(this.model.id)
       .subscribe(data => {
         this.model.training = true;
+        this.startTraining = false;
+      },
+      error => {
+        alert(error.statusText);
         this.startTraining = false;
       });
   }
