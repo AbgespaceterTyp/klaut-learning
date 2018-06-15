@@ -116,7 +116,7 @@ public class ModelController implements IModelControllerPathConst {
             return ResponseEntity.badRequest().build();
         }
 
-        long kbToUpload = fileToUpload.getSize() * 1024;
+        long kbToUpload = fileToUpload.getSize() / 1024;
         final SubscriptionInformation subscription = organizationService.getSubscription();
         if(kbToUpload > subscription.getMaxUploadInKb()){
             return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).build();
