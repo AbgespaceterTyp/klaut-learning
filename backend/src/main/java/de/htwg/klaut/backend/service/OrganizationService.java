@@ -1,5 +1,6 @@
 package de.htwg.klaut.backend.service;
 
+import de.htwg.klaut.backend.exception.OrganizationCreationException;
 import de.htwg.klaut.backend.exception.OrganizationNotFoundException;
 import de.htwg.klaut.backend.model.db.Organization;
 import de.htwg.klaut.backend.model.db.SubscriptionInformation;
@@ -25,9 +26,14 @@ public class OrganizationService implements IOrganizationService {
     }
 
     @Override
-    public Organization createOrganization(String name, String iconUrl) {
+    public Organization createOrganization(String name, String iconUrl) throws OrganizationCreationException {
         log.debug("creating organization", name);
-        // TODO: exception if organization name is already in use
+
+        final Optional<Organization> existingOrganization = organizationRepository.findByName(name);
+        if(existingOrganization.isPresent()){
+            throw new OrganizationCreationException(name);
+        }
+
         Organization organization = Organization.builder()
                 .iconUrl(iconUrl)
                 .name(name)

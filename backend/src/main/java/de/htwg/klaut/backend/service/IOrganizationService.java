@@ -1,5 +1,6 @@
 package de.htwg.klaut.backend.service;
 
+import de.htwg.klaut.backend.exception.OrganizationCreationException;
 import de.htwg.klaut.backend.model.db.Organization;
 import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 import de.htwg.klaut.backend.model.dto.SubscriptionInformationDto;
@@ -14,7 +15,7 @@ public interface IOrganizationService {
      * @param iconUrl the icon url of new organization
      * @return the updated {@Link Organization}
      */
-    Organization createOrganization(String name, String iconUrl);
+    Organization createOrganization(String name, String iconUrl) throws OrganizationCreationException;
 
     /**
      * IMPORTANT: This Method result value depends on calling thread.
