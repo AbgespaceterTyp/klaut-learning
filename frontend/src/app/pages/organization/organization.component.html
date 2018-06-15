@@ -23,23 +23,46 @@
         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           Subscription
         </button>
+        <app-loading [loading]="loadingSubscription"></app-loading>
       </h5>
     </div>
 
     <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#organization">
       <div class="card-body">
-        <div class="row">
-          <div class="col-sm-4">
-            <p>Remaining Training</p>
-            <p>5</p>
-          </div>
-          <div class="col-sm-4">
-            <p>Subscription Level</p>
-          </div>
-          <div class="col-sm-4">
-            <p>Max. Upload sourcefile size (kb)</p>
-          </div>
-        </div>
+        <table class="table table-hover">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">Max. Trainings</th>
+              <th scope="col">Remaining Training</th>
+              <th scope="col">Max. Upload sourcefile size (kb)</th>
+              <th scope="col">Subscription Level</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <tr>
+              <td>
+                <p *ngIf="subscription">{{subscription.maxTrainings}}</p>
+                <p>test</p>
+              </td>
+              <td>
+                <p>Remaining Training</p>
+                <p *ngIf="subscription">{{subscription.remainingTrainings}}</p>
+              </td>
+              <td>
+                <p>Max. Upload sourcefile size (kb)</p>
+                <p *ngIf="subscription">{{subscription.maxUploadInKb}}</p>
+                <p>test</p>
+              </td>
+
+              <td>
+                <p>Subscription Level</p>
+                <p *ngIf="subscription">{{subscription.subscriptionLevel}}</p>
+                <p>test</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
