@@ -12,11 +12,14 @@ export class UserComponent implements OnInit {
 
   users: UserDto[];
 
+  loadingUser = true;
+
   constructor(private userService: UserService) { }
 
   ngOnInit() {
-    this.userService.load().subscribe(pageable => {
-      this.users = pageable.content;
+    this.userService.load().subscribe(content => {
+      this.users = content;
+      this.loadingUser = false;
     })
   }
 

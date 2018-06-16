@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -83,5 +84,10 @@ public class UserService implements UserDetailsService, IUserService {
         String currentOrganization = organizationService.getCurrentOrganization();
         return create(createUserDto.getEmail(), createUserDto.getFirstName(),
                 createUserDto.getLastName(), createUserDto.getPassword(), currentOrganization);
+    }
+
+    @Override
+    public Collection<CloudUser> findAll() {
+        return userRepository.findByOrganization(organizationService.getCurrentOrganization());
     }
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
-import { ModelDto, Pageable, UserDto, CreateOrganizationDto } from '../_models';
+import { ModelDto, UserDto, CreateOrganizationDto } from '../_models';
 import { LocalStorageService } from './localstorage.service';
 import { Subscription } from '../_models/subscription';
 

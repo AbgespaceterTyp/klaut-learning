@@ -6,10 +6,13 @@ import org.socialsignin.spring.data.dynamodb.repository.DynamoDBPagingAndSorting
 import org.socialsignin.spring.data.dynamodb.repository.EnableScan;
 import org.socialsignin.spring.data.dynamodb.repository.EnableScanCount;
 
+import java.util.Collection;
 import java.util.Optional;
 
 @EnableScan
 @EnableScanCount
 public interface IUserRepository extends DynamoDBPagingAndSortingRepository<CloudUser, CompositeId> {
     Optional<CloudUser> findByEmailAndOrganization(String email, String organization);
+
+    Collection<CloudUser> findByOrganization(String organization);
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpRequest, HttpEvent, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map'
-import { ModelDto, Pageable, Word2Vec } from '../_models';
+import { ModelDto, Word2Vec } from '../_models';
 import { LocalStorageService } from './localstorage.service';
 import { Word2VecParams } from '../_models/params';
 import { Word2VecTestingResponse } from '../_models/testing';

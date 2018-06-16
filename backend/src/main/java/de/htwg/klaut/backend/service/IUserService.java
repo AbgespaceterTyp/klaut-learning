@@ -3,6 +3,8 @@ package de.htwg.klaut.backend.service;
 import de.htwg.klaut.backend.model.db.CloudUser;
 import de.htwg.klaut.backend.model.db.CreateUserDto;
 
+import java.util.Collection;
+
 public interface IUserService {
 
     /**
@@ -30,4 +32,6 @@ public interface IUserService {
      * @return the newly created CloudUser object
      */
     CloudUser create(CreateUserDto createUserDto);
+
+    Collection<CloudUser> findAll();
 }
