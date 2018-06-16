@@ -60,7 +60,10 @@ public class OrganizationService implements IOrganizationService {
 
     @Override
     public SubscriptionInformation updateSubscription(SubscriptionInformation subscriptionInformation) throws OrganizationNotFoundException {
-        return updateSubscription(new SubscriptionInformationDto(subscriptionInformation));
+        final Organization organization = get(currentOrganization.get());
+        organization.setSubscriptionInformation(subscriptionInformation);
+        organizationRepository.save(organization);
+        return  subscriptionInformation;
     }
 
     @Override
@@ -91,10 +94,9 @@ public class OrganizationService implements IOrganizationService {
                 break;
         }
 
-        // Previous subscription was free? -> upgrade max upload size in kb
-        // This needs to be done only once when upgrading from free to any other subscription level
-        if (SubscriptionLevel.FREE.equals(subscriptionInformationToUpdate.getSubscriptionLevel()) &&
-                !SubscriptionLevel.FREE.equals(subscriptionInformationDto.getSubscriptionLevel())) {
+        if (SubscriptionLevel.FREE.equals(subscriptionInformationToUpdate.getSubscriptionLevel())) {
+            subscriptionInformationToUpdate.setMaxUploadInKb(SubscriptionInformation.FREE_SUBS_MAX_UPLOAD_IN_KB);
+        } else {
             subscriptionInformationToUpdate.setMaxUploadInKb(SubscriptionInformation.NORMAL_SUBS_MAX_UPLOAD_IN_KB);
         }
 
