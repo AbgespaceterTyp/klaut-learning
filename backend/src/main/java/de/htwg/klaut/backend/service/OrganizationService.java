@@ -36,6 +36,7 @@ public class OrganizationService implements IOrganizationService {
 
         Organization organization = Organization.builder()
                 .name(name)
+                .iconUrl("")
                 .subscriptionInformation(new SubscriptionInformation())
                 .build();
         return organizationRepository.save(organization);
