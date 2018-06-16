@@ -26,16 +26,15 @@ public class OrganizationService implements IOrganizationService {
     }
 
     @Override
-    public Organization createOrganization(String name, String iconUrl) throws OrganizationCreationException {
+    public Organization createOrganization(String name) throws OrganizationCreationException {
         log.debug("creating organization", name);
 
         final Optional<Organization> existingOrganization = organizationRepository.findByName(name);
-        if(existingOrganization.isPresent()){
+        if (existingOrganization.isPresent()) {
             throw new OrganizationCreationException(name);
         }
 
         Organization organization = Organization.builder()
-                .iconUrl(iconUrl)
                 .name(name)
                 .subscriptionInformation(new SubscriptionInformation())
                 .build();
@@ -63,7 +62,7 @@ public class OrganizationService implements IOrganizationService {
         final Organization organization = get(currentOrganization.get());
         organization.setSubscriptionInformation(subscriptionInformation);
         organizationRepository.save(organization);
-        return  subscriptionInformation;
+        return subscriptionInformation;
     }
 
     @Override
@@ -76,7 +75,7 @@ public class OrganizationService implements IOrganizationService {
         subscriptionInformationToUpdate.setSubscriptionLevel(subscriptionInformationDto.getSubscriptionLevel());
         subscriptionInformationToUpdate.setRemainingTrainings(subscriptionInformationToUpdate.getRemainingTrainings() + subscriptionInformationDto.getRemainingTrainings());
 
-        switch (subscriptionInformationDto.getSubscriptionLevel()){
+        switch (subscriptionInformationDto.getSubscriptionLevel()) {
             case FREE:
                 subscriptionInformationToUpdate.setMaxTrainings(1);
                 break;

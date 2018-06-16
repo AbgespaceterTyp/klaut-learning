@@ -1,6 +1,6 @@
 package de.htwg.klaut.backend.controller;
 
-import de.htwg.klaut.backend.model.dto.UserDto;
+import de.htwg.klaut.backend.model.dto.CurrentUserDto;
 import de.htwg.klaut.backend.service.IOrganizationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +22,10 @@ public class UserController {
     }
 
     @GetMapping(IUserControllerPathConst.ME_MAPPING)
-    public ResponseEntity<UserDto> currentUser(@PathVariable String organization) {
+    public ResponseEntity<CurrentUserDto> currentUser(@PathVariable String organization) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentPrincipalName = authentication.getName();
-        return new ResponseEntity<>(new UserDto(currentPrincipalName), HttpStatus.OK);
+        return new ResponseEntity<>(new CurrentUserDto(currentPrincipalName), HttpStatus.OK);
     }
 
 }

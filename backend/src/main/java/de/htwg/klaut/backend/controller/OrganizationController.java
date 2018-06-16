@@ -40,7 +40,7 @@ public class OrganizationController {
 
     @PostMapping(IOrganizationControllerPathConst.ORGANIZATION_MAPPING)
     public ResponseEntity createOrganization(@RequestBody CreateOrganizationDto createOrganizationDto) {
-        Organization organization = organizationService.createOrganization(createOrganizationDto.getName(), "");
+        Organization organization = organizationService.createOrganization(createOrganizationDto.getName());
 
         userService.create(createOrganizationDto.getAdminEmail(), ADMIN, ADMIN,
                 createOrganizationDto.getAdminPassword(), organization.getKey());
