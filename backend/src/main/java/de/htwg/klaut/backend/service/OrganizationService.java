@@ -1,5 +1,6 @@
 package de.htwg.klaut.backend.service;
 
+import de.htwg.klaut.backend.exception.ImageNotFoundException;
 import de.htwg.klaut.backend.exception.OrganizationCreationException;
 import de.htwg.klaut.backend.exception.OrganizationNotFoundException;
 import de.htwg.klaut.backend.model.db.Organization;
@@ -10,7 +11,9 @@ import de.htwg.klaut.backend.repository.IOrganizationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.Optional;
 
 @Service
@@ -19,10 +22,13 @@ public class OrganizationService implements IOrganizationService {
 
     private IOrganizationRepository organizationRepository;
 
+    private IS3StorageService storageService;
+
     private static ThreadLocal<String> currentOrganization = new ThreadLocal<>();
 
-    public OrganizationService(IOrganizationRepository organizationRepository) {
+    public OrganizationService(IOrganizationRepository organizationRepository, IS3StorageService storageService) {
         this.organizationRepository = organizationRepository;
+        this.storageService = storageService;
     }
 
     @Override
@@ -110,6 +116,30 @@ public class OrganizationService implements IOrganizationService {
         return organizationRepository.findByName(name);
     }
 
+    @Override
+    public void changeImage(MultipartFile image) {
+        Optional<String> imageUri = storageService.addImage(image, getCurrentOrganization());
+        if (imageUri.isPresent()) {
+            Organization organization = organizationRepository.findByKey(getCurrentOrganization());
+            organization.setIconUrl(imageUri.get());
+            organizationRepository.save(organization);
+        }
+    }
+
+    @Override
+    public InputStream loadImage() {
+        Organization organization = organizationRepository.findByKey(getCurrentOrganization());
+        if (StringUtils.isEmpty(organization.getIconUrl())) {
+            throw new ImageNotFoundException();
+        }
+        Optional<InputStream> sourceFile = storageService.getSourceFile(organization.getIconUrl());
+        if (sourceFile.isPresent()) {
+            return sourceFile.get();
+        }
+        throw new ImageNotFoundException();
+
+    }
+
     private Organization get(String organizationKey) {
         if (StringUtils.isEmpty(organizationKey)) {
             throw new OrganizationNotFoundException("Unknown organization");
@@ -120,4 +150,5 @@ public class OrganizationService implements IOrganizationService {
         }
         return organization;
     }
+
 }

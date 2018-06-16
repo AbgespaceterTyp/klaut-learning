@@ -5,6 +5,8 @@ import com.amazonaws.services.s3.model.*;
 import de.htwg.klaut.backend.exception.SourceCreationException;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.word2vec.Word2Vec;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,14 +24,14 @@ import java.util.UUID;
 @Log4j2
 public class S3StorageService implements IS3StorageService {
 
-    private final IOrganizationService organizationService;
+    private static final String ORGANIZATION_IMAGE = "organization_image";
+
     @Value("${amazon.aws.bucketName}")
     private String bucketName;
 
     private AmazonS3 amazonS3;
 
-    public S3StorageService(IOrganizationService organizationService, AmazonS3 amazonS3) {
-        this.organizationService = organizationService;
+    public S3StorageService(AmazonS3 amazonS3) {
         this.amazonS3 = amazonS3;
     }
 
@@ -48,11 +50,6 @@ public class S3StorageService implements IS3StorageService {
     }
 
     @Override
-    public Optional<String> addSourceFile(MultipartFile file) throws SourceCreationException {
-        return addSourceFile(file, organizationService.getCurrentOrganization());
-    }
-
-    @Override
     public Optional<String> addSourceFile(MultipartFile file, String organization) throws SourceCreationException {
         String fileName = UUID.randomUUID().toString() + ".txt";
         try {
@@ -61,11 +58,6 @@ public class S3StorageService implements IS3StorageService {
             log.error("Failed to add source file " + fileName);
         }
         return Optional.empty();
-    }
-
-    @Override
-    public Optional<String> addSourceFile(Word2Vec word2Vec) throws SourceCreationException {
-        return addSourceFile(word2Vec, organizationService.getCurrentOrganization());
     }
 
     @Override
@@ -81,6 +73,22 @@ public class S3StorageService implements IS3StorageService {
             log.error("Failed to add source file " + modelFileName);
         } finally {
             FileUtils.deleteQuietly(modelFile);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> addImage(MultipartFile image, String organization) {
+        try {
+            String filename = image.getOriginalFilename();
+            String fileEnding = ".jpg";
+            String extension = FilenameUtils.getExtension(filename);
+            if (StringUtils.isNotEmpty(extension)) {
+                fileEnding = ".".concat(extension);
+            }
+            return Optional.of(addFile(image.getSize(), ORGANIZATION_IMAGE.concat(fileEnding), image.getInputStream(), organization));
+        } catch (IOException e) {
+            log.error("Failed to set image for Organization:", organization);
         }
         return Optional.empty();
     }

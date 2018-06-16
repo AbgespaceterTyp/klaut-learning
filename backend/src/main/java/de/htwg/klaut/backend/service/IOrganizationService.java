@@ -5,7 +5,9 @@ import de.htwg.klaut.backend.exception.OrganizationNotFoundException;
 import de.htwg.klaut.backend.model.db.Organization;
 import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 import de.htwg.klaut.backend.model.dto.SubscriptionInformationDto;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.Optional;
 
 public interface IOrganizationService {
@@ -37,4 +39,12 @@ public interface IOrganizationService {
     SubscriptionInformation updateSubscription(SubscriptionInformationDto subscriptionInformationDto);
 
     Optional<Organization> findByName(String name);
+
+    /**
+     * Uploads the given image to the data source and replaces the current one if present
+     * @param image
+     */
+    void changeImage(MultipartFile image);
+
+    InputStream loadImage();
 }

@@ -33,6 +33,7 @@ export class LoginComponent implements OnInit {
           .subscribe(
               data => {
                   this.appComponent.organization = this.localStorageService.currentOrganization.name
+                  this.appComponent.imageUrl = `api/${this.localStorageService.currentOrganization.key}/image`;
                   this.router.navigate([this.returnUrl]);
               },
               error => {

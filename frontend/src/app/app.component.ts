@@ -10,6 +10,7 @@ import { destroy } from 'splash-screen';
 })
 export class AppComponent {
   title = 'Klaut Learning';
+  imageUrl = `api/${this.localStorageService.currentOrganization.key}/image`;
   organization = this.localStorageService.currentOrganization.name;
 
   constructor(private authenticationService: AuthenticationService, private router: Router,

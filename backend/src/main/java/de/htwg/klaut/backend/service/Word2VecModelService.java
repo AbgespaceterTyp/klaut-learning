@@ -137,7 +137,7 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
         }
 
         final Model modelToUpdate = modelOptional.get();
-        Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(file);
+        Optional<String> sourceUrlOpt = s3StorageService.addSourceFile(file, organizationService.getCurrentOrganization());
         if (!sourceUrlOpt.isPresent()) {
             throw new SourceCreationException(modelId);
         }
@@ -196,9 +196,9 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
 
         final Collection<Model> modelsForOrganization = modelRepository.findByOrganization(organizationService.getCurrentOrganization());
         for (Model model : modelsForOrganization) {
-           if(model.isTraining()){
-               result++;
-           }
+            if (model.isTraining()) {
+                result++;
+            }
         }
         return result;
     }

@@ -22,29 +22,11 @@ public interface IS3StorageService {
     Optional<InputStream> getSourceFile(String sourceUrl);
 
     /**
-     * Adds the given {@link MultipartFile} to s3. The organization of the current request will be used,
-     * this is not thread safe! Use addSourceFile(MultipartFile file, String organization) instead in case of multi threading.
-     * @return returns {@Link Optional<String>} with source url in case of success
-     * @throws SourceCreationException when failed to upload source file to s3
-     */
-    Optional<String> addSourceFile(MultipartFile file) throws SourceCreationException;
-
-    /**
      * Adds the given {@link MultipartFile} to s3 for given organization.
      * @return returns {@Link Optional<String>} with source url in case of success
      * @throws SourceCreationException when failed to upload source file to s3
      */
     Optional<String> addSourceFile(MultipartFile file, String organization) throws SourceCreationException;
-
-
-    /**
-     * Adds the given {@link Word2Vec} to s3. The organization of the current request will be used,
-     * this is not thread safe! Use addSourceFile(Word2Vec word2Vec, String organization) instead in case of multi threading.
-     * @param word2Vec the model to add
-     * @return returns {@Link Optional<String>} with source url in case of success
-     * @throws SourceCreationException when failed to write source file
-     */
-    Optional<String> addSourceFile(Word2Vec word2Vec) throws SourceCreationException;
 
     /**
      * Adds the given {@link Word2Vec} to s3 for given organization.
@@ -54,4 +36,7 @@ public interface IS3StorageService {
      * @throws SourceCreationException
      */
     Optional<String> addSourceFile(Word2Vec word2Vec, String organization) throws SourceCreationException;
+
+    Optional<String> addImage(MultipartFile image, String organization);
+
 }

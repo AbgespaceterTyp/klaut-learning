@@ -7,13 +7,20 @@ import de.htwg.klaut.backend.model.dto.SearchOrganizationKeyResponseDto;
 import de.htwg.klaut.backend.model.dto.SubscriptionInformationDto;
 import de.htwg.klaut.backend.service.IOrganizationService;
 import de.htwg.klaut.backend.service.IUserService;
+import lombok.extern.log4j.Log4j2;
+import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Optional;
 
 @RestController
+@Log4j2
 public class OrganizationController {
 
     private final static String ADMIN = "admin";
@@ -56,6 +63,26 @@ public class OrganizationController {
             return ResponseEntity.ok(searchOrganizationKeyResponseDto);
         }
         return new ResponseEntity(HttpStatus.NOT_FOUND);
+    }
+
+    @PutMapping(IOrganizationControllerPathConst.ORGANIZATION_IMAGE_MAPPING)
+    public ResponseEntity changeImage(@PathVariable String organization, @RequestBody MultipartFile image) {
+        organizationService.changeImage(image);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @GetMapping(path = IOrganizationControllerPathConst.ORGANIZATION_IMAGE_MAPPING,
+            produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ResponseBody
+    public byte[] loadImage(@PathVariable String organization) {
+        try {
+            InputStream is = organizationService.loadImage();
+
+            return IOUtils.toByteArray(is);
+        } catch (IOException ex) {
+            log.error("Failed to download image");
+        }
+        return null;
     }
 
 }
