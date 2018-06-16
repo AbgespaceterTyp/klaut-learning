@@ -1,7 +1,18 @@
+<div *ngIf="!progress.uploaded" class="progress">
+  <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [ngStyle]="{width:progress.percentage+'%'}"
+    attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
 <div class="mt-2">
   <h2 class="text-center">{{organization.name}}</h2>
+
 </div>
+<button class="btn btn-link" (click)="uploadDummy()">
+  Change the Organization Image
+  <span class="fa fa-image"></span>
+</button>
+
 <div class="accordion" id="organization">
+
   <div class="card">
     <div class="card-header" id="headingOne">
       <h5 class="mb-0">
@@ -59,4 +70,5 @@
       </div>
     </div>
   </div>
+  <input type="file" accept=".jpg" id="fileInput" style="display: none;" (change)="uploadFile($event)" />
 </div>

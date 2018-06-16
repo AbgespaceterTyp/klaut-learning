@@ -18,4 +18,21 @@ export class OrganizationService {
     create(createOrganizationDto: CreateOrganizationDto) {
         return this.http.post('/api/organization', createOrganizationDto);
     }
+
+    getOrganizationImageUrl() {
+        return `api/${this.localStorageService.currentOrganization.key}/image`;
+    }
+
+    uploadFile(file: any): Observable<HttpEvent<{}>> {
+        let formdata: FormData = new FormData();
+
+        formdata.append('image', file);
+
+        const req = new HttpRequest('PUT', '/api/' + this.localStorageService.currentOrganization.key + '/image', formdata, {
+            reportProgress: true,
+            responseType: 'text'
+        });
+
+        return this.http.request(req);
+    }
 }

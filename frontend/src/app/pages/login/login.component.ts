@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { AuthenticationService, LocalStorageService } from '../../_services/index';
+import { AuthenticationService, LocalStorageService, OrganizationService } from '../../_services/index';
 import { AppComponent } from '../../app.component';
 
 @Component({
@@ -20,7 +20,8 @@ export class LoginComponent implements OnInit {
       private router: Router,
       private authenticationService: AuthenticationService,
       private appComponent: AppComponent,
-      private localStorageService: LocalStorageService) { }
+      private localStorageService: LocalStorageService,
+      private organizationService: OrganizationService) { }
 
   ngOnInit() {
       // get return url from route parameters or default to '/'
@@ -33,7 +34,7 @@ export class LoginComponent implements OnInit {
           .subscribe(
               data => {
                   this.appComponent.organization = this.localStorageService.currentOrganization.name
-                  this.appComponent.imageUrl = `api/${this.localStorageService.currentOrganization.key}/image`;
+                  this.appComponent.imageUrl = this.organizationService.getOrganizationImageUrl();
                   this.router.navigate([this.returnUrl]);
               },
               error => {

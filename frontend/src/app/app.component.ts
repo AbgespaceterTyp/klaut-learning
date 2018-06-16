@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthenticationService, LocalStorageService } from './_services';
+import { AuthenticationService, LocalStorageService, OrganizationService } from './_services';
 import { Router } from '@angular/router';
 import { destroy } from 'splash-screen';
 
@@ -10,11 +10,13 @@ import { destroy } from 'splash-screen';
 })
 export class AppComponent {
   title = 'Klaut Learning';
-  imageUrl = `api/${this.localStorageService.currentOrganization.key}/image`;
+  imageUrl = this.organizationService.getOrganizationImageUrl();
   organization = this.localStorageService.currentOrganization.name;
 
   constructor(private authenticationService: AuthenticationService, private router: Router,
-    private localStorageService: LocalStorageService) {
+    private localStorageService: LocalStorageService,
+    private organizationService: OrganizationService) {
+
     this.router.events.subscribe(data => {
       destroy();
     });
