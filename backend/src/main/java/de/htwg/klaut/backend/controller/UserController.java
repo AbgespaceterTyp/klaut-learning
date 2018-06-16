@@ -1,6 +1,6 @@
 package de.htwg.klaut.backend.controller;
 
-import de.htwg.klaut.backend.model.db.UserDto;
+import de.htwg.klaut.backend.model.db.CreateUserDto;
 import de.htwg.klaut.backend.model.dto.CurrentUserDto;
 import de.htwg.klaut.backend.service.IUserService;
 import org.springframework.http.HttpStatus;
@@ -35,8 +35,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity create(@PathVariable String organization, @RequestBody @Valid UserDto userDto) {
-        userService.create(userDto);
+    public ResponseEntity create(@PathVariable String organization, @RequestBody @Valid CreateUserDto createUserDto) {
+        userService.create(createUserDto);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

@@ -2,7 +2,7 @@ package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.exception.UserCreationException;
 import de.htwg.klaut.backend.model.db.CloudUser;
-import de.htwg.klaut.backend.model.db.UserDto;
+import de.htwg.klaut.backend.model.db.CreateUserDto;
 import de.htwg.klaut.backend.repository.IUserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -79,9 +79,9 @@ public class UserService implements UserDetailsService, IUserService {
     }
 
     @Override
-    public CloudUser create(UserDto userDto) {
+    public CloudUser create(CreateUserDto createUserDto) {
         String currentOrganization = organizationService.getCurrentOrganization();
-        return create(userDto.getEmail(), userDto.getFirstName(),
-                userDto.getLastName(), userDto.getPassword(), currentOrganization);
+        return create(createUserDto.getEmail(), createUserDto.getFirstName(),
+                createUserDto.getLastName(), createUserDto.getPassword(), currentOrganization);
     }
 }

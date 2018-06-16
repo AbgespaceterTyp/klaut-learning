@@ -5,9 +5,9 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class UserDto {
+public class CreateUserDto {
 
-    public UserDto() {
+    public CreateUserDto() {
     }
 
     @NotNull

@@ -1,7 +1,7 @@
 package de.htwg.klaut.backend.service;
 
 import de.htwg.klaut.backend.model.db.CloudUser;
-import de.htwg.klaut.backend.model.db.UserDto;
+import de.htwg.klaut.backend.model.db.CreateUserDto;
 
 public interface IUserService {
 
@@ -26,8 +26,8 @@ public interface IUserService {
     CloudUser create(String email, String firstName, String lastName, String password, String organizationKey);
 
     /**
-     * @param userDto The users information
+     * @param createUserDto The users information
      * @return the newly created CloudUser object
      */
-    CloudUser create(UserDto userDto);
+    CloudUser create(CreateUserDto createUserDto);
 }
