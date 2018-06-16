@@ -39,6 +39,10 @@ export class SearchOrganizationResponsetDto {
   constructor(public organizationKey: String) { }
 }
 
+export class CreateOrganizationDto {
+  constructor(public name?: string, public adminEmail?: string,
+    public adminPassword?: string) { }
+}
 
 // TODO: add other necessary properties to Pageable
 export class Pageable<T> {

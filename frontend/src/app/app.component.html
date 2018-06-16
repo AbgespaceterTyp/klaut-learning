@@ -3,7 +3,12 @@
       <div *ngIf="loggedIn()" class="organization">
         <img class="rounded-circle" src="https://picsum.photos/300/300/?random" height="48px" width="48px">
       </div>
-    <a class="navbar-brand" [routerLink]="['/']">Klaut Learning</a>
+      <div *ngIf="loggedIn()" class="organization">
+        <a class="navbar-brand" [routerLink]="['/']">{{organization}}</a>
+      </div>
+      <div *ngIf="!loggedIn()" class="organization">
+          <a class="navbar-brand" [routerLink]="['/']">{{title}}</a>
+        </div>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -29,4 +34,4 @@
   
 <app-footer></app-footer>
 
-<cookie-law learnMore="/impressum"></cookie-law>
+<!--<cookie-law learnMore="/impressum"></cookie-law>-->

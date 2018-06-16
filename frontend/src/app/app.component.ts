@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthenticationService } from './_services';
+import { AuthenticationService, LocalStorageService } from './_services';
 import { Router } from '@angular/router';
 import { destroy } from 'splash-screen';
 
@@ -9,9 +9,11 @@ import { destroy } from 'splash-screen';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'app';
+  title = 'Klaut Learning';
+  organization = this.localStorageService.currentOrganization.name;
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) {
+  constructor(private authenticationService: AuthenticationService, private router: Router,
+    private localStorageService: LocalStorageService) {
     this.router.events.subscribe(data => {
       destroy();
     });
@@ -25,4 +27,5 @@ export class AppComponent {
   loggedIn() {
     return this.authenticationService.loggedIn();
   }
+
 }
