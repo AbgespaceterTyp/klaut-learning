@@ -45,6 +45,12 @@ public class UserController {
         return ResponseEntity.ok(userDtos);
     }
 
+    @DeleteMapping
+    public ResponseEntity delete(@PathVariable String organization, @RequestBody @Valid CurrentUserDto userDto) {
+        userService.delete(userDto.getEmail());
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping(IUserControllerPathConst.ME_MAPPING)
     public ResponseEntity logout(@PathVariable String organization) {
         SecurityContextHolder.clearContext();

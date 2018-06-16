@@ -90,4 +90,9 @@ public class UserService implements UserDetailsService, IUserService {
     public Collection<CloudUser> findAll() {
         return userRepository.findByOrganization(organizationService.getCurrentOrganization());
     }
+
+    @Override
+    public void delete(String email) {
+        userRepository.deleteByEmailAndOrganization(email, organizationService.getCurrentOrganization());
+    }
 }

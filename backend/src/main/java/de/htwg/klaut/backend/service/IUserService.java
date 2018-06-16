@@ -34,4 +34,6 @@ public interface IUserService {
     CloudUser create(CreateUserDto createUserDto);
 
     Collection<CloudUser> findAll();
+
+    void delete(String email);
 }

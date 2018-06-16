@@ -15,4 +15,6 @@ public interface IUserRepository extends DynamoDBPagingAndSortingRepository<Clou
     Optional<CloudUser> findByEmailAndOrganization(String email, String organization);
 
     Collection<CloudUser> findByOrganization(String organization);
+
+    void deleteByEmailAndOrganization(String email, String organization);
 }
