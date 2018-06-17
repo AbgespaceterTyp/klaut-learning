@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpRequest, HttpEvent } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpRequest, HttpEvent, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { UserDto } from '../_models';
@@ -17,4 +17,10 @@ export class UserService {
     load(): Observable<UserDto[]> {
         return this.http.get<UserDto[]>('/api/' + this.localStorageService.currentOrganization.key + '/user');
     }
+
+    deleteUser(email: string) {
+        let params = new HttpParams().set('email', email);
+        return this.http.delete('/api/' + this.localStorageService.currentOrganization.key + '/user', { params });
+    }
+
 }

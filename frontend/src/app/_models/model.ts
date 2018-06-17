@@ -26,9 +26,9 @@ export class OrganizationDto {
 }
 
 export class UserDto {
-  constructor(private email: String,
-    private firstName: String,
-    private lastName: String) { }
+  constructor(private email?: String,
+    private firstName?: String,
+    private lastName?: String) { }
 }
 
 export class SearchOrganizationRequestDto {

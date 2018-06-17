@@ -21,7 +21,7 @@
       <td>{{user.firstName}}</td>
 
       <td>
-        <button type="button" class="btn btn-link btn-link--red pull-right">
+        <button type="button" (click)="deleteUser(user.email)" class="btn btn-link btn-link--red pull-right">
           <i class="fa fa-trash fa-lg"></i>
         </button>
       </td>

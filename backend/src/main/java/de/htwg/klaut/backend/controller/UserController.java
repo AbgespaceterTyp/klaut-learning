@@ -46,8 +46,8 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity delete(@PathVariable String organization, @RequestBody @Valid CurrentUserDto userDto) {
-        userService.delete(userDto.getEmail());
+    public ResponseEntity delete(@PathVariable String organization, @RequestParam String email) {
+        userService.delete(email);
         return ResponseEntity.ok().build();
     }
 

@@ -17,10 +17,20 @@ export class UserComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit() {
+    this.loadUsers();
+  }
+
+  deleteUser(email: string) {
+    this.loadingUser = true;
+    this.userService.deleteUser(email).subscribe(response => {
+      this.loadUsers()
+    })
+  }
+
+  loadUsers() {
     this.userService.load().subscribe(content => {
       this.users = content;
       this.loadingUser = false;
     })
   }
-
 }

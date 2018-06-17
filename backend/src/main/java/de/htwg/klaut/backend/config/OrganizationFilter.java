@@ -38,7 +38,7 @@ public class OrganizationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         String organization = httpServletRequest.getRequestURI().split("/")[1];
         if (organization != null) {
-            log.info("Setting organization to {}", organization);
+            log.debug("Setting organization to {}", organization);
             organizationService.setCurrentOrganization(organization);
         }
         filterChain.doFilter(httpServletRequest, httpServletResponse);
