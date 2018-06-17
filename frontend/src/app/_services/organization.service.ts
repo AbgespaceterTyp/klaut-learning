@@ -4,7 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import { ModelDto, UserDto, CreateOrganizationDto } from '../_models';
 import { LocalStorageService } from './localstorage.service';
-import { Subscription } from '../_models/subscription';
+import { Subscription, RenewSubscriptionDto } from '../_models/subscription';
 
 @Injectable()
 export class OrganizationService {
@@ -14,6 +14,13 @@ export class OrganizationService {
     getSubscription() {
         return this.http.get<Subscription>('/api/' + this.localStorageService.currentOrganization.key + '/subscription');
     }
+
+    renewSubscription(level: String) {
+      let dto: RenewSubscriptionDto = {
+        subscriptionLevel: level
+      }
+      return this.http.post<Subscription>('/api/' + this.localStorageService.currentOrganization.key + '/subscription', dto);
+  }
 
     create(createOrganizationDto: CreateOrganizationDto) {
         return this.http.post('/api/organization', createOrganizationDto);

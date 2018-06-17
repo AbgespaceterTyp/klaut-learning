@@ -36,6 +36,15 @@
         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           Subscription
         </button>
+        <button type="button" class="btn btn-link btn-link--red pull-right" (click)="renewSubscription()">
+          <i class="fas fa-hand-holding-usd fa-lg"></i>
+        </button>
+        <select class="form-control" id="subscription" name="subscriptionLevel" [(ngModel)]="subscriptionLevel">
+          <option value="COPPER" selected>Copper</option>
+          <option value="SILVER">Silver</option>
+          <option value="GOLD">Gold</option>
+          <option value="PLATIN">Platin</option>
+        </select>
         <app-loading [loading]="loadingSubscription"></app-loading>
       </h5>
     </div>

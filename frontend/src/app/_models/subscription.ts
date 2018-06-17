@@ -4,3 +4,7 @@ export class Subscription {
   remainingTrainings: Number;
   subscriptionLevel: String;
 }
+
+export class RenewSubscriptionDto {
+  subscriptionLevel: String
+}

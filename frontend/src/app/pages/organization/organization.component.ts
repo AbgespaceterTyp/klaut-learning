@@ -16,6 +16,8 @@ export class OrganizationComponent implements OnInit {
   organization: OrganizationDto;
   subscription: Subscription;
   loadingSubscription = false;
+  subscriptionLevel = "COPPER";
+
   organizationImageUrl = this.organizationService.getOrganizationImageUrl();
 
   uploadingFile = false;
@@ -66,6 +68,13 @@ export class OrganizationComponent implements OnInit {
   onLoading(loading: boolean) {
     setTimeout(() => {
       this.loading = loading;
+    });
+  }
+
+  renewSubscription() {
+    this.organizationService.renewSubscription(this.subscriptionLevel)
+    .subscribe(data => {
+      console.log(data);
     });
   }
 }
