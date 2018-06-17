@@ -18,18 +18,8 @@ export class OrganizationComponent implements OnInit {
   loadingSubscription = false;
   subscriptionLevel = "COPPER";
 
-  organizationImageUrl = this.organizationService.getOrganizationImageUrl();
-
-  uploadingFile = false;
   loading = false;
 
-  progress: {
-    percentage: number;
-    uploaded: boolean;
-  } = {
-      percentage: 0,
-      uploaded: true
-    };
   constructor(private organizationService: OrganizationService, private localStorageService: LocalStorageService) { }
 
   ngOnInit() {
@@ -42,29 +32,6 @@ export class OrganizationComponent implements OnInit {
       })
   }
 
-  uploadDummy() {
-    document
-      .getElementById('fileInput')
-      .click();
-  }
-
-  uploadFile(event) {
-    this.uploadingFile = true;
-    this.progress.percentage = 0;
-    this.progress.uploaded = false;
-    let files = event.target.files;
-    if (files.length > 0) {
-      this.organizationService.uploadFile(files[0])
-        .subscribe(event => {
-          if (event.type === HttpEventType.UploadProgress) {
-            this.progress.percentage = Math.round(100 * event.loaded / event.total);
-          } else if (event instanceof HttpResponse) {
-            this.progress.uploaded = true;
-            this.uploadingFile = false;
-          }
-        })
-    }
-  }
   onLoading(loading: boolean) {
     setTimeout(() => {
       this.loading = loading;
@@ -73,8 +40,8 @@ export class OrganizationComponent implements OnInit {
 
   renewSubscription() {
     this.organizationService.renewSubscription(this.subscriptionLevel)
-    .subscribe(data => {
-      this.subscription = data;
-    });
+      .subscribe(data => {
+        this.subscription = data;
+      });
   }
 }

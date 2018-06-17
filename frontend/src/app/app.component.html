@@ -1,8 +1,8 @@
-<div class="wrapper">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">    
+<div class="wrapper">   
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">          
       <div *ngIf="loggedIn()" class="organization">
-        <img class="rounded-circle" src="{{imageUrl}}" 
-         onerror="this.src='assets/placeholder.png';" height="48px" width="48px">         
+        <img class="rounded-circle organizationImage" [src]="imageUrl"
+         onerror="this.src='assets/placeholder.png';" height="48px" width="48px" (click)="uploadOrgaDummy()">
       </div>
       <div *ngIf="loggedIn()" class="organization">
         <a class="navbar-brand" [routerLink]="['/']">{{organization}}</a>
@@ -30,9 +30,13 @@
     </div>
     
   </nav>
+  <div *ngIf="!progress.uploaded" class="progress">
+      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" [ngStyle]="{width:progress.percentage+'%'}"
+        attr.aria-valuenow="{{progress.percentage}}" aria-valuemin="0" aria-valuemax="100"></div>
+    </div>    
   <router-outlet></router-outlet>
 </div>
-  
+<input type="file" accept=".jpg" id="organizationImageInput" style="display: none;" (change)="uploadOrganizationImage($event)" /> 
 <app-footer></app-footer>
 
 <!--<cookie-law learnMore="/impressum"></cookie-law>-->
