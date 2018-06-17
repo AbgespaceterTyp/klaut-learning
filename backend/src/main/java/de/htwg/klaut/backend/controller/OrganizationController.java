@@ -38,8 +38,7 @@ public class OrganizationController {
 
     @PostMapping(IOrganizationControllerPathConst.SUBSCRIPTION_MAPPING)
     public ResponseEntity updateSubscription(@PathVariable String organization, @RequestBody SubscriptionRenewDto newSubscriptionDto) {
-        organizationService.renewSubscription(newSubscriptionDto);
-        return ResponseEntity.noContent().build();
+        return new ResponseEntity<>(organizationService.renewSubscription(newSubscriptionDto), HttpStatus.OK);
     }
 
     @PostMapping(IOrganizationControllerPathConst.ORGANIZATION_MAPPING)
