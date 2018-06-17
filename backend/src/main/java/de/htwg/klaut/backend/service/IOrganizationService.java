@@ -5,6 +5,7 @@ import de.htwg.klaut.backend.exception.OrganizationNotFoundException;
 import de.htwg.klaut.backend.model.db.Organization;
 import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 import de.htwg.klaut.backend.model.dto.SubscriptionInformationDto;
+import de.htwg.klaut.backend.model.dto.SubscriptionRenewDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.InputStream;
@@ -36,7 +37,7 @@ public interface IOrganizationService {
 
     SubscriptionInformation updateSubscription(SubscriptionInformation subscriptionInformation) throws OrganizationNotFoundException;
 
-    SubscriptionInformation updateSubscription(SubscriptionInformationDto subscriptionInformationDto);
+    SubscriptionInformation renewSubscription(SubscriptionRenewDto newSubscriptionDto);
 
     Optional<Organization> findByName(String name);
 

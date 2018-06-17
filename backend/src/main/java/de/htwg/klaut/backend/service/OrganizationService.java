@@ -7,6 +7,7 @@ import de.htwg.klaut.backend.model.db.Organization;
 import de.htwg.klaut.backend.model.db.SubscriptionInformation;
 import de.htwg.klaut.backend.model.db.SubscriptionLevel;
 import de.htwg.klaut.backend.model.dto.SubscriptionInformationDto;
+import de.htwg.klaut.backend.model.dto.SubscriptionRenewDto;
 import de.htwg.klaut.backend.repository.IOrganizationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -73,32 +74,35 @@ public class OrganizationService implements IOrganizationService {
     }
 
     @Override
-    public SubscriptionInformation updateSubscription(SubscriptionInformationDto subscriptionInformationDto) throws OrganizationNotFoundException {
+    public SubscriptionInformation renewSubscription(SubscriptionRenewDto subscriptionRenewDto) throws OrganizationNotFoundException {
         final Organization organization = get(currentOrganization.get());
         SubscriptionInformation subscriptionInformationToUpdate = organization.getSubscriptionInformation();
         if (null == subscriptionInformationToUpdate) {
             subscriptionInformationToUpdate = new SubscriptionInformation();
         }
-        subscriptionInformationToUpdate.setSubscriptionLevel(subscriptionInformationDto.getSubscriptionLevel());
-        subscriptionInformationToUpdate.setRemainingTrainings(subscriptionInformationToUpdate.getRemainingTrainings() + subscriptionInformationDto.getRemainingTrainings());
 
-        switch (subscriptionInformationDto.getSubscriptionLevel()) {
+        switch (subscriptionRenewDto.getSubscriptionLevel()) {
             case FREE:
                 subscriptionInformationToUpdate.setMaxTrainings(1);
                 break;
-            case COOPER:
+            case COPPER:
                 subscriptionInformationToUpdate.setMaxTrainings(5);
+                subscriptionInformationToUpdate.setRemainingTrainings(subscriptionInformationToUpdate.getRemainingTrainings() + 10);
                 break;
             case SILVER:
                 subscriptionInformationToUpdate.setMaxTrainings(10);
+                subscriptionInformationToUpdate.setRemainingTrainings(subscriptionInformationToUpdate.getRemainingTrainings() + 30);
                 break;
             case GOLD:
                 subscriptionInformationToUpdate.setMaxTrainings(25);
+                subscriptionInformationToUpdate.setRemainingTrainings(subscriptionInformationToUpdate.getRemainingTrainings() + 100);
                 break;
             case PLATIN:
                 subscriptionInformationToUpdate.setMaxTrainings(50);
+                subscriptionInformationToUpdate.setRemainingTrainings(subscriptionInformationToUpdate.getRemainingTrainings() + 500);
                 break;
         }
+        subscriptionInformationToUpdate.setSubscriptionLevel(subscriptionRenewDto.getSubscriptionLevel());
 
         if (SubscriptionLevel.FREE.equals(subscriptionInformationToUpdate.getSubscriptionLevel())) {
             subscriptionInformationToUpdate.setMaxUploadInKb(SubscriptionInformation.FREE_SUBS_MAX_UPLOAD_IN_KB);

@@ -1,10 +1,7 @@
 package de.htwg.klaut.backend.controller;
 
 import de.htwg.klaut.backend.model.db.Organization;
-import de.htwg.klaut.backend.model.dto.CreateOrganizationDto;
-import de.htwg.klaut.backend.model.dto.SearchOrganizationKeyRequestDto;
-import de.htwg.klaut.backend.model.dto.SearchOrganizationKeyResponseDto;
-import de.htwg.klaut.backend.model.dto.SubscriptionInformationDto;
+import de.htwg.klaut.backend.model.dto.*;
 import de.htwg.klaut.backend.service.IOrganizationService;
 import de.htwg.klaut.backend.service.IUserService;
 import lombok.extern.log4j.Log4j2;
@@ -40,8 +37,8 @@ public class OrganizationController {
     }
 
     @PostMapping(IOrganizationControllerPathConst.SUBSCRIPTION_MAPPING)
-    public ResponseEntity updateSubscription(@PathVariable String organization, @RequestBody SubscriptionInformationDto subscriptionInformationDto) {
-        organizationService.updateSubscription(subscriptionInformationDto);
+    public ResponseEntity updateSubscription(@PathVariable String organization, @RequestBody SubscriptionRenewDto newSubscriptionDto) {
+        organizationService.renewSubscription(newSubscriptionDto);
         return ResponseEntity.noContent().build();
     }
 
