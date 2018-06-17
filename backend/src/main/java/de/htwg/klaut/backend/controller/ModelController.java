@@ -96,7 +96,7 @@ public class ModelController implements IModelControllerPathConst {
     @PutMapping(path = TRAIN_MAPPING)
     public ResponseEntity train(@PathVariable String organization, @PathVariable String modelId) {
         final SubscriptionInformation subscription = organizationService.getSubscription();
-        if(modelService.getAmountOfModelsInTraining() >= subscription.getMaxTrainings()){
+        if(subscription.getRemainingTrainings() < 1 || modelService.getAmountOfModelsInTraining() >= subscription.getMaxTrainings()){
             return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).build();
         }
 
