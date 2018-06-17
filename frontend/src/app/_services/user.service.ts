@@ -8,9 +8,6 @@ import { LocalStorageService } from './localstorage.service';
 @Injectable()
 export class UserService {
 
-    mocks = [new UserDto("Test@test", "first", "last"),
-    new UserDto("Test@test", "first", "last"),
-    new UserDto("Test@test", "first", "last")]
 
     constructor(private http: HttpClient, private localStorageService: LocalStorageService) { }
 
@@ -21,6 +18,10 @@ export class UserService {
     deleteUser(email: string) {
         let params = new HttpParams().set('email', email);
         return this.http.delete('/api/' + this.localStorageService.currentOrganization.key + '/user', { params });
+    }
+
+    create(user: UserDto) {
+        return this.http.post('/api/' + this.localStorageService.currentOrganization.key + '/user', user);
     }
 
 }

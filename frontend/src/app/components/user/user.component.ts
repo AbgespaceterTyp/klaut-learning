@@ -39,6 +39,7 @@ export class UserComponent implements OnInit {
   createUser() {
     this.loading.emit(true);
     this.userService.create(this.newUser).subscribe(response => {
+      this.newUser = new UserDto();
       this.loadUsers()
     });
   }

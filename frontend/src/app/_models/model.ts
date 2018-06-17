@@ -28,7 +28,8 @@ export class OrganizationDto {
 export class UserDto {
   constructor(private email?: String,
     private firstName?: String,
-    private lastName?: String) { }
+    private lastName?: String,
+    private password?: String) { }
 }
 
 export class SearchOrganizationRequestDto {
