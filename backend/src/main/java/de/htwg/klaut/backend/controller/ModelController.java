@@ -1,6 +1,7 @@
 package de.htwg.klaut.backend.controller;
 
 
+import de.htwg.klaut.backend.exception.PaymentRequiredException;
 import de.htwg.klaut.backend.model.db.*;
 import de.htwg.klaut.backend.model.dto.IdDto;
 import de.htwg.klaut.backend.model.dto.ModelDto;
@@ -97,7 +98,7 @@ public class ModelController implements IModelControllerPathConst {
     public ResponseEntity train(@PathVariable String organization, @PathVariable String modelId) {
         final SubscriptionInformation subscription = organizationService.getSubscription();
         if(subscription.getRemainingTrainings() < 1 || modelService.getAmountOfModelsInTraining() >= subscription.getMaxTrainings()){
-            return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).build();
+            throw new PaymentRequiredException();
         }
 
         modelService.train(new CompositeId(organization, modelId));

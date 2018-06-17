@@ -22,6 +22,7 @@
         "../node_modules/bootstrap/dist/css/bootstrap.min.css",
         "../node_modules/font-awesome/scss/font-awesome.scss",
         "../node_modules/splash-screen/dist/splash-screen.min.css",
+        "../node_modules/ngx-toastr/toastr.css",
         "styles.scss"
       ],
       "scripts": [

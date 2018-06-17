@@ -125,9 +125,7 @@ export class AccordionItemComponent implements OnInit {
         this.startTraining = false;
       },
       error => {
-        console.log(error);
-
-        alert(error.statusText);
+        console.log(error);        
         this.startTraining = false;
       });
   }

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthenticationService, LocalStorageService, OrganizationService } from './_services';
+import { AuthenticationService, LocalStorageService, OrganizationService, MessageService } from './_services';
 import { Router } from '@angular/router';
 import { destroy } from 'splash-screen';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -24,7 +25,9 @@ export class AppComponent implements OnInit {
 
   constructor(private authenticationService: AuthenticationService, private router: Router,
     private localStorageService: LocalStorageService,
-    private organizationService: OrganizationService) {
+    private organizationService: OrganizationService,
+    private messageService: MessageService,
+    private toastr: ToastrService) {
 
     this.router.events.subscribe(data => {
       destroy();
@@ -35,6 +38,9 @@ export class AppComponent implements OnInit {
     // Hacky Hack to tell the browser that the uri has changed. Unfortunately prevents caching
     this.imageUrl = this.organizationService.getOrganizationImageUrl() + "?rerender=" + Math.floor(Math.random() * 100) + 1;
     this.organization = this.localStorageService.currentOrganization.name;
+    this.messageService.errorEvent.subscribe(error => {
+      this.toastr.error(error);
+    });
   }
 
   logout() {
