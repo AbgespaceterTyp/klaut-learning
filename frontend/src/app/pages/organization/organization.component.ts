@@ -74,7 +74,7 @@ export class OrganizationComponent implements OnInit {
   renewSubscription() {
     this.organizationService.renewSubscription(this.subscriptionLevel)
     .subscribe(data => {
-      console.log(data);
+      this.subscription = data;
     });
   }
 }

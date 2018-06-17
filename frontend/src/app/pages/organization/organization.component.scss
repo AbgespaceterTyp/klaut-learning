@@ -1,5 +1,6 @@
 #orgBody {
   padding: 0;
+  text-align: center;
 }
 
 #subBody {
@@ -7,7 +8,15 @@
   text-align: center;
 }
 
+.carb-subscription {
+  padding: 8px;
+  text-align: left;
+}
+
 #subscription {
-  width: 100px;
-  float: right;
+  display: inline;
+}
+
+th {
+  background-color: #f7f7f761 !important;
 }

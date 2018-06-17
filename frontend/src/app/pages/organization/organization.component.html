@@ -6,13 +6,12 @@
   <h2 class="text-center">{{organization.name}}</h2>
 
 </div>
-<button class="btn btn-link" (click)="uploadDummy()">
+<!-- <button class="btn btn-link" (click)="uploadDummy()">
   Change the Organization Image
   <span class="fa fa-image"></span>
-</button>
+</button> -->
 
 <div class="accordion" id="organization">
-
   <div class="card">
     <div class="card-header" id="headingOne">
       <h5 class="mb-0">
@@ -20,7 +19,6 @@
           Users
         </button>
         <app-loading [loading]="loading"></app-loading>
-
       </h5>
     </div>
 
@@ -36,32 +34,34 @@
         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
           Subscription
         </button>
-        <button type="button" class="btn btn-link btn-link--red pull-right" (click)="renewSubscription()">
-          <i class="fas fa-hand-holding-usd fa-lg"></i>
-        </button>
-        <select class="form-control" id="subscription" name="subscriptionLevel" [(ngModel)]="subscriptionLevel">
-          <option value="COPPER" selected>Copper</option>
-          <option value="SILVER">Silver</option>
-          <option value="GOLD">Gold</option>
-          <option value="PLATIN">Platin</option>
-        </select>
+
         <app-loading [loading]="loadingSubscription"></app-loading>
       </h5>
     </div>
 
     <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#organization">
       <div class="card-body" id="subBody">
+        <div class="carb-subscription">
+          <select class="form-control" id="subscription" name="subscriptionLevel" [(ngModel)]="subscriptionLevel">
+            <option value="COPPER" selected>Copper</option>
+            <option value="SILVER">Silver</option>
+            <option value="GOLD">Gold</option>
+            <option value="PLATIN">Platin</option>
+          </select>
+          <button type="button" class="btn btn-link" (click)="renewSubscription()">
+            <i class="fas fa-hand-holding-usd fa-lg"></i>
+          </button>
+        </div>
         <table class="table table-hover">
           <thead class="thead-light">
             <tr>
-              <th scope="col">Max. Trainings</th>
+              <th scope="col">Parallel Trainings</th>
               <th scope="col">Remaining Training</th>
-              <th scope="col">Max. Upload sourcefile size (kb)</th>
+              <th scope="col">Max Sourcefile Size [KB]</th>
               <th scope="col">Subscription Level</th>
             </tr>
           </thead>
           <tbody>
-
             <tr>
               <td>
                 <p *ngIf="subscription">{{subscription.maxTrainings}}</p>
