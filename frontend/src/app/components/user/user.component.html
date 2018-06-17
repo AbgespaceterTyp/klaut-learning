@@ -1,8 +1,31 @@
 <div class="ml-2 mr-2 mb-2 mt-2">
+  <div class="form-inline">
+
+    <div class="form-group mb-2 mr-2">
+      <label for="name" class="sr-only">Enter Email</label>
+      <input type="text" class="form-control" id="name" placeholder="Enter Email" />
+    </div>
+
+    <div class="form-group mb-2 mr-2">
+      <label for="name" class="sr-only">Enter Firstname</label>
+      <input type="text" class="form-control" id="name" placeholder="Enter Firstname" />
+    </div>
+
+    <div class="form-group mb-2 mr-2">
+      <label for="name" class="sr-only">Enter Lastname</label>
+      <input type="text" class="form-control" id="name" placeholder="Enter Lastname" />
+    </div>
+
+    <div class="form-group mb-2 mr-2">
+      <label for="name" class="sr-only">Enter Password</label>
+      <input type="text" class="form-control" id="name" placeholder="Enter Password" />
+    </div>
+    <button class="btn btn-light mb-2"><i class="fa fa-plus fa-lg"></i></button>
+
+  </div>
   <input class="form-control" id="searchInput" type="text" placeholder="Search...">
 </div>
 <table class="table table-hover">
-  <app-loading [loading]="loadingUser"></app-loading>
   <thead class="thead-light">
     <tr>
       <th scope="col">Email</th>

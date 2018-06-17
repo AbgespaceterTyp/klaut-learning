@@ -19,12 +19,14 @@
         <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
           Users
         </button>
+        <app-loading [loading]="loading"></app-loading>
+
       </h5>
     </div>
 
     <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#organization">
       <div class="card-body" id="orgBody">
-        <app-user [organization]="organization"></app-user>
+        <app-user [organization]="organization" (loading)='onLoading($event)'></app-user>
       </div>
     </div>
   </div>

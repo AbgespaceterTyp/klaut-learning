@@ -3,9 +3,12 @@ import { OrganizationDto } from '../../_models';
 import { OrganizationService, LocalStorageService } from '../../_services';
 import { Subscription } from '../../_models/subscription';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy } from '@angular/compiler/src/core';
 
 @Component({
   selector: 'app-organization',
+
+
   templateUrl: './organization.component.html',
   styleUrls: ['./organization.component.scss']
 })
@@ -16,6 +19,7 @@ export class OrganizationComponent implements OnInit {
   organizationImageUrl = this.organizationService.getOrganizationImageUrl();
 
   uploadingFile = false;
+  loading = false;
 
   progress: {
     percentage: number;
@@ -59,5 +63,9 @@ export class OrganizationComponent implements OnInit {
         })
     }
   }
-
+  onLoading(loading: boolean) {
+    setTimeout(() => {
+      this.loading = loading;
+    });
+  }
 }
