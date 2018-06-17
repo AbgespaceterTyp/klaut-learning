@@ -1,5 +1,6 @@
 package de.htwg.klaut.backend.controller;
 
+import de.htwg.klaut.backend.exception.OrganizationNotFoundException;
 import de.htwg.klaut.backend.model.db.Organization;
 import de.htwg.klaut.backend.model.dto.*;
 import de.htwg.klaut.backend.service.IOrganizationService;
@@ -58,7 +59,7 @@ public class OrganizationController {
             SearchOrganizationKeyResponseDto searchOrganizationKeyResponseDto = new SearchOrganizationKeyResponseDto(organization.get().getKey());
             return ResponseEntity.ok(searchOrganizationKeyResponseDto);
         }
-        return new ResponseEntity(HttpStatus.NOT_FOUND);
+        throw new OrganizationNotFoundException(searchOrganizationKeyRequestDto.getOrganizationName());
     }
 
     @PutMapping(IOrganizationControllerPathConst.ORGANIZATION_IMAGE_MAPPING)

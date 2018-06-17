@@ -1,7 +1,6 @@
 package de.htwg.klaut.backend.config;
 
 import de.htwg.klaut.backend.controller.IOrganizationControllerPathConst;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -26,8 +25,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             IOrganizationControllerPathConst.ORGANIZATION_KEY_MAPPING
     };
 
-    @Autowired
-    private OrganizationFilter organizationFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -58,7 +55,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable();
 
-        http.addFilterBefore(organizationFilter, BasicAuthenticationFilter.class);
+        http
+                .addFilterBefore(organizationFilter(), BasicAuthenticationFilter.class);
+    }
+
+    @Bean
+    public OrganizationFilter organizationFilter() {
+        return new OrganizationFilter();
     }
 
 }

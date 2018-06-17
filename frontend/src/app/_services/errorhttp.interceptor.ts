@@ -29,7 +29,7 @@ export class ErrorHttpInterceptor implements HttpInterceptor {
                 if (err.error && err.error.message) {
                     this.messageService.errorEvent.emit(err.error.message);
                 } else {
-                    this.messageService.errorEvent.emit("Something went wrong!");
+                    this.messageService.errorEvent.emit("Something went wrong! " + err.statusText);
                 }
             }
         });

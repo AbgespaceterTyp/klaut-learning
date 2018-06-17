@@ -11,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Collection;
 import java.util.List;
@@ -52,8 +53,9 @@ public class UserController {
     }
 
     @DeleteMapping(IUserControllerPathConst.ME_MAPPING)
-    public ResponseEntity logout(@PathVariable String organization) {
+    public ResponseEntity logout(@PathVariable String organization, HttpServletRequest request) {
         SecurityContextHolder.clearContext();
+        request.getSession(false).invalidate();
         return ResponseEntity.ok().build();
     }
 
