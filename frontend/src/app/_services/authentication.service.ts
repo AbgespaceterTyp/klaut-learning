@@ -40,8 +40,12 @@ export class AuthenticationService {
     }
 
     logout() {
-        // remove user from local storage to log user out
-        this.localStorageService.removeCurrentOrganization();
-        this.localStorageService.removeCurrentUser();
+        return this.http.delete('/api/' +
+            this.localStorageService.currentOrganization.key + '/user/me')
+            .subscribe(response => {
+                // remove user from local storage to log user out
+                this.localStorageService.removeCurrentOrganization();
+                this.localStorageService.removeCurrentUser();
+            });
     }
 }
