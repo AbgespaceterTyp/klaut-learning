@@ -1,15 +1,15 @@
 <div class="container">
   <div class="spacer"></div>
-  <div class="row login">
-    <div class="col align-self-center login-container">
-      <div class="jumbotron">
+  <div class="row login vertical-center">
+    <div class="col login-container">
+      <div class="col col-sm-6 align-self-center">
         <div class="card">
           <div class="card-body">
               <form name="form" (ngSubmit)="f.form.valid && login()" #f="ngForm" novalidate>
                 <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
-                    <label class="label label--required" for="username">Username</label>
+                    <label class="label label--required" for="username">Email</label>
                     <input type="text" class="form-control" name="username" [(ngModel)]="model.username" #username="ngModel" required />
-                    <div *ngIf="f.submitted && !username.valid" class="help-block">Username is required</div>
+                    <div *ngIf="f.submitted && !username.valid" class="help-block">Email is required</div>
                 </div>
                 <div class="form-group" [ngClass]="{ 'has-error': f.submitted && !username.valid }">
                     <label class="label label--required" for="organization">Organization</label>
