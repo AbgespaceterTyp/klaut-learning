@@ -1,4 +1,4 @@
-<div class="wrapper backgroundimage">   
+<div class="wrapper"  [ngClass]="{'backgroundimage': !loggedIn()}">   
   <nav class="navbar navbar-expand-lg navbar-light bg-light">          
       <div *ngIf="loggedIn()" class="organization">
         <img class="rounded-circle organizationImage" [src]="imageUrl"
