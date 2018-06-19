@@ -8,11 +8,6 @@
       <option *ngFor="let item of tdata" [ngValue]="item.url">{{item.endTime}}</option>
     </select>
   </div>
-  <div class="col-sm-1">
-    <button type="button" class="btn btn-link" (click)="download()" [disabled]="!selectedTrainingData">
-      <i class="fa fa-download fa-lg"></i>
-    </button>
-  </div>
   <div class="col-sm-4">
     <input class="form-control" [class.loading]="testing" type="text" placeholder="Enter Test Word" [(ngModel)]="testWord" (change)="testModel()"
            [disabled]="!selectedTrainingData || testing">
