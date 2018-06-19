@@ -12,6 +12,11 @@
     <input class="form-control" [class.loading]="testing" type="text" placeholder="Enter Test Word" [(ngModel)]="testWord" (change)="testModel()"
            [disabled]="!selectedTrainingData || testing">
   </div>
+  <div >
+    <button type="button" class="btn btn-link" [disabled]="!selectedTrainingData">
+      <i class="fa fa-search fa-lg"></i>
+    </button>
+  </div>
 </div>
 <div class="spacer spacer--20"></div>
 <div *ngIf="synonyms" class="row">
