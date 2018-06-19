@@ -1,11 +1,14 @@
 package de.htwg.klaut.backend.service;
 
+import de.htwg.klaut.backend.exception.UnableToDeleteOwnUserException;
 import de.htwg.klaut.backend.exception.UserCreationException;
 import de.htwg.klaut.backend.model.db.CloudUser;
 import de.htwg.klaut.backend.model.db.CreateUserDto;
 import de.htwg.klaut.backend.repository.IUserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -93,6 +96,11 @@ public class UserService implements UserDetailsService, IUserService {
 
     @Override
     public void delete(String email) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+        if (email.equals(currentUserEmail)) {
+            throw new UnableToDeleteOwnUserException();
+        }
         userRepository.deleteByEmailAndOrganization(email, organizationService.getCurrentOrganization());
     }
 }
