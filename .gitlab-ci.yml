@@ -6,7 +6,8 @@ build:backend:
   image: maven:3.3-jdk-8
   stage: build
   artifacts:
-    untracked: true
+    paths:
+    - backend/target/backend*.jar
   script:
   - cd backend
   - mvn install -q
@@ -15,7 +16,8 @@ build:frontend:
   image: node:9.11.1
   stage: build
   artifacts:
-    untracked: true
+    paths:
+    - frontend/dist
   script:
   - cd frontend
   - npm install
