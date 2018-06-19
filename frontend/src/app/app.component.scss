@@ -4,6 +4,7 @@
 
 .navbar {
   border-bottom: 1px dotted black;
+  background-color: #344352 !important;
 }
 
 .nav {
@@ -11,10 +12,21 @@
     float: right;
   }
 }
+.navbar-light .navbar-nav .nav-link {
+  color: #fff;
+}
+
+.fa.fa-navicon {
+  color:white;
+}
 
 .organization {
   margin-right: 12px;
 } 
+
+.navbar-light .navbar-brand {
+  color: #fff !important;
+}
 
 .organizationImage {
   cursor: pointer;
@@ -42,3 +54,4 @@
   z-index: -1;   
   background-size: cover;
 }
+
