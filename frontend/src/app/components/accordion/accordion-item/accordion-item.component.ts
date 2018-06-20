@@ -43,6 +43,9 @@ export class AccordionItemComponent implements OnInit {
         windowSize: 0
       }
     }
+    if(this.model.trainingDuration) {
+      this.trainingDuration = moment.duration(this.model.trainingDuration as number, "ms").format("mm:ss");
+    }
   }
 
   updateModel() {
@@ -125,7 +128,7 @@ export class AccordionItemComponent implements OnInit {
         this.startTraining = false;
       },
       error => {
-        console.log(error);        
+        console.log(error);
         this.startTraining = false;
       });
   }
