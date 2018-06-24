@@ -1,9 +1,10 @@
 import {Component, OnInit, Input} from '@angular/core';
 import {Word2Vec} from '../../../_models';
-import {ModelService} from '../../../_services';
+import {ModelService, MessageService} from '../../../_services';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
 import * as moment from 'moment';
 import 'moment-duration-format';
+import { Observable } from 'rxjs';
 
 @Component({selector: 'app-accordion-item', templateUrl: './accordion-item.component.html', styleUrls: ['./accordion-item.component.scss']})
 export class AccordionItemComponent implements OnInit {
@@ -31,7 +32,8 @@ export class AccordionItemComponent implements OnInit {
     uploaded: true
   };
 
-  constructor(private modelService : ModelService) {}
+  constructor(private modelService : ModelService,
+    private messageService: MessageService) {}
 
   ngOnInit() {
     if (!this.model.params) {
@@ -50,14 +52,20 @@ export class AccordionItemComponent implements OnInit {
 
   updateModel() {
     this.loadingModel = true;
-    this.modelService.loadModel(this.model.id)
-      .subscribe(
-        data => {
-          this.loadingModel = false;
-          this.model = data;
+    this.loadModel()
+    .subscribe(data => {
+      this.loadingModel = false;
+    });    
+  }
 
+  private loadModel() {
+    return this.modelService.loadModel(this.model.id)
+      .map(
+        data => {
+          this.model = data;
           this.trainingDuration = moment.duration(this.model.trainingDuration as number, "ms").format("mm:ss");
-      });
+          return data;                    
+      })
   }
 
   updateParams() {
@@ -121,16 +129,27 @@ export class AccordionItemComponent implements OnInit {
   }
 
   train() {
-    this.startTraining = true;
-    this.modelService.train(this.model.id)
+    this.loadingModel = true;
+    this.loadModel()
       .subscribe(data => {
-        this.model.training = true;
-        this.startTraining = false;
-      },
-      error => {
-        console.log(error);
-        this.startTraining = false;
-      });
+        this.loadingModel = false;
+        console.log(data);
+        
+        if(!data.training) {
+          this.startTraining = true;
+          this.modelService.train(this.model.id)
+            .subscribe(data => {
+              this.model.training = true;
+              this.startTraining = false;
+            },
+            error => {
+              console.log(error);
+              this.startTraining = false;
+            });
+        } else {
+          this.messageService.errorEvent.emit("model is already in training");
+        }
+      })
   }
 
   trainable() : boolean {
