@@ -121,7 +121,11 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
                 // Remove current training data in case of exceptions
                 modelToTrain.getTrainingData().remove(trainingData);
             } finally {
-                modelRepository.save(modelToTrain);
+                try {
+                    modelRepository.save(modelToTrain);
+                } catch (Exception e) {
+                    log.error("Failed to save model after training {}", modelToTrain, e);
+                }
             }
         });
         return modelToTrain;
