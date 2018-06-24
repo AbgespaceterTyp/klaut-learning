@@ -1,9 +1,6 @@
 package de.htwg.klaut.backend.service;
 
-import de.htwg.klaut.backend.exception.ModelCreationException;
-import de.htwg.klaut.backend.exception.ModelNotFoundException;
-import de.htwg.klaut.backend.exception.SourceCreationException;
-import de.htwg.klaut.backend.exception.SourceNotFoundException;
+import de.htwg.klaut.backend.exception.*;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.IModelParams;
 import de.htwg.klaut.backend.model.db.Model;
@@ -60,7 +57,7 @@ public interface IModelService<MODEL_PARAM_TYPE extends IModelParams> {
      * @throws ModelNotFoundException  in case of missing {@Link Model}
      * @throws SourceNotFoundException
      */
-    Model train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException;
+    Model train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException, ModelTrainingException;
 
     /**
      * Adds a source file to {@Link Model} with given {@Link CompositeId}.

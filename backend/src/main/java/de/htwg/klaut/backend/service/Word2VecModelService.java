@@ -1,9 +1,6 @@
 package de.htwg.klaut.backend.service;
 
-import de.htwg.klaut.backend.exception.ModelCreationException;
-import de.htwg.klaut.backend.exception.ModelNotFoundException;
-import de.htwg.klaut.backend.exception.SourceCreationException;
-import de.htwg.klaut.backend.exception.SourceNotFoundException;
+import de.htwg.klaut.backend.exception.*;
 import de.htwg.klaut.backend.model.db.CompositeId;
 import de.htwg.klaut.backend.model.db.Model;
 import de.htwg.klaut.backend.model.db.ModelTrainingData;
@@ -91,12 +88,16 @@ public class Word2VecModelService implements IModelService<Word2VecParams> {
     }
 
     @Override
-    public Model train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException {
+    public Model train(CompositeId modelId) throws ModelNotFoundException, SourceNotFoundException, ModelTrainingException {
         log.debug("starting training of model {}", modelId);
 
         final Model modelToTrain = get(modelId);
         if (StringUtils.isEmpty(modelToTrain.getSourceUrl())) {
             throw new SourceNotFoundException(modelId);
+        }
+
+        if(modelToTrain.isTraining()){
+            throw new ModelTrainingException(modelId);
         }
 
         // Prepare training data
